@@ -36,7 +36,7 @@ class TextNode extends PrimaryComponent {
   }
 }
 
-class Unescaped extends PrimaryComponent {
+class UnescapedText extends PrimaryComponent {
   private $text;
 
   public function __construct(string $text) {
