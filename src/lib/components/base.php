@@ -24,7 +24,11 @@ class Element extends PrimaryComponent {
   }
 }
 
-class TextNode extends PrimaryComponent {
+abstract class TextBase extends PrimaryComponent {
+  abstract public function getText(): string;
+}
+
+class TextNode extends TextBase {
   private $text;
 
   public function __construct(string $text) {
@@ -36,7 +40,7 @@ class TextNode extends PrimaryComponent {
   }
 }
 
-class UnescapedText extends PrimaryComponent {
+class UnescapedText extends TextBase {
   private $text;
 
   public function __construct(string $text) {
