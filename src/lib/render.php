@@ -20,7 +20,9 @@ class Renderer {
       throw new TypeError('Cannot render custom PrimaryComponent');
     }
 
-    if ($component instanceof Component) {}
+    if ($component instanceof Component) {
+      return $this->renderLevel($component->render(), $level);
+    }
 
     throw new TypeError('Must be an instance of Component');
   }
