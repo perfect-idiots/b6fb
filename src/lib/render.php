@@ -15,7 +15,7 @@ class Renderer {
   private function renderLevel(Component $component, int $level): string {
     if ($component instanceof PrimaryComponent) {
       if ($component instanceof Element) return $this->renderElement($component, $level);
-      if ($component instanceof TextBase) return $this->renderText($component);
+      if ($component instanceof TextBase) return $this->renderText($component, $level);
 
       throw new TypeError('Cannot render custom PrimaryComponent');
     }
@@ -54,8 +54,16 @@ class Renderer {
     return "{$result}{$indent}</$tag>";
   }
 
-  private function renderText(TextBase $text): string {
-    return $text->getText();
+  private function renderText(TextBase $text, int $level): string {
+    $segments = explode("\n", $text->getText());
+    $indent = $this->indent($level);
+    $result = array();
+
+    foreach($segments as $chunk) {
+      array_push($result, $indent . $chunk);
+    }
+
+    return implode("\n", $result);
   }
 
   private function renderAttributes(array $attributes): string {
