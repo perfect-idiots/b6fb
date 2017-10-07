@@ -38,7 +38,13 @@ class Renderer {
     $newline = $this->newline();
     $indent = $this->indent($newlevel);
 
-    $result = "<$tag $attributes $classes $style $data>$newline";
+    $open = Renderer::joinStringSegments(
+      array($tag, $attributes, $classes, $style, $data)
+    );
+
+    if ($element->isSelfClosing()) return "<$open />$newline";
+
+    $result = "<$open>$newline";
 
     foreach($element->children as $child) {
       $childHTML = $this->renderLevel($child, $newlevel);
@@ -110,6 +116,18 @@ class Renderer {
 
   private function indent(int $level): string {
     return $this->production ? '' : str_repeat(' ', $level << 1);
+  }
+
+  static private function joinStringSegments(array $segments) {
+    return join(
+      ' ',
+      array_filter(
+        $segments,
+        function ($x) {
+          return $x != null && $x !== '';
+        }
+      )
+    );
   }
 }
 ?>

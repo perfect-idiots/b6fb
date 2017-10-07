@@ -9,7 +9,7 @@ class PrimaryComponent implements Component {
   }
 }
 
-class Element extends PrimaryComponent {
+abstract class Element extends PrimaryComponent {
   public $tag, $attributes, $children, $classes, $style, $dataset;
 
   public function __construct(string $tag, array $props = array(), array $children = array()) {
@@ -22,8 +22,28 @@ class Element extends PrimaryComponent {
     $this->dataset = Element::getArrayKey($props, 'dataset');
   }
 
+  abstract public function isSelfClosing(): bool;
+
   private function getArrayKey(array $array, string $key) {
     return array_key_exists($key, $array) && $array[$key] ? $array[$key] : array();
+  }
+}
+
+class XMLElement extends Element {
+  public function isSelfClosing(): bool {
+    return sizeof($this->children) == 0;
+  }
+}
+
+class HTMLElement extends Element {
+  private const EMPTY_TAGS = array(
+    'area', 'base', 'br', 'col', 'embed',
+    'hr', 'img', 'input', 'keygen', 'link',
+    'meta', 'param', 'source', 'track', 'wbr'
+  );
+
+  public function isSelfClosing(): bool {
+    return (bool) in_array($this->tag, HTMLElement::EMPTY_TAGS);
   }
 }
 
