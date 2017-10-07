@@ -9,7 +9,7 @@ class Renderer {
   }
 
   public function render(Component $component): string {
-    return renderLevel($component, 0);
+    return $this->renderLevel($component, 0);
   }
 
   private function renderLevel(Component $component, int $level): string {
