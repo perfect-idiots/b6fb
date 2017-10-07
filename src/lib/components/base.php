@@ -12,11 +12,10 @@ class PrimaryComponent implements Component {
 class Element extends PrimaryComponent {
   public $tag, $attributes, $children, $classes, $style, $data;
 
-  public function __construct(string $tag, array $props, array $children) {
+  public function __construct(string $tag, array $props = array(), array $children = array()) {
     $this->tag = $tag;
-    $this->children = $children || array();
+    $this->children = $children;
 
-    if (!$props) $props = array();
     $this->attributes = $props['attributes'] || array();
     $this->classes = $props['classes'] || array();
     $this->style = $props['style'] || array();
