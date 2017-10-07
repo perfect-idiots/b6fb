@@ -36,22 +36,22 @@ class Renderer {
 
     $newlevel = $level + 1;
     $newline = $this->newline();
-    $indent = $this->indent($newlevel);
+    $indent = $this->indent($level);
 
     $open = Renderer::joinStringSegments(
       array($tag, $attributes, $classes, $style, $data)
     );
 
-    if ($element->isSelfClosing()) return "<$open />";
+    if ($element->isSelfClosing()) return "$indent<$open />";
 
-    $result = "<$open>$newline";
+    $result = "$indent<$open>$newline";
 
     foreach($element->children as $child) {
       $childHTML = $this->renderLevel($child, $newlevel);
-      $result .= $indent . $childHTML . $newline;
+      $result .= $childHTML . $newline;
     }
 
-    return "$result</$tag>";
+    return "{$result}{$indent}</$tag>";
   }
 
   private function renderText(TextBase $text): string {
