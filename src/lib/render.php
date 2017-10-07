@@ -76,13 +76,13 @@ class Renderer {
       array_push($result, "$actualKey=\"$actualValue\"");
     }
 
-    return join(' ', $result);
+    return implode(' ', $result);
   }
 
   private function renderClassAttribute(array $classes): string {
     if (!sizeof($classes)) return '';
 
-    return 'class="' . join(
+    return 'class="' . implode(
       ' ',
       array_map(
         function ($x) { return htmlspecialchars($x); },
@@ -98,7 +98,7 @@ class Renderer {
 
     foreach($style as $key => $value) {
       $actualKey = htmlspecialchars($key);
-      $actualValue = htmlspecialchars(is_array($value) ? join(' ', $value) : $value);
+      $actualValue = htmlspecialchars(is_array($value) ? implode(' ', $value) : $value);
 
       $result .= "$actualKey: $actualValue; ";
     }
@@ -127,7 +127,7 @@ class Renderer {
   }
 
   static private function joinStringSegments(array $segments) {
-    return join(
+    return implode(
       ' ',
       array_filter(
         $segments,
