@@ -9,4 +9,6 @@ echo "<!DOCTYPE html>\n";
 echo $renderer->render(
   new App()
 );
+
+echo "\n";
 ?>
