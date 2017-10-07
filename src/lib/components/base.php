@@ -16,10 +16,14 @@ class Element extends PrimaryComponent {
     $this->tag = $tag;
     $this->children = $children;
 
-    $this->attributes = $props['attributes'] || array();
-    $this->classes = $props['classes'] || array();
-    $this->style = $props['style'] || array();
-    $this->data = $props['data'] || array();
+    function get(array $array, string $key, array $default): array {
+      return array_key_exists($key, $array) ? $array[$key] : $default;
+    }
+
+    $this->attributes = get($props, 'attributes', array());
+    $this->classes = get($props, 'classes', array());
+    $this->style = get($props, 'style', array());
+    $this->data = get($props, 'data', array());
   }
 }
 
