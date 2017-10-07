@@ -10,7 +10,7 @@ class PrimaryComponent implements Component {
 }
 
 class Element extends PrimaryComponent {
-  public $tag, $attributes, $children, $classes, $style, $data;
+  public $tag, $attributes, $children, $classes, $style, $dataset;
 
   public function __construct(string $tag, array $props = array(), array $children = array()) {
     $this->tag = $tag;
@@ -23,7 +23,7 @@ class Element extends PrimaryComponent {
     $this->attributes = get($props, 'attributes', array());
     $this->classes = get($props, 'classes', array());
     $this->style = get($props, 'style', array());
-    $this->data = get($props, 'data', array());
+    $this->dataset = get($props, 'dataset', array());
   }
 }
 

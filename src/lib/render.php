@@ -32,7 +32,7 @@ class Renderer {
     $attributes = $this->renderAttributes($element->attributes);
     $classes = $this->renderClassAttribute($element->classes);
     $style = $this->renderStyleAttribute($element->style);
-    $data = $this->renderDataAttribute($element->data);
+    $data = $this->renderDatasetAttribute($element->dataset);
 
     $newlevel = $level + 1;
     $newline = $this->newline();
@@ -92,12 +92,12 @@ class Renderer {
     return $result.'"';
   }
 
-  private function renderDataAttribute(array $data): string {
-    if (!sizeof($data)) return '';
+  private function renderDatasetAttribute(array $dataset): string {
+    if (!sizeof($dataset)) return '';
 
     $result = array();
 
-    foreach($data as $key => $value) {
+    foreach($dataset as $key => $value) {
       $result["data-$key"] = $value;
     }
 
