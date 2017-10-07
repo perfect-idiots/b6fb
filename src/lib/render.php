@@ -42,16 +42,16 @@ class Renderer {
       array($tag, $attributes, $classes, $style, $data)
     );
 
-    if ($element->isSelfClosing()) return "<$open />$newline";
+    if ($element->isSelfClosing()) return "<$open />";
 
     $result = "<$open>$newline";
 
     foreach($element->children as $child) {
       $childHTML = $this->renderLevel($child, $newlevel);
-      $result .= $indent . $childHTML;
+      $result .= $indent . $childHTML . $newline;
     }
 
-    return "$result</$tag>$newline";
+    return "$result</$tag>";
   }
 
   private function renderText(TextBase $text): string {
