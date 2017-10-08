@@ -6,7 +6,7 @@ class Head implements Component {
     return HTMLElement::create('head', array(
       HTMLElement::create('meta', array('charset' => 'utf-8')),
       HTMLElement::create('title', array(
-        new TextNode('Hello, World!!')
+        'Hello, World!!'
       ))
     ));
   }

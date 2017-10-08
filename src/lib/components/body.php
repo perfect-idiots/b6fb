@@ -5,7 +5,7 @@ class Body implements Component {
   public function render(): Component {
     return HTMLElement::create('body', array(
       HTMLElement::create('h1', array(
-        new TextNode('Hello, World!!')
+        'Hello, World!!'
       ))
     ));
   }
