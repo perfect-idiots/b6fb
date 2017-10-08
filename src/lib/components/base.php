@@ -11,7 +11,7 @@ class PrimaryComponent implements Component {
 
 abstract class Element extends PrimaryComponent {
   private const SPECIAL_FIELDS = array(
-    'tag', 'attributes', 'classes', 'style', 'dataset', 'children'
+    'attributes', 'classes', 'style', 'dataset', 'children'
   );
 
   public $tag, $attributes, $children, $classes, $style, $dataset;
@@ -28,8 +28,7 @@ abstract class Element extends PrimaryComponent {
 
   abstract public function isSelfClosing(): bool;
 
-  static public function create(array $desc): self {
-    $tag = $desc['tag'];
+  static public function create(string $tag, array $desc = array()): self {
     $attributes = Element::getArrayKey($desc, 'attributes');
     $classes = Element::getArrayKey($desc, 'classes');
     $style = Element::getArrayKey($desc, 'style');
