@@ -3,8 +3,8 @@ require_once __DIR__ . '/base.php';
 
 class Body implements Component {
   public function render(): Component {
-    return new HTMLElement('body', array(), array(
-      new HTMLElement('h1', array(), array(
+    return HTMLElement::create('body', array(
+      HTMLElement::create('h1', array(
         new TextNode('Hello, World!!')
       ))
     ));
