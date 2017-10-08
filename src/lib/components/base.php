@@ -10,6 +10,10 @@ class PrimaryComponent implements Component {
 }
 
 abstract class Element extends PrimaryComponent {
+  private const SPECIAL_FIELDS = array(
+    'tag', 'attributes', 'classes', 'style', 'dataset', 'children'
+  );
+
   public $tag, $attributes, $children, $classes, $style, $dataset;
 
   public function __construct(string $tag, array $props = array(), array $children = array()) {
@@ -24,7 +28,35 @@ abstract class Element extends PrimaryComponent {
 
   abstract public function isSelfClosing(): bool;
 
-  private function getArrayKey(array $array, string $key) {
+  static public function create(array $desc): self {
+    $tag = $desc['tag'];
+    $attributes = Element::getArrayKey($desc, 'attributes');
+    $classes = Element::getArrayKey($desc, 'classes');
+    $style = Element::getArrayKey($desc, 'style');
+    $dataset = Element::getArrayKey($desc, 'dataset');
+    $children = Element::getArrayKey($desc, 'children');
+
+    foreach($desc as $key => $value) {
+      if (is_long($key)) {
+        array_push($children, $value);
+      } else if (!in_array($key, Element::SPECIAL_FIELDS)) {
+        $attributes[$key] = $value;
+      }
+    }
+
+    return new static(
+      $tag,
+      array(
+        'attributes' => $attributes,
+        'classes' => $classes,
+        'style' => $style,
+        'dataset' => $dataset
+      ),
+      $children
+    );
+  }
+
+  static private function getArrayKey(array $array, string $key): array {
     return array_key_exists($key, $array) && $array[$key] ? $array[$key] : array();
   }
 }
