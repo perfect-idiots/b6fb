@@ -28,7 +28,9 @@ abstract class Element extends PrimaryComponent {
 
   abstract public function isSelfClosing(): bool;
 
-  static public function create(string $tag, array $desc = array()): self {
+  static public function create(string $tag, $desc = array()): self {
+    if (gettype($desc) != 'array') return static::create($tag, array($desc));
+
     $attributes = Element::getArrayKey($desc, 'attributes');
     $classes = Element::getArrayKey($desc, 'classes');
     $style = Element::getArrayKey($desc, 'style');
@@ -51,7 +53,12 @@ abstract class Element extends PrimaryComponent {
         'style' => $style,
         'dataset' => $dataset
       ),
-      $children
+      array_map(
+        function ($x) {
+          return $x instanceof Component ? $x : new TextNode((string) $x);
+        },
+        $children
+      )
     );
   }
 
