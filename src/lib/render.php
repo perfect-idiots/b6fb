@@ -42,8 +42,16 @@ class Renderer {
       array($tag, $attributes, $classes, $style, $data)
     );
 
-    if ($element->isSelfClosing()) return "$indent<$open />";
-    if (!sizeof($element->children)) return "$indent<$tag></$tag>";
+    switch($element->tagClosingStyle()) {
+      case 'self-close':
+        return "$indent<$open />";
+      case 'pair-close':
+        return "$indent<$open></$tag>";
+      case 'non-empty':
+        break;
+      default:
+        throw new Exception('Invalid tag closing style');
+    }
 
     $result = "$indent<$open>$newline";
 

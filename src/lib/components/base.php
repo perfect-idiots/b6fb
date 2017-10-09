@@ -26,7 +26,7 @@ abstract class Element extends PrimaryComponent {
     $this->dataset = Element::getArrayKey($props, 'dataset');
   }
 
-  abstract public function isSelfClosing(): bool;
+  abstract public function tagClosingStyle(): string;
 
   static public function create(string $tag, $desc = array()): self {
     if (gettype($desc) != 'array') return static::create($tag, array($desc));
@@ -78,8 +78,8 @@ abstract class Element extends PrimaryComponent {
 }
 
 class XMLElement extends Element {
-  public function isSelfClosing(): bool {
-    return sizeof($this->children) == 0;
+  public function tagClosingStyle(): string {
+    return sizeof($this->element) ? 'non-empty' : 'self-close';
   }
 }
 
@@ -90,8 +90,10 @@ class HTMLElement extends Element {
     'meta', 'param', 'source', 'track', 'wbr'
   );
 
-  public function isSelfClosing(): bool {
-    return (bool) in_array($this->tag, HTMLElement::EMPTY_TAGS);
+  public function tagClosingStyle(): string {
+    if(in_array($this->tag, HTMLElement::EMPTY_TAGS)) return 'self-close';
+    if(sizeof($this->children)) return 'non-empty';
+    return 'pair-close';
   }
 }
 
