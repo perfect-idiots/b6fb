@@ -43,6 +43,7 @@ class Renderer {
     );
 
     if ($element->isSelfClosing()) return "$indent<$open />";
+    if (!sizeof($element->children)) return "$indent<$tag></$tag>";
 
     $result = "$indent<$open>$newline";
 
