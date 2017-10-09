@@ -62,6 +62,16 @@ abstract class Element extends PrimaryComponent {
     );
   }
 
+  static public function nested(array $tags, $desc = array()) {
+    return sizeof($tags)
+      ? static::create(
+        $tags[0],
+        static::nested(array_slice($tags, 1), $desc)
+      )
+      : $desc
+    ;
+  }
+
   static private function getArrayKey(array $array, string $key): array {
     return array_key_exists($key, $array) && $array[$key] ? $array[$key] : array();
   }
