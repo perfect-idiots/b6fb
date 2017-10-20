@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/components/base.php';
+require_once __DIR__ . '../view/components/base.php';
 
 class Renderer {
   private $production;
