@@ -77,13 +77,13 @@ abstract class Element extends PrimaryComponent {
   }
 }
 
-class XMLElement extends Element {
+class XmlElement extends Element {
   public function tagClosingStyle(): string {
     return sizeof($this->element) ? 'non-empty' : 'self-close';
   }
 }
 
-class HTMLElement extends Element {
+class HtmlElement extends Element {
   private const EMPTY_TAGS = array(
     'area', 'base', 'br', 'col', 'embed',
     'hr', 'img', 'input', 'keygen', 'link',
@@ -91,7 +91,7 @@ class HTMLElement extends Element {
   );
 
   public function tagClosingStyle(): string {
-    if(in_array($this->tag, HTMLElement::EMPTY_TAGS)) return 'self-close';
+    if(in_array($this->tag, HtmlElement::EMPTY_TAGS)) return 'self-close';
     if(sizeof($this->children)) return 'non-empty';
     return 'pair-close';
   }
