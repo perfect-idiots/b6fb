@@ -5,7 +5,7 @@ interface Component {
 
 class PrimaryComponent implements Component {
   public function render(): Component {
-    throw new Exception('Cannot render a primary component.');
+    throw new TypeError('Cannot render a primary component.');
   }
 }
 
