@@ -3,11 +3,14 @@ class CaseConverter {
   private $words;
 
   public function __construct(array $words) {
-    if (!validate($words)) throw new TypeError('Passed array contains non-string elements');
+    if (!$this->validateWords($words)) {
+      throw new TypeError('Passed array contains non-string elements');
+    }
+
     $this->words = $words;
   }
 
-  static private function validateWords(array $words): boolean {
+  static private function validateWords(array $words): bool {
     foreach ($words as $word) {
       if (gettype($word) != 'string') return false;
     }
@@ -19,13 +22,13 @@ class CaseConverter {
     $words = array();
     $current = '';
 
-    foreach ($text as $char) {
+    foreach (str_split($text) as $char) {
       $lowcase = strtolower($char);
 
       if ($lowcase == $char) {
         $current .= $lowcase;
       } else {
-        $current or array_push($words, $current);
+        $current and array_push($words, $current);
         $current = $lowcase;
       }
     }
