@@ -9,29 +9,44 @@ class Renderer {
   }
 
   public function render(Component $component): string {
-    return $this->renderLevel($component, 0);
+    return $this->renderLevel($component, 0, array());
   }
 
-  private function renderLevel(Component $component, int $level): string {
+  private function renderLevel(Component $component, int $level, array $prevComponents): string {
+    $components = array_merge($prevComponents, array(get_class($component)));
+
     if ($component instanceof PrimaryComponent) {
-      if ($component instanceof Element) return $this->renderElement($component, $level);
+      if ($component instanceof Element) return $this->renderElement($component, $level, $components);
       if ($component instanceof TextBase) return $this->renderText($component, $level);
 
       throw new TypeError('Cannot render custom PrimaryComponent');
     }
 
     if ($component instanceof Component) {
-      return $this->renderLevel($component->render(), $level);
+      return $this->renderLevel($component->render(), $level, $components);
     }
 
     throw new TypeError('Must be an instance of Component');
   }
 
-  private function renderElement(Element $element, int $level): string {
+  private function renderElement(Element $element, int $level, array $components): string {
     $tag = $element->tag;
-    $attributes = $this->renderAttributes($element->attributes);
-    $classes = $this->renderClassAttribute($element->classes);
+
+    $attributes = $this->renderAttributes(array_merge(
+      $element->attributes,
+      array('x-component' => implode(' ', $components))
+    ));
+
+    $classes = $this->renderClassAttribute(array_merge(
+      $element->classes,
+      array_map(
+        function ($name) { return "x-component--$name"; },
+        $components
+      )
+    ));
+
     $style = $this->renderStyleAttribute($element->style);
+
     $data = $this->renderDatasetAttribute($element->dataset);
 
     $newlevel = $level + 1;
@@ -56,7 +71,7 @@ class Renderer {
     $result = "$indent<$open>$newline";
 
     foreach($element->children as $child) {
-      $childHTML = $this->renderLevel($child, $newlevel);
+      $childHTML = $this->renderLevel($child, $newlevel, array());
       $result .= $childHTML . $newline;
     }
 
