@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/utils.php';
 require_once __DIR__ . '/../view/components/base.php';
 
 class Renderer {
@@ -40,7 +41,11 @@ class Renderer {
     $classes = $this->renderClassAttribute(array_merge(
       $element->classes,
       array_map(
-        function ($name) { return "x-component--$name"; },
+        function (string $name): string {
+          $kebab = CaseConverter::fromPascalCase($name)->toKebabCase();
+          return 'x-component--' . $kebab;
+        },
+
         $components
       )
     ));
