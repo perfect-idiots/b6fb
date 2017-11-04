@@ -35,11 +35,14 @@ class Renderer {
 
     $attributes = $this->renderAttributes(array_merge(
       $element->attributes,
+      array('x-component-level' => (string) $level),
       array('x-component' => implode(' ', $components))
     ));
 
     $classes = $this->renderClassAttribute(array_merge(
       $element->classes,
+      array("x-component-level--$level"),
+
       array_map(
         function (string $name): string {
           $kebab = CaseConverter::fromPascalCase($name)->toKebabCase();
