@@ -14,7 +14,7 @@ class MarkdownView implements Component {
   }
 
   public function render(): Component {
-    return UnescapedText($this->html);
+    return new UnescapedText($this->html);
   }
 }
 ?>
