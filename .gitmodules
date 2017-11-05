@@ -4,3 +4,6 @@
 [submodule "vendor/stylus"]
 	path = vendor/stylus
 	url = https://github.com/AustP/Stylus.php.git
+[submodule "src/vendor/stylus"]
+	path = src/vendor/stylus
+	url = https://github.com/AustP/Stylus.php.git
