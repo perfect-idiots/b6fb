@@ -13,9 +13,7 @@ class Renderer {
     return $this->renderLevel($component, 0, array());
   }
 
-  private function renderLevel(Component $component, int $level, array $prevComponents): string {
-    $compClassNames = array_merge($prevComponents, array(get_class($component)));
-
+  private function renderLevel(Component $component, int $level, array $compClassNames): string {
     if ($component instanceof PrimaryComponent) {
       if ($component instanceof Element) return $this->renderElement($component, $level, $compClassNames);
       if ($component instanceof TextBase) return $this->renderText($component, $level);
@@ -24,7 +22,8 @@ class Renderer {
     }
 
     if ($component instanceof Component) {
-      return $this->renderLevel($component->render(), $level, $compClassNames);
+      $nextCompClassNames = array_merge($compClassNames, array(get_class($component)));
+      return $this->renderLevel($component->render(), $level, $nextCompClassNames);
     }
 
     throw new TypeError('Must be an instance of Component');
