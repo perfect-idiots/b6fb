@@ -29,13 +29,13 @@ class Renderer {
     throw new TypeError('Must be an instance of Component');
   }
 
-  private function renderElement(Element $element, int $level, array $components): string {
+  private function renderElement(Element $element, int $level, array $compClassNames): string {
     $tag = $element->tag;
 
     $attributes = $this->renderAttributes(array_merge(
       $element->attributes,
       array('x-component-level' => (string) $level),
-      array('x-component' => implode(' ', $components))
+      array('x-component' => implode(' ', $compClassNames))
     ));
 
     $classes = $this->renderClassAttribute(array_merge(
@@ -48,7 +48,7 @@ class Renderer {
           return 'x-component--' . $kebab;
         },
 
-        $components
+        $compClassNames
       )
     ));
 
