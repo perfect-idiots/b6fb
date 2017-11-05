@@ -14,17 +14,17 @@ class Renderer {
   }
 
   private function renderLevel(Component $component, int $level, array $prevComponents): string {
-    $components = array_merge($prevComponents, array(get_class($component)));
+    $compClassNames = array_merge($prevComponents, array(get_class($component)));
 
     if ($component instanceof PrimaryComponent) {
-      if ($component instanceof Element) return $this->renderElement($component, $level, $components);
+      if ($component instanceof Element) return $this->renderElement($component, $level, $compClassNames);
       if ($component instanceof TextBase) return $this->renderText($component, $level);
 
       throw new TypeError('Cannot render custom PrimaryComponent');
     }
 
     if ($component instanceof Component) {
-      return $this->renderLevel($component->render(), $level, $components);
+      return $this->renderLevel($component->render(), $level, $compClassNames);
     }
 
     throw new TypeError('Must be an instance of Component');
