@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/utils.php';
-require_once __DIR__ . '/../view/components/base.php';
+require_once __DIR__ . '/component-base.php';
 
 class Renderer {
   private $production;
