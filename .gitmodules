@@ -1,3 +1,6 @@
 [submodule "src/vendor/parsedown"]
 	path = src/vendor/parsedown
 	url = https://github.com/erusev/parsedown.git
+[submodule "vendor/stylus"]
+	path = vendor/stylus
+	url = https://github.com/AustP/Stylus.php.git
