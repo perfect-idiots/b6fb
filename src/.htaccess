@@ -1,1 +1,1 @@
-RedirectMatch 403 /(lib|vendor|model|view|controller)/
+RedirectMatch 403 /(lib|vendor|model|view|controller|\.git)/
