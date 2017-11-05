@@ -1,20 +1,17 @@
 <?php
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/../../lib/stylus.php';
+use NodejsPhpFallback\Stylus;
 
 class StylusView implements Component {
   private $css;
 
   public function __construct(Stylus $stylus) {
-    $this->css = $stylus->toString();
+    $this->css = $stylus->getCss();
   }
 
-  public static function fromString(Stylus $stylus, string $styl): self {
-    return new self($stylus->fromString($styl));
-  }
-
-  public static function fromFile(Stylus $stylus, string $filename): self {
-    return new self($stylus->fromFile($filename));
+  static public function instance(string $str): self {
+    return new self(new Stylus($str));
   }
 
   public function render(): Component {
