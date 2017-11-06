@@ -1,3 +1,6 @@
 [submodule "src/vendor/parsedown"]
 	path = src/vendor/parsedown
 	url = https://github.com/erusev/parsedown.git
+[submodule "src/vendor/yaml"]
+	path = src/vendor/yaml
+	url = https://github.com/mustangostang/spyc.git
