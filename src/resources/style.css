@@ -3,3 +3,8 @@ html, body {
   border: 0;
   padding: 0;
 }
+
+.x-component--logo a {
+  color: [[text-color]];
+  text-decoration: none;
+}
