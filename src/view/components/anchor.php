@@ -10,11 +10,11 @@ class Anchor implements Component {
   }
 
   static public function withoutAttributes(string $href, $content): self {
-    return new self($href, array($content));
+    return new static($href, array($content));
   }
 
   static public function linkify(string $href, array $attr = array()): self {
-    return new self($href, array_merge(array($href), $attr));
+    return new static($href, array_merge(array($href), $attr));
   }
 
   public function render(): Component {
