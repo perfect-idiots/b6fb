@@ -65,7 +65,7 @@ class DataContainer {
     $this->data = $data;
   }
 
-  static public function from(array $data = array()): self {
+  static public function instance(array $data = array()): self {
     return new static($data);
   }
 
