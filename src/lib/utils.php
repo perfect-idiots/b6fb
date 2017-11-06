@@ -57,4 +57,32 @@ class CaseConverter {
     return implode($dash, $this->words);
   }
 }
+
+class DataContainer {
+  protected $data;
+
+  public function __construct(array $data = array()) {
+    $this->data = $data;
+  }
+
+  public function getData(): array {
+    return $this->data;
+  }
+
+  public function get($key) {
+    return $this->data[$key];
+  }
+
+  public function set($key, $value): self {
+    return self::assign(array($key => $value));
+  }
+
+  public function assign(array $data): self {
+    return new self(array_merge($this->data, $data));
+  }
+
+  public function merge(self $addend): self {
+    return self::assign($addend->getData());
+  }
+}
 ?>
