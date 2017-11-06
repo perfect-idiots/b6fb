@@ -1,4 +1,5 @@
 <?php
-$GLOBALS['PREDEFINED_GAMES'] = yaml_parse_file(__DIR__ . '/predefined/games.yaml');
-$GLOBALS['PREDEFINED_GENRES'] = yaml_parse_file(__DIR__ . '/predefined/genres.yaml');
+require_once __DIR__ . '/../lib/yaml.php';
+$GLOBALS['PREDEFINED_GAMES'] = spyc_load_file(__DIR__ . '/predefined/games.yaml');
+$GLOBALS['PREDEFINED_GENRES'] = spyc_load_file(__DIR__ . '/predefined/genres.yaml');
 ?>
