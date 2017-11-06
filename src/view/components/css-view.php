@@ -12,7 +12,7 @@ class CssView implements Component {
     return new self(file_get_contents($filename));
   }
 
-  public function render() {
+  public function render(): Component {
     return HtmlElement::create('style', array(
       'type' => 'text/css',
       new UnescapedText($this->css)
