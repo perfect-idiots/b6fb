@@ -2,8 +2,9 @@
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/header-section.php';
+require_once __DIR__ . '/../../lib/utils.php';
 
-class App implements Component {
+class App extends DataContainer implements Component {
   public function render(): Component {
     return HtmlElement::create('html', array(
       'lang' => 'en',
