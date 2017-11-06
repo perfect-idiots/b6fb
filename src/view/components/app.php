@@ -10,7 +10,9 @@ class App implements Component {
       HtmlElement::create('head', array(
         HtmlElement::create('meta', array('charset' => 'utf-8')),
         HtmlElement::create('title', 'Hello, World!!'),
-        CssView::fromFile(__DIR__ . '/../../resources/style.css'),
+        CssView::fromFile(__DIR__ . '/../../resources/style.css', array(
+          'text-color' => 'black'
+        )),
       )),
       HtmlElement::create('body', array(
         new HeaderSection(),
