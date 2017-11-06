@@ -78,7 +78,7 @@ class DataContainer {
   }
 
   public function set($key, $value): self {
-    return self::assign(array($key => $value));
+    return static::assign(array($key => $value));
   }
 
   public function assign(array $data): self {
@@ -86,7 +86,7 @@ class DataContainer {
   }
 
   public function merge(self $addend): self {
-    return self::assign($addend->getData());
+    return static::assign($addend->getData());
   }
 }
 ?>
