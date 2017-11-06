@@ -10,7 +10,7 @@ class CssView implements Component {
   }
 
   static public function fromFile(string $filename, array $variables = array()): self {
-    return new self(file_get_contents($filename), $variables);
+    return new static(file_get_contents($filename), $variables);
   }
 
   public function render(): Component {

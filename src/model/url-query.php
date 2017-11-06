@@ -5,7 +5,7 @@ class UrlQuery extends DataContainer {
   private $prefix, $separator;
 
   static public function from(array $data): self {
-    return new self($data);
+    return new static($data);
   }
 
   public function getUrlQuery(): string {
