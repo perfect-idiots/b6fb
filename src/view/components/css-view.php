@@ -15,7 +15,7 @@ class CssView implements Component {
   public function render(): Component {
     return HtmlElement::create('style', array(
       'type' => 'text/css',
-      new UnescapedText($this->css)
+      new UnescapedText($this->css),
     ));
   }
 }

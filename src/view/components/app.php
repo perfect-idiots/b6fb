@@ -9,12 +9,12 @@ class App implements Component {
       HtmlElement::create('head', array(
         HtmlElement::create('meta', array('charset' => 'utf-8')),
         HtmlElement::create('title', 'Hello, World!!'),
-        CssView::fromFile(__DIR__ . '/../../resources/style.css')
+        CssView::fromFile(__DIR__ . '/../../resources/style.css'),
       )),
       HtmlElement::create('body', array(
         HtmlElement::create('header'),
         HtmlElement::create('main'),
-        HtmlElement::create('footer')
+        HtmlElement::create('footer'),
       ))
     ));
   }
