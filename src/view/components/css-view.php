@@ -19,7 +19,7 @@ class CssView implements Component {
     foreach($this->variables as $key => $value) {
       $css = implode(
         (string) $value,
-        explode('$' . $key, $css)
+        explode("[[$key]]", $css)
       );
     }
 
