@@ -34,7 +34,7 @@ class CaseConverter {
     }
 
     array_push($words, $current);
-    return new self($words);
+    return new static($words);
   }
 
   static public function fromKebabCase(string $text): self {
@@ -50,11 +50,43 @@ class CaseConverter {
     }
 
     array_push($words, $current);
-    return new self($words);
+    return new static($words);
   }
 
   public function toKebabCase(string $dash = '-'): string {
     return implode($dash, $this->words);
+  }
+}
+
+class DataContainer {
+  protected $data;
+
+  public function __construct(array $data = array()) {
+    $this->data = $data;
+  }
+
+  static public function instance(array $data = array()): self {
+    return new static($data);
+  }
+
+  public function getData(): array {
+    return $this->data;
+  }
+
+  public function get($key) {
+    return $this->data[$key];
+  }
+
+  public function set($key, $value): self {
+    return self::assign(array($key => $value));
+  }
+
+  public function assign(array $data): self {
+    return new static(array_merge($this->data, $data));
+  }
+
+  public function merge(self $addend): self {
+    return self::assign($addend->getData());
   }
 }
 ?>
