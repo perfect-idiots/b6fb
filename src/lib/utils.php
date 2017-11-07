@@ -66,7 +66,7 @@ interface DataContainerTraits {
   public function merge(DataContainerTraits $addend): DataContainerTraits;
 }
 
-class DataContainer implements DataContainerTraits {
+class RawDataContainer implements DataContainerTraits {
   private $data;
 
   public function __construct(array $data = array()) {
