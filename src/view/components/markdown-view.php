@@ -10,7 +10,7 @@ class MarkdownView implements Component {
   }
 
   public static function instance(string $markdown): self {
-    return new self(Parsedown::instance(), $markdown);
+    return new static(Parsedown::instance(), $markdown);
   }
 
   public function render(): Component {
