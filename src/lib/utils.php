@@ -96,6 +96,11 @@ class RawDataContainer implements DataContainer {
   public function merge(DataContainer $addend): DataContainer {
     return static::assign($addend->getData());
   }
+
+  public function getDefault($key, $default) {
+    $data = $this->getData();
+    return array_key_exists($key, $data) ? $data[$key] : $default;
+  }
 }
 
 abstract class LazyLoadedDataContainer implements DataContainer {
