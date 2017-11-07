@@ -28,6 +28,7 @@ function main(): string {
   $themeColorSet = getThemeColorSet($urlQuery);
 
   $data = array(
+    'title' => 'b6fb',
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],

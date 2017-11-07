@@ -19,11 +19,11 @@ class App extends RawDataContainer implements Component {
 
       HtmlElement::create('head', array(
         HtmlElement::create('meta', array('charset' => 'utf-8')),
-        HtmlElement::create('title', 'Hello, World!!'),
+        HtmlElement::create('title', $data['title']),
         CssView::fromFile(__DIR__ . '/../../resources/style.css', $data['colors']),
       )),
       HtmlElement::create('body', array(
-        new HeaderSection(),
+        new HeaderSection($data),
         HtmlElement::create('main'),
         HtmlElement::create('footer'),
       ))
