@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../lib/yaml.php';
 require_once __DIR__ . '/../lib/utils.php';
 
-class YamlObjectLoader extends LoadedDataContainer {
+class YamlObjectLoader extends LazyLoadedDataContainer {
   protected function load(): array {
     return spyc_load_file($this->param);
   }

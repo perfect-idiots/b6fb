@@ -98,7 +98,7 @@ class DataContainer implements DataContainerTraits {
   }
 }
 
-abstract class LoadedDataContainer implements DataContainerTraits {
+abstract class LazyLoadedDataContainer implements DataContainerTraits {
   protected $param;
   private $state;
 
