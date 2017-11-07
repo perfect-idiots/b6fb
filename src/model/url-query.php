@@ -12,6 +12,4 @@ class UrlQuery extends RawDataContainer {
     return '?' . http_build_query($this->getData());
   }
 }
-
-$GLOBALS['URL_QUERY'] = new UrlQuery($_GET);
 ?>
