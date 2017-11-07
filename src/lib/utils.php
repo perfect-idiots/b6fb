@@ -107,7 +107,7 @@ abstract class LoadedDataContainer implements DataContainerTraits {
     $this->state = false;
   }
 
-  abstract protected function calculate(): array;
+  abstract protected function load(): array;
 
   public function getData(): array {
     $this->firstRun();
