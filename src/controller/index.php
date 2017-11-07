@@ -2,9 +2,7 @@
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 
-function main(): string {
-  $urlQuery = new UrlQuery($_GET);
-
+function getThemeColorSet(UrlQuery $urlQuery): array {
   $themeName = $urlQuery->getDefault('theme', 'light');
   $themeColorSet = null;
 
@@ -19,9 +17,20 @@ function main(): string {
       $urlQuery->set('theme', 'light')->redirect();
   }
 
+  return array(
+    'name' => $themeName,
+    'colors' => $themeColorSet->getData(),
+  );
+}
+
+function main(): string {
+  $urlQuery = new UrlQuery($_GET);
+  $themeColorSet = getThemeColorSet($urlQuery);
+
   $data = array(
     'url-query' => $urlQuery,
-    'colors' => $themeColorSet->getData(),
+    'theme-name' => $themeColorSet['name'],
+    'colors' => $themeColorSet['colors'],
   );
 
   return Page::instance($data)->render();
