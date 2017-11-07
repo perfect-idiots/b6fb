@@ -20,7 +20,8 @@ function main(): string {
   }
 
   $data = array(
-    'url-query' => $urlQuery
+    'url-query' => $urlQuery,
+    'colors' => $themeColorSet->getData(),
   );
 
   return Page::instance($data)->render();

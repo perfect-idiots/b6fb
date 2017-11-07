@@ -6,14 +6,14 @@ require_once __DIR__ . '/../../lib/utils.php';
 
 class App extends RawDataContainer implements Component {
   public function render(): Component {
+    $data = $this->getData();
+
     return HtmlElement::create('html', array(
       'lang' => 'en',
       HtmlElement::create('head', array(
         HtmlElement::create('meta', array('charset' => 'utf-8')),
         HtmlElement::create('title', 'Hello, World!!'),
-        CssView::fromFile(__DIR__ . '/../../resources/style.css', array(
-          'text-color' => 'black'
-        )),
+        CssView::fromFile(__DIR__ . '/../../resources/style.css', $data['colors']),
       )),
       HtmlElement::create('body', array(
         new HeaderSection(),
