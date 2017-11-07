@@ -46,7 +46,7 @@ class JsonDataEmbed extends DataEmbed {
     return 'application/json';
   }
 
-  static public function dump($data, array $attr = array()): self {
+  static public function dump($data, int $options = 0, array $attr = array()): self {
     return self::text(json_encode($data), $attr);
   }
 }
