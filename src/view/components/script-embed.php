@@ -45,5 +45,9 @@ class JsonDataEmbed extends DataEmbed {
   static function type(): string {
     return 'application/json';
   }
+
+  static public function dump($data, int $options = 0, array $attr = array()): self {
+    return self::text(json_encode($data), $attr);
+  }
 }
 ?>
