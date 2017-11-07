@@ -58,22 +58,22 @@ class CaseConverter {
   }
 }
 
-interface DataContainerTraits {
+interface DataContainer {
   public function getData(): array;
   public function get($key);
-  public function set($key, $value): DataContainerTraits;
-  public function assign(array $data): DataContainerTraits;
-  public function merge(DataContainerTraits $addend): DataContainerTraits;
+  public function set($key, $value): DataContainer;
+  public function assign(array $data): DataContainer;
+  public function merge(DataContainer $addend): DataContainer;
 }
 
-class RawDataContainer implements DataContainerTraits {
+class RawDataContainer implements DataContainer {
   private $data;
 
   public function __construct(array $data = array()) {
     $this->data = $data;
   }
 
-  static public function instance(array $data = array()): DataContainerTraits {
+  static public function instance(array $data = array()): DataContainer {
     return new static($data);
   }
 
@@ -85,20 +85,20 @@ class RawDataContainer implements DataContainerTraits {
     return $this->data[$key];
   }
 
-  public function set($key, $value): DataContainerTraits {
+  public function set($key, $value): DataContainer {
     return static::assign(array($key => $value));
   }
 
-  public function assign(array $data): DataContainerTraits {
+  public function assign(array $data): DataContainer {
     return new static(array_merge($this->data, $data));
   }
 
-  public function merge(DataContainerTraits $addend): DataContainerTraits {
+  public function merge(DataContainer $addend): DataContainer {
     return static::assign($addend->getData());
   }
 }
 
-abstract class LazyLoadedDataContainer implements DataContainerTraits {
+abstract class LazyLoadedDataContainer implements DataContainer {
   protected $param;
   private $state;
 
@@ -119,17 +119,17 @@ abstract class LazyLoadedDataContainer implements DataContainerTraits {
     return $this->data[$key];
   }
 
-  public function set($key, $value): DataContainerTraits {
+  public function set($key, $value): DataContainer {
     $this->firstRun();
     return static::assign(array($key => $value));
   }
 
-  public function assign(array $data): DataContainerTraits {
+  public function assign(array $data): DataContainer {
     $this->firstRun();
     return new static(array_merge($this->data, $data));
   }
 
-  public function merge(DataContainerTraits $addend): DataContainerTraits {
+  public function merge(DataContainer $addend): DataContainer {
     $this->firstRun();
     return static::assign($addend->getData());
   }
