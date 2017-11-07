@@ -10,6 +10,13 @@ class App extends RawDataContainer implements Component {
 
     return HtmlElement::create('html', array(
       'lang' => 'en',
+      'dataset' => array(
+        'theme-name' => $data['theme-name'],
+      ),
+      'classes' => array(
+        "theme-{$data['theme-name']}",
+      ),
+
       HtmlElement::create('head', array(
         HtmlElement::create('meta', array('charset' => 'utf-8')),
         HtmlElement::create('title', 'Hello, World!!'),
