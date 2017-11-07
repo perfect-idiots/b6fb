@@ -3,7 +3,7 @@ require_once __DIR__ . '/../lib/utils.php';
 require_once __DIR__ . '/../lib/render.php';
 require_once __DIR__ . '/components/app.php';
 
-class Page extends DataContainer {
+class Page extends RawDataContainer {
   public function render(): string {
     $renderer = new Renderer(false);
     $app = new App($this->getData());
