@@ -4,7 +4,7 @@ require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
-class App extends DataContainer implements Component {
+class App extends RawDataContainer implements Component {
   public function render(): Component {
     return HtmlElement::create('html', array(
       'lang' => 'en',

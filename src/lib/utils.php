@@ -58,14 +58,22 @@ class CaseConverter {
   }
 }
 
-class DataContainer {
-  protected $data;
+interface DataContainer {
+  public function getData(): array;
+  public function get($key);
+  public function set($key, $value): DataContainer;
+  public function assign(array $data): DataContainer;
+  public function merge(DataContainer $addend): DataContainer;
+}
+
+class RawDataContainer implements DataContainer {
+  private $data;
 
   public function __construct(array $data = array()) {
     $this->data = $data;
   }
 
-  static public function instance(array $data = array()): self {
+  static public function instance(array $data = array()): DataContainer {
     return new static($data);
   }
 
@@ -77,16 +85,64 @@ class DataContainer {
     return $this->data[$key];
   }
 
-  public function set($key, $value): self {
+  public function set($key, $value): DataContainer {
     return static::assign(array($key => $value));
   }
 
-  public function assign(array $data): self {
+  public function assign(array $data): DataContainer {
     return new static(array_merge($this->data, $data));
   }
 
-  public function merge(self $addend): self {
+  public function merge(DataContainer $addend): DataContainer {
     return static::assign($addend->getData());
+  }
+
+  public function getDefault($key, $default) {
+    $data = $this->getData();
+    return array_key_exists($key, $data) ? $data[$key] : $default;
+  }
+}
+
+abstract class LazyLoadedDataContainer implements DataContainer {
+  protected $param;
+  private $state;
+
+  public function __construct($param) {
+    $this->param = $param;
+    $this->state = false;
+  }
+
+  abstract protected function load(): array;
+
+  public function getData(): array {
+    $this->firstRun();
+    return $this->data;
+  }
+
+  public function get($key) {
+    $this->firstRun();
+    return $this->data[$key];
+  }
+
+  public function set($key, $value): DataContainer {
+    $this->firstRun();
+    return static::assign(array($key => $value));
+  }
+
+  public function assign(array $data): DataContainer {
+    $this->firstRun();
+    return new static(array_merge($this->data, $data));
+  }
+
+  public function merge(DataContainer $addend): DataContainer {
+    $this->firstRun();
+    return static::assign($addend->getData());
+  }
+
+  private function firstRun(): void {
+    if ($this->state) return;
+    $this->state = true;
+    $this->data = $this->load();
   }
 }
 ?>
