@@ -14,13 +14,21 @@ class CssView implements Component {
   }
 
   public function render(): Component {
-    $css = $this->css;
+    $css = trim($this->css);
 
     foreach($this->variables as $key => $value) {
       $css = implode(
         (string) $value,
         explode("[[$key]]", $css)
       );
+    }
+
+    $regres = preg_match('/\[\[[a-zA-Z\-]+\]\]/', $css, $matches);
+    if ($regres === false) {
+      throw new Exception('An error occurred when counting remain CSS unsupplied variables');
+    } else if ($regres !== 0) {
+      $list = implode(', ', $matches);
+      throw new Error("Some variables are not supplied: $list");
     }
 
     return HtmlElement::create('style', array(
