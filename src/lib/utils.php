@@ -137,7 +137,7 @@ abstract class LoadedDataContainer implements DataContainerTraits {
   private function firstRun(): void {
     if ($this->state) return;
     $this->state = true;
-    $this->data = $this->calculate();
+    $this->data = $this->load();
   }
 }
 ?>
