@@ -14,7 +14,7 @@ class CssView implements Component {
   }
 
   public function render(): Component {
-    $css = $this->css;
+    $css = trim($this->css);
 
     foreach($this->variables as $key => $value) {
       $css = implode(
