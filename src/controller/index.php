@@ -4,6 +4,11 @@ require_once __DIR__ . '/../view/index.php';
 
 function main(): string {
   $urlQuery = new UrlQuery($_GET);
-  return Page::instance(array())->render();
+
+  $data = array(
+    'url-query' => $urlQuery
+  );
+
+  return Page::instance($data)->render();
 }
 ?>
