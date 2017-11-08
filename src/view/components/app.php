@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/meta-element.php';
 require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/script-embed.php';
@@ -19,7 +20,7 @@ class App extends RawDataContainer implements Component {
       ),
 
       HtmlElement::create('head', array(
-        HtmlElement::create('meta', array('charset' => 'utf-8')),
+        new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', $data['title']),
         CssView::fromFile(__DIR__ . '/../../resources/style.css', $data['colors']),
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, array('id' => 'data-colors')),
