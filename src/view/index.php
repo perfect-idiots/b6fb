@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../lib/utils.php';
 require_once __DIR__ . '/../lib/render.php';
+require_once __DIR__ . '/../lib/http-status-table.php';
 require_once __DIR__ . '/components/base.php';
 require_once __DIR__ . '/components/app.php';
 require_once __DIR__ . '/components/meta-element.php';
@@ -25,7 +26,7 @@ class MainPage extends Page {
 class ErrorPage extends Page {
   protected function component(): Component {
     $status = $this->get('status');
-    $message = "[TODO] explain $status";
+    $message = (new HttpStatusTable())->get($status);
     http_response_code($status);
 
     return HtmlElement::create('html', array(
