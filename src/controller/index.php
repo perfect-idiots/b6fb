@@ -33,7 +33,7 @@ function sendHtml(UrlQuery $urlQuery): string {
     'colors' => $themeColorSet['colors'],
   );
 
-  return Page::instance($data)->render();
+  return MainPage::instance($data)->render();
 }
 
 function main(): string {
