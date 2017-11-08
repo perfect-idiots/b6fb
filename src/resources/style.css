@@ -9,6 +9,11 @@ body {
   background-color: [[background-color]];
 }
 
+.x-component--header-section {
+  background: [[header-background-color]];
+}
+
 .x-component--logo a {
+  color: [[logo-text-color]];
   text-decoration: none;
 }
