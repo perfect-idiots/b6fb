@@ -62,7 +62,9 @@ interface DataContainer {
   public function getData(): array;
   public function get($key);
   public function set($key, $value): DataContainer;
+  public function except($key): DataContainer;
   public function assign(array $data): DataContainer;
+  public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
 }
 
@@ -89,8 +91,18 @@ class RawDataContainer implements DataContainer {
     return static::assign(array($key => $value));
   }
 
+  public function except($key): DataContainer {
+    return static::without(array($key));
+  }
+
   public function assign(array $data): DataContainer {
     return new static(array_merge($this->data, $data));
+  }
+
+  public function without(array $keys): DataContainer {
+    return new static(
+      array_diff_key($this->getData(), array_flip((array) $keys))
+    );
   }
 
   public function merge(DataContainer $addend): DataContainer {
@@ -129,9 +141,20 @@ abstract class LazyLoadedDataContainer implements DataContainer {
     return static::assign(array($key => $value));
   }
 
+  public function except($key): DataContainer {
+    return static::without(array($key));
+  }
+
   public function assign(array $data): DataContainer {
     $this->firstRun();
     return new static(array_merge($this->data, $data));
+  }
+
+  public function without(array $keys): DataContainer {
+    $this->firstRun();
+    return new static(
+      array_diff_key($this->getData(), array_flip((array) $keys))
+    );
   }
 
   public function merge(DataContainer $addend): DataContainer {
@@ -147,6 +170,5 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 }
 
 class HttpException extends Exception {}
-
 class NotFoundException extends HttpException {}
 ?>
