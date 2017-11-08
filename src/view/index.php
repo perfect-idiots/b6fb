@@ -34,7 +34,7 @@ class ErrorPage extends Page {
       HtmlElement::create('head', array(
         new CharsetMetaElement('utf-8'),
         new NamedMetaElement('status', $status),
-        HtmlElement::create('title', $message),
+        HtmlElement::create('title', "$status: $message"),
       )),
       HtmlElement::create('body', array(
         HtmlElement::nested(array('header', 'h1', 'code'), array(
