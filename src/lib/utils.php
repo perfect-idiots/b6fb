@@ -147,6 +147,5 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 }
 
 class HttpException extends Exception {}
-
 class NotFoundException extends HttpException {}
 ?>
