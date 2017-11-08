@@ -145,4 +145,8 @@ abstract class LazyLoadedDataContainer implements DataContainer {
     $this->data = $this->load();
   }
 }
+
+class HttpException extends Exception {}
+
+class NotFoundException extends HttpException {}
 ?>
