@@ -31,6 +31,7 @@ abstract class ContentMetaElement implements Component {
   public function __construct(string $key, string $content, array $attr = array()) {
     $this->key = $key;
     $this->content = $content;
+    $this->attr = $attr;
   }
 
   public function render(): Component {
