@@ -117,7 +117,7 @@ class RawDataContainer implements DataContainer {
 
 abstract class LazyLoadedDataContainer implements DataContainer {
   protected $param;
-  private $state;
+  private $state, $data;
 
   public function __construct($param = null) {
     $this->param = $param;
