@@ -23,8 +23,7 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
   );
 }
 
-function main(): string {
-  $urlQuery = new UrlQuery($_GET);
+function sendHtml(UrlQuery $urlQuery): string {
   $themeColorSet = getThemeColorSet($urlQuery);
 
   $data = array(
@@ -34,6 +33,21 @@ function main(): string {
     'colors' => $themeColorSet['colors'],
   );
 
-  return Page::instance($data)->render();
+  try {
+    return MainPage::instance($data)->render();
+  } catch (NotFoundException $error) {
+    return ErrorPage::status(404)->render();
+  }
+}
+
+function main(): string {
+  $urlQuery = new UrlQuery($_GET);
+
+  switch($urlQuery->getDefault('type', 'html')) {
+    case 'html':
+      return sendHtml($urlQuery);
+    default:
+      return ErrorPage::status(404)->render();
+  }
 }
 ?>
