@@ -2,6 +2,7 @@ html, body {
   margin: 0;
   border: 0;
   padding: 0;
+  color: [[text-color]];
 }
 
 body {
@@ -9,6 +10,5 @@ body {
 }
 
 .x-component--logo a {
-  color: [[text-color]];
   text-decoration: none;
 }
