@@ -31,6 +31,8 @@ class ErrorPage extends Page {
 
     return HtmlElement::create('html', array(
       'lang' => 'en',
+      'classes' => array('error', 'message'),
+      'dataset' => array('status' => $status),
       HtmlElement::create('head', array(
         new CharsetMetaElement('utf-8'),
         new NamedMetaElement('status', $status),
