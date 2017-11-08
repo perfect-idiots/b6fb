@@ -1,4 +1,17 @@
 <?php
-$GLOBALS['PREDEFINED_GAMES'] = spyc_load_file(__DIR__ . '/predefined/games.yaml');
-$GLOBALS['PREDEFINED_GENRES'] = spyc_load_file(__DIR__ . '/predefined/genres.yaml');
+require_once __DIR__ . '/../lib/yaml.php';
+
+abstract class PredefinedData extends FixedYamlObjectLoader {}
+
+class PredefinedGames extends PredefinedData {
+  static protected function filename(): string {
+    return __DIR__ . '/predefined/games.yaml';
+  }
+}
+
+class PredefinedGenres extends PredefinedData {
+  static protected function filename(): string {
+    return __DIR__ . '/predefined/genres.yaml';
+  }
+}
 ?>
