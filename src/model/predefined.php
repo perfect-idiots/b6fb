@@ -1,17 +1,17 @@
 <?php
 require_once __DIR__ . '/../lib/yaml.php';
 
-class PredefinedData extends YamlObjectLoader {}
+abstract class PredefinedData extends FixedYamlObjectLoader {}
 
 class PredefinedGames extends PredefinedData {
-  public function __construct() {
-    parent::__construct(__DIR__ . '/predefined/games.yaml');
+  static protected function filename(): string {
+    return __DIR__ . '/predefined/games.yaml';
   }
 }
 
 class PredefinedGenres extends PredefinedData {
-  public function __construct() {
-    parent::__construct(__DIR__ . '/predefined/genres.yaml');
+  static protected function filename(): string {
+    return __DIR__ . '/predefined/genres.yaml';
   }
 }
 ?>
