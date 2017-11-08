@@ -23,8 +23,7 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
   );
 }
 
-function main(): string {
-  $urlQuery = new UrlQuery($_GET);
+function sendHtml(UrlQuery $urlQuery): string {
   $themeColorSet = getThemeColorSet($urlQuery);
 
   $data = array(
@@ -35,5 +34,16 @@ function main(): string {
   );
 
   return Page::instance($data)->render();
+}
+
+function main(): string {
+  $urlQuery = new UrlQuery($_GET);
+
+  switch($urlQuery->getDefault('type', 'html')) {
+    case 'html':
+      return sendHtml($urlQuery);
+    default:
+      throw new Exception('Unsupported');
+  }
 }
 ?>
