@@ -9,14 +9,18 @@ class MetaElement extends RawDataContainer implements Component {
 }
 
 class CharsetMetaElement implements Component {
-  private $charset;
+  private $charset, $attr;
 
-  public function __construct(string $charset = 'utf-8') {
+  public function __construct(string $charset = 'utf-8', array $attr = array()) {
     $this->charset = $charset;
+    $this->attr = $attr;
   }
 
   public function render(): Component {
-    return new MetaElement($this->charset);
+    return new MetaElement(array_merge(
+      array('charset' => 'utf-8'),
+      $this->attr
+    ));
   }
 }
 
