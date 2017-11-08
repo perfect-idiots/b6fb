@@ -107,7 +107,7 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   protected $param;
   private $state;
 
-  public function __construct($param) {
+  public function __construct($param = null) {
     $this->param = $param;
     $this->state = false;
   }
@@ -145,4 +145,8 @@ abstract class LazyLoadedDataContainer implements DataContainer {
     $this->data = $this->load();
   }
 }
+
+class HttpException extends Exception {}
+
+class NotFoundException extends HttpException {}
 ?>
