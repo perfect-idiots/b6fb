@@ -2,13 +2,25 @@ html, body {
   margin: 0;
   border: 0;
   padding: 0;
-  color: [[text-color]];
 }
 
 body {
+  color: [[text-color]];
   background-color: [[background-color]];
+  font-family: 'Arial', 'Helvatica', sans-serif;
+}
+
+.x-component--header-section {
+  background: [[header-background-color]];
+}
+
+.x-component--logo {
+  display: inline-block;
+  font-weight: normal;
+  margin: 0;
 }
 
 .x-component--logo a {
+  color: [[logo-text-color]];
   text-decoration: none;
 }
