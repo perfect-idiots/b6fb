@@ -4,6 +4,6 @@
 [submodule "src/vendor/yaml"]
 	path = src/vendor/yaml
 	url = https://github.com/mustangostang/spyc.git
-[submodule "src/vendor/http-status-code"]
-	path = src/vendor/http-status-code
+[submodule "src/vendor/http-status-table"]
+	path = src/vendor/http-status-table
 	url = https://gist.github.com/8833a6a87c0716b8a2793464946c4286.git
