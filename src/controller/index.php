@@ -8,10 +8,10 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
 
   switch($themeName) {
     case 'light':
-      $themeColorSet = new LightThemeColors();
+      $themeColorSet = LightThemeColors::create();
       break;
     case 'dark':
-      $themeColorSet = new DarkThemeColors();
+      $themeColorSet = DarkThemeColors::create();
       break;
     default:
       $urlQuery->set('theme', 'light')->redirect();
