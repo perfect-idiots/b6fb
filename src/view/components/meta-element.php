@@ -2,13 +2,13 @@
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
-class MetaData extends RawDataContainer implements Component {
+class MetaElement extends RawDataContainer implements Component {
   public function render(): Component {
     return HtmlElement::create('meta', $this->getData());
   }
 }
 
-class CharsetMetaData implements Component {
+class CharsetMetaElement implements Component {
   private $charset;
 
   public function __construct(string $charset = 'utf-8') {
@@ -16,11 +16,11 @@ class CharsetMetaData implements Component {
   }
 
   public function render(): Component {
-    return new MetaData($this->charset);
+    return new MetaElement($this->charset);
   }
 }
 
-abstract class ContentMetaData implements Component {
+abstract class ContentMetaElement implements Component {
   private $key, $content, $attr;
   abstract protected function field(): string;
 
@@ -30,7 +30,7 @@ abstract class ContentMetaData implements Component {
   }
 
   public function render(): Component {
-    return new MetaData(array_merge(
+    return new MetaElement(array_merge(
       array(
         $this->field() => $this->name,
         'content' => $this->content,
@@ -40,13 +40,13 @@ abstract class ContentMetaData implements Component {
   }
 }
 
-class NamedMetaData extends ContentMetaData {
+class NamedMetaElement extends ContentMetaElement {
   protected function field(): string {
     return 'name';
   }
 }
 
-class HttpEquivMetaData extends ContentMetaData {
+class HttpEquivMetaElement extends ContentMetaElement {
   protected function field(): string {
     return 'http-equiv';
   }
