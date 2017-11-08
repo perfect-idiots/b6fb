@@ -27,7 +27,7 @@ class MainPage extends Page {
 class ErrorPage extends Page {
   protected function component(): Component {
     $status = $this->get('status');
-    $message = (new HttpStatusTable())->get($status);
+    $message = HttpStatusTable::create()->get($status);
     http_response_code($status);
 
     return HtmlElement::create('html', array(
