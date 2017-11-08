@@ -175,6 +175,20 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   }
 }
 
+class ArrayLoader extends LazyLoadedDataContainer {
+  public function load(): array {
+    return require $this->param;
+  }
+}
+
+abstract class FixedArrayLoader extends ArrayLoader {
+  static abstract protected function filename(): string;
+
+  static public function create(): self {
+    return static::instance(static::filename());
+  }
+}
+
 class HttpException extends Exception {}
 class NotFoundException extends HttpException {}
 ?>
