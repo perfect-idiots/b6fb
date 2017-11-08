@@ -16,6 +16,7 @@ body {
 
 .x-component--logo {
   display: inline-block;
+  font-weight: normal;
   margin: 0;
 }
 
