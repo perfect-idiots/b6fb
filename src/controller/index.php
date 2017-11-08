@@ -31,6 +31,7 @@ function sendHtml(UrlQuery $urlQuery): string {
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
+    'page' => array_key_exists('page', $_GET) ? $_GET['page'] : 'index',
   );
 
   try {
