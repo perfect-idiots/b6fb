@@ -36,7 +36,7 @@ abstract class ContentMetaElement implements Component {
   public function render(): Component {
     return new MetaElement(array_merge(
       array(
-        $this->field() => $this->name,
+        $this->field() => $this->key,
         'content' => $this->content,
       ),
       $this->attr
