@@ -119,9 +119,14 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   protected $param;
   private $state, $data;
 
-  public function __construct($param = null) {
+  private function __construct(bool $state, $param, array $data = array()) {
+    $this->state = $state;
     $this->param = $param;
-    $this->state = false;
+    $this->data = $data;
+  }
+
+  static public function instance($param = null): self {
+    return new static(false, $param, array());
   }
 
   abstract protected function load(): array;
@@ -147,12 +152,13 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function assign(array $data): DataContainer {
     $this->firstRun();
-    return new static(array_merge($this->data, $data));
+    return new static(true, null, array_merge($this->data, $data));
   }
 
   public function without(array $keys): DataContainer {
     $this->firstRun();
     return new static(
+      true, null,
       array_diff_key($this->getData(), array_flip((array) $keys))
     );
   }
