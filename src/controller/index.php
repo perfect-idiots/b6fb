@@ -33,7 +33,11 @@ function sendHtml(UrlQuery $urlQuery): string {
     'colors' => $themeColorSet['colors'],
   );
 
-  return MainPage::instance($data)->render();
+  try {
+    return MainPage::instance($data)->render();
+  } catch (NotFoundException $error) {
+    return ErrorPage::status(404)->render();
+  }
 }
 
 function main(): string {
@@ -43,7 +47,7 @@ function main(): string {
     case 'html':
       return sendHtml($urlQuery);
     default:
-      throw new Exception('Unsupported');
+      return ErrorPage::status(404)->render();
   }
 }
 ?>
