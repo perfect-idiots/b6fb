@@ -4,6 +4,7 @@ require_once __DIR__ . '/../lib/render.php';
 require_once __DIR__ . '/../lib/http-status-table.php';
 require_once __DIR__ . '/components/base.php';
 require_once __DIR__ . '/components/app.php';
+require_once __DIR__ . '/components/admin-user-interface.php';
 require_once __DIR__ . '/components/meta-element.php';
 require_once __DIR__ . '/components/css-view.php';
 require_once __DIR__ . '/components/script-embed.php';
@@ -22,6 +23,12 @@ abstract class Page extends RawDataContainer {
 class MainPage extends Page {
   protected function component(): Component {
     return new App($this->getData());
+  }
+}
+
+class AdminPage extends Page {
+  protected function component(): Component {
+    return new AdminUserInterface($this->getData());
   }
 }
 
