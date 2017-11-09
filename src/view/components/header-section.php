@@ -6,12 +6,12 @@ require_once __DIR__ . '/../../lib/utils.php';
 
 class HeaderSection extends RawDataContainer implements Component {
   public function render(): Component {
-    return HtmlElement::create('header', array(
+    return HtmlElement::create('header', [
       'id' => 'main-header',
-      'classes' => array('header'),
+      'classes' => ['header'],
       new Logo($this->getData()),
       new SearchBox($this->getData()),
-    ));
+    ]);
   }
 }
 ?>

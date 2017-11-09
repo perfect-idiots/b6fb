@@ -4,12 +4,12 @@ require_once __DIR__ . '/base.php';
 class CssView implements Component {
   private $css, $variables;
 
-  public function __construct(string $css, array $variables = array()) {
+  public function __construct(string $css, array $variables = []) {
     $this->css = $css;
     $this->variables = $variables;
   }
 
-  static public function fromFile(string $filename, array $variables = array()): self {
+  static public function fromFile(string $filename, array $variables = []): self {
     return new static(file_get_contents($filename), $variables);
   }
 
@@ -31,10 +31,10 @@ class CssView implements Component {
       throw new Error("Some variables are not supplied: $list");
     }
 
-    return HtmlElement::create('style', array(
+    return HtmlElement::create('style', [
       'type' => 'text/css',
       new UnescapedText($css),
-    ));
+    ]);
   }
 }
 ?>

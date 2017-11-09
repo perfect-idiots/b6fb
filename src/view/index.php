@@ -30,47 +30,47 @@ class ErrorPage extends Page {
     $message = HttpStatusTable::create()->get($status);
     http_response_code($status);
 
-    return HtmlElement::create('html', array(
+    return HtmlElement::create('html', [
       'lang' => 'en',
-      'classes' => array('error', 'message'),
-      'dataset' => array('status' => $status),
-      HtmlElement::create('head', array(
+      'classes' => ['error', 'message'],
+      'dataset' => ['status' => $status],
+      HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         new NamedMetaElement('status', $status),
         HtmlElement::create('title', "$status: $message"),
-        CssView::fromFile(__DIR__ . '/../resources/style.css', array(
+        CssView::fromFile(__DIR__ . '/../resources/style.css', [
           'text-color' => 'black',
           'background-color' => 'white',
-        )),
-      )),
-      HtmlElement::create('body', array(
-        'style' => array(
+        ]),
+      ]),
+      HtmlElement::create('body', [
+        'style' => [
           'text-align' => 'center',
           'font-family' => 'sans-serif',
-        ),
-        HtmlElement::nested(array('header', 'h1', 'code'), array(
-          'style' => array(
+        ],
+        HtmlElement::nested(['header', 'h1', 'code'], [
+          'style' => [
             'color' => 'red',
             'font-weight' => 'normal',
             'font-size' => '5em',
-          ),
+          ],
           (string) $status
-        )),
-        HtmlElement::nested(array('main', 'output'), array(
-          'style' => array(
+        ]),
+        HtmlElement::nested(['main', 'output'], [
+          'style' => [
             'background-color' => 'yellow',
             'font-size' => '3em',
             'display' => 'block',
             'height' => '100%',
-          ),
+          ],
           $message
-        )),
-      )),
-    ));
+        ]),
+      ]),
+    ]);
   }
 
   static public function status(int $status): self {
-    return new static(array('status' => $status));
+    return new static(['status' => $status]);
   }
 }
 ?>
