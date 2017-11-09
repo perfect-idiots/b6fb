@@ -10,13 +10,13 @@ class PrimaryComponent implements Component {
 }
 
 abstract class Element extends PrimaryComponent {
-  private const SPECIAL_FIELDS = array(
+  private const SPECIAL_FIELDS = [
     'attributes', 'classes', 'style', 'dataset', 'children'
-  );
+  ];
 
   public $tag, $attributes, $children, $classes, $style, $dataset;
 
-  public function __construct(string $tag, array $props = array(), array $children = array()) {
+  public function __construct(string $tag, array $props = [], array $children = []) {
     $this->tag = $tag;
     $this->children = $children;
 
@@ -28,8 +28,8 @@ abstract class Element extends PrimaryComponent {
 
   abstract public function tagClosingStyle(): string;
 
-  static public function create(string $tag, $desc = array()): self {
-    if (gettype($desc) != 'array') return static::create($tag, array($desc));
+  static public function create(string $tag, $desc = []): self {
+    if (gettype($desc) != 'array') return static::create($tag, [$desc]);
 
     $attributes = Element::getArrayKey($desc, 'attributes');
     $classes = Element::getArrayKey($desc, 'classes');
@@ -47,12 +47,12 @@ abstract class Element extends PrimaryComponent {
 
     return new static(
       $tag,
-      array(
+      [
         'attributes' => $attributes,
         'classes' => $classes,
         'style' => $style,
         'dataset' => $dataset
-      ),
+      ],
       array_map(
         function ($x) {
           return $x instanceof Component ? $x : new TextNode((string) $x);
@@ -62,7 +62,7 @@ abstract class Element extends PrimaryComponent {
     );
   }
 
-  static public function nested(array $tags, $desc = array()) {
+  static public function nested(array $tags, $desc = []) {
     return sizeof($tags)
       ? static::create(
         $tags[0],
@@ -73,7 +73,7 @@ abstract class Element extends PrimaryComponent {
   }
 
   static private function getArrayKey(array $array, string $key): array {
-    return array_key_exists($key, $array) && $array[$key] ? $array[$key] : array();
+    return array_key_exists($key, $array) && $array[$key] ? $array[$key] : [];
   }
 }
 
@@ -84,11 +84,11 @@ class XmlElement extends Element {
 }
 
 class HtmlElement extends Element {
-  private const EMPTY_TAGS = array(
+  private const EMPTY_TAGS = [
     'area', 'base', 'br', 'col', 'embed',
     'hr', 'img', 'input', 'keygen', 'link',
     'meta', 'param', 'source', 'track', 'wbr'
-  );
+  ];
 
   public function tagClosingStyle(): string {
     if(in_array($this->tag, HtmlElement::EMPTY_TAGS)) return 'self-close';

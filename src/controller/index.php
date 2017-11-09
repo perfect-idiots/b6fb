@@ -17,24 +17,36 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
       $urlQuery->set('theme', 'light')->redirect();
   }
 
-  return array(
+  return [
     'name' => $themeName,
     'colors' => $themeColorSet->getData(),
-  );
+  ];
+}
+
+function switchPage(array $data): Page {
+  switch($data['page']) {
+    case 'index':
+      return MainPage::instance($data);
+    case 'admin':
+      return AdminPage::instance($data);
+    default:
+      throw new NotFoundException();
+  }
 }
 
 function sendHtml(UrlQuery $urlQuery): string {
   $themeColorSet = getThemeColorSet($urlQuery);
 
-  $data = array(
+  $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
-  );
+    'page' => $urlQuery->getDefault('page', 'index'),
+  ];
 
   try {
-    return MainPage::instance($data)->render();
+    return switchPage($data)->render();
   } catch (NotFoundException $error) {
     return ErrorPage::status(404)->render();
   }
