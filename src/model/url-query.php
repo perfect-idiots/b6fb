@@ -4,8 +4,6 @@ require_once __DIR__ . '/../lib/render.php';
 require_once __DIR__ . '/../view/components/redirect-page.php';
 
 class UrlQuery extends RawDataContainer {
-  private $prefix, $separator;
-
   static public function from(array $data): self {
     return new static($data);
   }

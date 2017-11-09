@@ -8,30 +8,30 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
 
   switch($themeName) {
     case 'light':
-      $themeColorSet = new LightThemeColors();
+      $themeColorSet = LightThemeColors::create();
       break;
     case 'dark':
-      $themeColorSet = new DarkThemeColors();
+      $themeColorSet = DarkThemeColors::create();
       break;
     default:
       $urlQuery->set('theme', 'light')->redirect();
   }
 
-  return array(
+  return [
     'name' => $themeName,
     'colors' => $themeColorSet->getData(),
-  );
+  ];
 }
 
 function sendHtml(UrlQuery $urlQuery): string {
   $themeColorSet = getThemeColorSet($urlQuery);
 
-  $data = array(
+  $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
-  );
+  ];
 
   try {
     return MainPage::instance($data)->render();

@@ -10,7 +10,7 @@ class Renderer {
   }
 
   public function render(Component $component): string {
-    return $this->renderLevel($component, 0, array());
+    return $this->renderLevel($component, 0, []);
   }
 
   private function renderLevel(Component $component, int $level, array $compClassNames): string {
@@ -22,7 +22,7 @@ class Renderer {
     }
 
     if ($component instanceof Component) {
-      $nextCompClassNames = array_merge($compClassNames, array(get_class($component)));
+      $nextCompClassNames = array_merge($compClassNames, [get_class($component)]);
       return $this->renderLevel($component->render(), $level, $nextCompClassNames);
     }
 
@@ -34,13 +34,13 @@ class Renderer {
 
     $attributes = $this->renderAttributes(array_merge(
       $element->attributes,
-      array('x-component-level' => (string) $level),
-      array('x-component' => implode(' ', $compClassNames))
+      ['x-component-level' => (string) $level],
+      ['x-component' => implode(' ', $compClassNames)]
     ));
 
     $classes = $this->renderClassAttribute(array_merge(
       $element->classes,
-      array("x-component-level--$level"),
+      ["x-component-level--$level"],
 
       array_map(
         function (string $name): string {
@@ -61,7 +61,7 @@ class Renderer {
     $indent = $this->indent($level);
 
     $open = Renderer::joinStringSegments(
-      array($tag, $attributes, $classes, $style, $data)
+      [$tag, $attributes, $classes, $style, $data]
     );
 
     switch($element->tagClosingStyle()) {
@@ -78,7 +78,7 @@ class Renderer {
     $result = "$indent<$open>$newline";
 
     foreach($element->children as $child) {
-      $childHTML = $this->renderLevel($child, $newlevel, array());
+      $childHTML = $this->renderLevel($child, $newlevel, []);
       $result .= $childHTML . $newline;
     }
 
@@ -88,7 +88,7 @@ class Renderer {
   private function renderText(TextBase $text, int $level): string {
     $segments = explode("\n", $text->getText());
     $indent = $this->indent($level);
-    $result = array();
+    $result = [];
 
     foreach($segments as $chunk) {
       array_push($result, $indent . $chunk);
@@ -98,7 +98,7 @@ class Renderer {
   }
 
   private function renderAttributes(array $attributes): string {
-    $result = array();
+    $result = [];
 
     foreach($attributes as $key => $value) {
       $actualKey = htmlspecialchars($key);
@@ -140,7 +140,7 @@ class Renderer {
   private function renderDatasetAttribute(array $dataset): string {
     if (!sizeof($dataset)) return '';
 
-    $result = array();
+    $result = [];
 
     foreach($dataset as $key => $value) {
       $result["data-$key"] = $value;
