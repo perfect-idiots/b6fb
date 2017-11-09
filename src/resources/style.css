@@ -24,3 +24,7 @@ body {
   color: [[logo-text-color]];
   text-decoration: none;
 }
+
+[hidden], [hidden] *, input[type='hidden'], button[type='hidden'], {
+  display: none;
+}
