@@ -6,6 +6,7 @@ require_once __DIR__ . '/components/base.php';
 require_once __DIR__ . '/components/app.php';
 require_once __DIR__ . '/components/meta-element.php';
 require_once __DIR__ . '/components/css-view.php';
+require_once __DIR__ . '/components/script-embed.php';
 
 abstract class Page extends RawDataContainer {
   abstract protected function component(): Component;
@@ -68,6 +69,10 @@ class ErrorPage extends Page {
           ],
           $message
         ]),
+        JavascriptEmbed::text(
+          "console.error(new Error('HTTP Status: $status — $message'))",
+          ['classes' => ['error-logger']]
+        ),
       ]),
     ]);
   }
