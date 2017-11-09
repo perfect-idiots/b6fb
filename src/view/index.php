@@ -41,6 +41,9 @@ class ErrorPage extends Page {
         CssView::fromFile(__DIR__ . '/../resources/style.css', [
           'text-color' => 'black',
           'background-color' => 'white',
+          'logo-text-color' => 'black',
+          'logo-background-color' => 'white',
+          'header-background-color' => 'white',
         ]),
       ]),
       HtmlElement::create('body', [
