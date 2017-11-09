@@ -19,7 +19,7 @@ class CaseConverter {
   }
 
   static public function fromPascalCase(string $text): self {
-    $words = array();
+    $words = [];
     $current = '';
 
     foreach (str_split($text) as $char) {
@@ -38,7 +38,7 @@ class CaseConverter {
   }
 
   static public function fromKebabCase(string $text): self {
-    $words = array();
+    $words = [];
     $current = '';
 
     foreach ($text as $char) {
@@ -62,18 +62,20 @@ interface DataContainer {
   public function getData(): array;
   public function get($key);
   public function set($key, $value): DataContainer;
+  public function except($key): DataContainer;
   public function assign(array $data): DataContainer;
+  public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
 }
 
 class RawDataContainer implements DataContainer {
   private $data;
 
-  public function __construct(array $data = array()) {
+  public function __construct(array $data = []) {
     $this->data = $data;
   }
 
-  static public function instance(array $data = array()): DataContainer {
+  static public function instance(array $data = []): DataContainer {
     return new static($data);
   }
 
@@ -86,11 +88,21 @@ class RawDataContainer implements DataContainer {
   }
 
   public function set($key, $value): DataContainer {
-    return static::assign(array($key => $value));
+    return static::assign([$key => $value]);
+  }
+
+  public function except($key): DataContainer {
+    return static::without([$key]);
   }
 
   public function assign(array $data): DataContainer {
     return new static(array_merge($this->data, $data));
+  }
+
+  public function without(array $keys): DataContainer {
+    return new static(
+      array_diff_key($this->getData(), array_flip((array) $keys))
+    );
   }
 
   public function merge(DataContainer $addend): DataContainer {
@@ -105,11 +117,16 @@ class RawDataContainer implements DataContainer {
 
 abstract class LazyLoadedDataContainer implements DataContainer {
   protected $param;
-  private $state;
+  private $state, $data;
 
-  public function __construct($param) {
+  private function __construct(bool $state, $param, array $data = []) {
+    $this->state = $state;
     $this->param = $param;
-    $this->state = false;
+    $this->data = $data;
+  }
+
+  static public function instance($param = null): self {
+    return new static(false, $param, []);
   }
 
   abstract protected function load(): array;
@@ -126,12 +143,24 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function set($key, $value): DataContainer {
     $this->firstRun();
-    return static::assign(array($key => $value));
+    return static::assign([$key => $value]);
+  }
+
+  public function except($key): DataContainer {
+    return static::without([$key]);
   }
 
   public function assign(array $data): DataContainer {
     $this->firstRun();
-    return new static(array_merge($this->data, $data));
+    return new static(true, null, array_merge($this->data, $data));
+  }
+
+  public function without(array $keys): DataContainer {
+    $this->firstRun();
+    return new static(
+      true, null,
+      array_diff_key($this->getData(), array_flip((array) $keys))
+    );
   }
 
   public function merge(DataContainer $addend): DataContainer {
@@ -146,7 +175,20 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   }
 }
 
-class HttpException extends Exception {}
+class ArrayLoader extends LazyLoadedDataContainer {
+  public function load(): array {
+    return require $this->param;
+  }
+}
 
+abstract class FixedArrayLoader extends ArrayLoader {
+  static abstract protected function filename(): string;
+
+  static public function create(): self {
+    return static::instance(static::filename());
+  }
+}
+
+class HttpException extends Exception {}
 class NotFoundException extends HttpException {}
 ?>
