@@ -35,8 +35,10 @@ class Renderer {
 
     $attributes = $this->renderAttributes(array_merge(
       $element->attributes,
-      ['x-component-level' => (string) $level],
-      ['x-component' => implode(' ', $classmap['set'])]
+      [
+        'x-component-level' => (string) $level,
+        'x-component' => implode(' ', $classmap['set']),
+      ]
     ));
 
     $classes = $this->renderClassAttribute(array_merge(
