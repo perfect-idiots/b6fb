@@ -41,7 +41,8 @@ abstract class Element extends PrimaryComponent {
       if (is_long($key)) {
         array_push($children, $value);
       } else if (!in_array($key, Element::SPECIAL_FIELDS)) {
-        $attributes[$key] = $value;
+        if ($value === false) continue;
+        $attributes[$key] = $value === true ? $key : $value;
       }
     }
 
