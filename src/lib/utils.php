@@ -1,4 +1,33 @@
 <?php
+class ClassChecker {
+  private $parents, $implements;
+
+  public function __construct(string $subject) {
+    $this->parents = class_parents($subject);
+    $this->implements = class_implements($subject);
+  }
+
+  static public function instance(string $subject): self {
+    return new static($subject);
+  }
+
+  public function getParents(): array {
+    return $this->parents;
+  }
+
+  public function getImplements(): array {
+    return $this->implements;
+  }
+
+  public function didExtended(string $class): bool {
+    return in_array($class, $this->getParents());
+  }
+
+  public function didImplemented(string $interface): bool {
+    return in_array($interface, $this->getImplements());
+  }
+}
+
 class CaseConverter {
   private $words;
 
