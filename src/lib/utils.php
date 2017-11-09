@@ -19,7 +19,7 @@ class CaseConverter {
   }
 
   static public function fromPascalCase(string $text): self {
-    $words = array();
+    $words = [];
     $current = '';
 
     foreach (str_split($text) as $char) {
@@ -38,7 +38,7 @@ class CaseConverter {
   }
 
   static public function fromKebabCase(string $text): self {
-    $words = array();
+    $words = [];
     $current = '';
 
     foreach ($text as $char) {
@@ -71,11 +71,11 @@ interface DataContainer {
 class RawDataContainer implements DataContainer {
   private $data;
 
-  public function __construct(array $data = array()) {
+  public function __construct(array $data = []) {
     $this->data = $data;
   }
 
-  static public function instance(array $data = array()): DataContainer {
+  static public function instance(array $data = []): DataContainer {
     return new static($data);
   }
 
@@ -88,11 +88,11 @@ class RawDataContainer implements DataContainer {
   }
 
   public function set($key, $value): DataContainer {
-    return static::assign(array($key => $value));
+    return static::assign([$key => $value]);
   }
 
   public function except($key): DataContainer {
-    return static::without(array($key));
+    return static::without([$key]);
   }
 
   public function assign(array $data): DataContainer {
@@ -119,14 +119,14 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   protected $param;
   private $state, $data;
 
-  private function __construct(bool $state, $param, array $data = array()) {
+  private function __construct(bool $state, $param, array $data = []) {
     $this->state = $state;
     $this->param = $param;
     $this->data = $data;
   }
 
   static public function instance($param = null): self {
-    return new static(false, $param, array());
+    return new static(false, $param, []);
   }
 
   abstract protected function load(): array;
@@ -143,11 +143,11 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function set($key, $value): DataContainer {
     $this->firstRun();
-    return static::assign(array($key => $value));
+    return static::assign([$key => $value]);
   }
 
   public function except($key): DataContainer {
-    return static::without(array($key));
+    return static::without([$key]);
   }
 
   public function assign(array $data): DataContainer {
