@@ -175,6 +175,7 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   }
 }
 
+<<<<<<< .merge_file_gnrsdW
 class ArrayLoader extends LazyLoadedDataContainer {
   public function load(): array {
     return require $this->param;
@@ -189,6 +190,8 @@ abstract class FixedArrayLoader extends ArrayLoader {
   }
 }
 
+=======
+>>>>>>> .merge_file_TadZyZ
 class HttpException extends Exception {}
 class NotFoundException extends HttpException {}
 ?>

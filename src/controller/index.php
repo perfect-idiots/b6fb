@@ -42,8 +42,13 @@ function sendHtml(UrlQuery $urlQuery): string {
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
+<<<<<<< .merge_file_wZEnuR
     'page' => $urlQuery->getDefault('page', 'index'),
   ];
+=======
+    'page' => array_key_exists('page', $_GET) ? $_GET['page'] : 'index',
+  );
+>>>>>>> .merge_file_7zSbAU
 
   try {
     return switchPage($data)->render();
