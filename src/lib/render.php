@@ -31,7 +31,6 @@ class Renderer {
 
   private function renderElement(Element $element, int $level, array $compClassNames): string {
     $tag = $element->tag;
-
     $classmap = Renderer::makeComponentClassMap($compClassNames);
 
     $attributes = $this->renderAttributes(array_merge(
