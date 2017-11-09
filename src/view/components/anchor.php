@@ -10,16 +10,16 @@ class Anchor implements Component {
   }
 
   static public function withoutAttributes(string $href, $content): self {
-    return new static($href, array($content));
+    return new static($href, [$content]);
   }
 
-  static public function linkify(string $href, array $attr = array()): self {
-    return new static($href, array_merge(array($href), $attr));
+  static public function linkify(string $href, array $attr = []): self {
+    return new static($href, array_merge([$href], $attr));
   }
 
   public function render(): Component {
     return HtmlElement::create('a', array_merge(
-      array('href' => $this->href),
+      ['href' => $this->href],
       $this->attr
     ));
   }

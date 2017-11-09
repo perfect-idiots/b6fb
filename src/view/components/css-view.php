@@ -4,17 +4,17 @@ require_once __DIR__ . '/base.php';
 class CssView implements Component {
   private $css, $variables;
 
-  public function __construct(string $css, array $variables = array()) {
+  public function __construct(string $css, array $variables = []) {
     $this->css = $css;
     $this->variables = $variables;
   }
 
-  static public function fromFile(string $filename, array $variables = array()): self {
+  static public function fromFile(string $filename, array $variables = []): self {
     return new static(file_get_contents($filename), $variables);
   }
 
   public function render(): Component {
-    $css = $this->css;
+    $css = trim($this->css);
 
     foreach($this->variables as $key => $value) {
       $css = implode(
@@ -23,10 +23,18 @@ class CssView implements Component {
       );
     }
 
-    return HtmlElement::create('style', array(
+    $regres = preg_match('/\[\[[a-zA-Z\-]+\]\]/', $css, $matches);
+    if ($regres === false) {
+      throw new Exception('An error occurred when counting remain CSS unsupplied variables');
+    } else if ($regres !== 0) {
+      $list = implode(', ', $matches);
+      throw new Error("Some variables are not supplied: $list");
+    }
+
+    return HtmlElement::create('style', [
       'type' => 'text/css',
       new UnescapedText($css),
-    ));
+    ]);
   }
 }
 ?>

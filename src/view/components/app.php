@@ -1,26 +1,37 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/meta-element.php';
 require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/header-section.php';
+require_once __DIR__ . '/main-section.php';
+require_once __DIR__ . '/script-embed.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class App extends RawDataContainer implements Component {
   public function render(): Component {
-    return HtmlElement::create('html', array(
+    $data = $this->getData();
+
+    return HtmlElement::create('html', [
       'lang' => 'en',
-      HtmlElement::create('head', array(
-        HtmlElement::create('meta', array('charset' => 'utf-8')),
-        HtmlElement::create('title', 'Hello, World!!'),
-        CssView::fromFile(__DIR__ . '/../../resources/style.css', array(
-          'text-color' => 'black'
-        )),
-      )),
-      HtmlElement::create('body', array(
-        new HeaderSection(),
-        HtmlElement::create('main'),
+      'dataset' => [
+        'theme-name' => $data['theme-name'],
+      ],
+      'classes' => [
+        "theme-{$data['theme-name']}",
+      ],
+
+      HtmlElement::create('head', [
+        new CharsetMetaElement('utf-8'),
+        HtmlElement::create('title', $data['title']),
+        CssView::fromFile(__DIR__ . '/../../resources/style.css', $data['colors']),
+        JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
+      ]),
+      HtmlElement::create('body', [
+        new HeaderSection($data),
+        new MainSection($data),
         HtmlElement::create('footer'),
-      ))
-    ));
+      ])
+    ]);
   }
 }
 ?>
