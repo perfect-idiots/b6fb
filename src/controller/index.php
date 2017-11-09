@@ -23,6 +23,17 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
   ];
 }
 
+function switchPage(array $data): Page {
+  switch($data['page']) {
+    case 'index':
+      return MainPage::instance($data);
+    case 'admin':
+      return AdminPage::instance($data);
+    default:
+      throw new NotFoundException();
+  }
+}
+
 function sendHtml(UrlQuery $urlQuery): string {
   $themeColorSet = getThemeColorSet($urlQuery);
 
@@ -31,10 +42,11 @@ function sendHtml(UrlQuery $urlQuery): string {
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
+    'page' => $urlQuery->getDefault('page', 'index'),
   ];
 
   try {
-    return MainPage::instance($data)->render();
+    return switchPage($data)->render();
   } catch (NotFoundException $error) {
     return ErrorPage::status(404)->render();
   }
