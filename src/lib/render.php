@@ -38,6 +38,7 @@ class Renderer {
       [
         'x-component-level' => (string) $level,
         'x-component' => implode(' ', $classmap['set']),
+        'x-component-tree' => json_encode($classmap['tree']),
       ]
     ));
 
