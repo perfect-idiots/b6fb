@@ -11,19 +11,19 @@ class RedirectPage implements Component {
   }
 
   public function render(): Component {
-    return HtmlElement::create('html', array(
+    return HtmlElement::create('html', [
       'lang' => 'en',
-      HtmlElement::nested(array('head', 'title'), 'Redirecting...'),
-      HtmlElement::create('body', array(
-        HtmlElement::create('h1', array(
+      HtmlElement::nested(['head', 'title'], 'Redirecting...'),
+      HtmlElement::create('body', [
+        HtmlElement::create('h1', [
           'Document has been moved to ',
           Anchor::linkify($location),
-        )),
+        ]),
         JavascriptEmbed::src("
           window.location.href = '$location'
         "),
-      )),
-    ));
+      ]),
+    ]);
   }
 }
 ?>
