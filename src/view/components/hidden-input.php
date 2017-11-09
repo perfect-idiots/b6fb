@@ -33,7 +33,10 @@ class HiddenInputSet extends RawDataContainer implements Component {
       array_push($children, new HiddenInput($name, $value));
     }
 
-    return HtmlElement::create('div', $children);
+    return HtmlElement::create('div', array_merge(
+      array('hidden' => true),
+      $children
+    ));
   }
 }
 ?>
