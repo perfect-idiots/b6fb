@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/hidden-input.php';
 
 class SearchBox extends RawDataContainer implements Component {
   public function render(): Component {
@@ -17,6 +18,9 @@ class SearchBox extends RawDataContainer implements Component {
         'id' => 'search-box-button',
         'Search'
       )),
+      new HiddenInputSet(
+        $this->get('url-query')->except('search')->getData()
+      ),
     ));
   }
 }
