@@ -37,11 +37,12 @@ abstract class Element extends PrimaryComponent {
     $dataset = Element::getArrayKey($desc, 'dataset');
     $children = Element::getArrayKey($desc, 'children');
 
-    foreach($desc as $key => $value) {
+    foreach ($desc as $key => $value) {
       if (is_long($key)) {
         array_push($children, $value);
       } else if (!in_array($key, Element::SPECIAL_FIELDS)) {
-        $attributes[$key] = $value;
+        if ($value === false) continue;
+        $attributes[$key] = $value === true ? $key : $value;
       }
     }
 
@@ -91,8 +92,8 @@ class HtmlElement extends Element {
   ];
 
   public function tagClosingStyle(): string {
-    if(in_array($this->tag, HtmlElement::EMPTY_TAGS)) return 'self-close';
-    if(sizeof($this->children)) return 'non-empty';
+    if (in_array($this->tag, HtmlElement::EMPTY_TAGS)) return 'self-close';
+    if (sizeof($this->children)) return 'non-empty';
     return 'pair-close';
   }
 }
