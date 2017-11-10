@@ -155,10 +155,16 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   }
 
   static public function instance($param = null): self {
+    $error = static::validateParam($param);
+    if ($error) throw new Error($error);
     return new static(false, $param, []);
   }
 
   abstract protected function load(): array;
+
+  static public function validateParam($param): string {
+    return '';
+  }
 
   public function getData(): array {
     $this->firstRun();

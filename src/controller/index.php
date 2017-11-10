@@ -35,6 +35,10 @@ function switchPage(array $data): Page {
 }
 
 function sendHtml(UrlQuery $urlQuery): string {
+  $cookie = Cookie::instance([
+    'expiry-extend' => 30 * 24 * 3600, // 30 days
+  ]);
+
   $themeColorSet = getThemeColorSet($urlQuery);
 
   $data = [
@@ -43,6 +47,7 @@ function sendHtml(UrlQuery $urlQuery): string {
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'page' => $urlQuery->getDefault('page', 'index'),
+    'cookie' => $cookie,
   ];
 
   try {
