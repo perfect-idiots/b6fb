@@ -29,7 +29,7 @@ class HiddenInputSet extends RawDataContainer implements Component {
     $data = $this->getData();
     $children = [];
 
-    foreach($data as $name => $value) {
+    foreach ($data as $name => $value) {
       array_push($children, new HiddenInput($name, $value));
     }
 
