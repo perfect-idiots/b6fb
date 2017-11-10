@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../lib/utils.php';
+require_once __DIR__ . '/utils.php';
 
 class Constants extends LazyLoadedDataContainer {
   protected function load(): array {
