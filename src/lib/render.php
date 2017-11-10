@@ -68,7 +68,7 @@ class Renderer {
       [$tag, $attributes, $classes, $style, $data]
     );
 
-    switch($element->tagClosingStyle()) {
+    switch ($element->tagClosingStyle()) {
       case 'self-close':
         return "$indent<$open />";
       case 'pair-close':
@@ -81,7 +81,7 @@ class Renderer {
 
     $result = "$indent<$open>$newline";
 
-    foreach($element->children as $child) {
+    foreach ($element->children as $child) {
       $childHTML = $this->renderLevel($child, $newlevel, []);
       $result .= $childHTML . $newline;
     }
@@ -94,7 +94,7 @@ class Renderer {
     $indent = $this->indent($level);
     $result = [];
 
-    foreach($segments as $chunk) {
+    foreach ($segments as $chunk) {
       array_push($result, $indent . $chunk);
     }
 
@@ -104,7 +104,7 @@ class Renderer {
   private function renderAttributes(array $attributes): string {
     $result = [];
 
-    foreach($attributes as $key => $value) {
+    foreach ($attributes as $key => $value) {
       $actualKey = htmlspecialchars($key);
       $actualValue = htmlspecialchars($value);
 
@@ -131,7 +131,7 @@ class Renderer {
 
     $result = 'style="';
 
-    foreach($style as $key => $value) {
+    foreach ($style as $key => $value) {
       $actualKey = htmlspecialchars($key);
       $actualValue = htmlspecialchars(is_array($value) ? implode(' ', $value) : $value);
 
@@ -146,7 +146,7 @@ class Renderer {
 
     $result = [];
 
-    foreach($dataset as $key => $value) {
+    foreach ($dataset as $key => $value) {
       $result["data-$key"] = $value;
     }
 
@@ -177,7 +177,7 @@ class Renderer {
     $set = [];
     $tree = [];
 
-    foreach($list as $component) {
+    foreach ($list as $component) {
       $checker = new ClassChecker($component);
       if (!$checker->didImplemented('Component')) continue;
       if ($checker->didExtended('PrimaryComponent')) continue;
