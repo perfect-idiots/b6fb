@@ -89,6 +89,8 @@ class CaseConverter {
 
 interface DataContainer {
   public function getData(): array;
+  public function hasKey($key): bool;
+  public function hasValue($key): bool;
   public function get($key);
   public function set($key, $value): DataContainer;
   public function except($key): DataContainer;
@@ -111,6 +113,14 @@ class RawDataContainer implements DataContainer {
 
   public function getData(): array {
     return $this->data;
+  }
+
+  public function hasKey($key): bool {
+    return array_key_exists($key, $this->getData());
+  }
+
+  public function hasValue($value): bool {
+    return in_array($value, $this->getData());
   }
 
   public function get($key) {
@@ -170,6 +180,16 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   public function getData(): array {
     $this->firstRun();
     return $this->data;
+  }
+
+  public function hasKey($key): bool {
+    $this->firstRun();
+    return array_key_exists($key, $this->getData());
+  }
+
+  public function hasValue($value): bool {
+    $this->firstRun();
+    return in_array($value, $this->getData());
   }
 
   public function get($key) {
