@@ -1,9 +1,10 @@
 <?php
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
+require_once __DIR__ . '/../lib/constants.php';
 
-function getThemeColorSet(UrlQuery $urlQuery): array {
-  $themeName = $urlQuery->getDefault('theme', 'light');
+function getThemeColorSet(Cookie $cookie): array {
+  $themeName = $cookie->getDefault('theme', 'light');
   $themeColorSet = null;
 
   switch ($themeName) {
@@ -14,10 +15,14 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
       $themeColorSet = DarkThemeColors::create();
       break;
     default:
-      $urlQuery->set('theme', 'light')->redirect();
+      return [
+        'invalid' => true,
+        'new-cookie' => $cookie->set('theme', 'light'),
+      ];
   }
 
   return [
+    'invalid' => false,
     'name' => $themeName,
     'colors' => $themeColorSet->getData(),
   ];
@@ -34,8 +39,18 @@ function switchPage(array $data): Page {
   }
 }
 
-function sendHtml(UrlQuery $urlQuery): string {
-  $themeColorSet = getThemeColorSet($urlQuery);
+function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
+  if ($urlQuery->hasKey('theme')) {
+    $cookie->set('theme', $urlQuery->get('theme'))->update();
+    $urlQuery->except('theme')->redirect();
+  }
+
+  $themeColorSet = getThemeColorSet($cookie);
+
+  if ($themeColorSet['invalid']) {
+    $themeColorSet['new-cookie']->update();
+    $urlQuery->except('theme')->redirect();
+  }
 
   $data = [
     'title' => 'b6fb',
@@ -43,6 +58,7 @@ function sendHtml(UrlQuery $urlQuery): string {
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'page' => $urlQuery->getDefault('page', 'index'),
+    'cookie' => $cookie,
   ];
 
   try {
@@ -53,11 +69,16 @@ function sendHtml(UrlQuery $urlQuery): string {
 }
 
 function main(): string {
+  $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
+
+  $cookie = Cookie::instance([
+    'expiry-extend' => $constants->get('month'),
+  ]);
 
   switch ($urlQuery->getDefault('type', 'html')) {
     case 'html':
-      return sendHtml($urlQuery);
+      return sendHtml($urlQuery, $cookie);
     default:
       return ErrorPage::status(404)->render();
   }
