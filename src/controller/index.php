@@ -40,11 +40,16 @@ function switchPage(array $data): Page {
 }
 
 function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
+  if ($urlQuery->hasKey('theme')) {
+    $cookie->set('theme', $urlQuery->get('theme'))->update();
+    $urlQuery->except('theme')->redirect();
+  }
+
   $themeColorSet = getThemeColorSet($cookie);
 
   if ($themeColorSet['invalid']) {
     $themeColorSet['new-cookie']->update();
-    $urlQuery->redirect();
+    $urlQuery->except('theme')->redirect();
   }
 
   $data = [
