@@ -6,7 +6,7 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
   $themeName = $urlQuery->getDefault('theme', 'light');
   $themeColorSet = null;
 
-  switch($themeName) {
+  switch ($themeName) {
     case 'light':
       $themeColorSet = LightThemeColors::create();
       break;
@@ -24,7 +24,7 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
 }
 
 function switchPage(array $data): Page {
-  switch($data['page']) {
+  switch ($data['page']) {
     case 'index':
       return MainPage::instance($data);
     case 'admin':
@@ -55,7 +55,7 @@ function sendHtml(UrlQuery $urlQuery): string {
 function main(): string {
   $urlQuery = new UrlQuery($_GET);
 
-  switch($urlQuery->getDefault('type', 'html')) {
+  switch ($urlQuery->getDefault('type', 'html')) {
     case 'html':
       return sendHtml($urlQuery);
     default:
