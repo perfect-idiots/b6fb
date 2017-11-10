@@ -95,6 +95,7 @@ interface DataContainer {
   public function assign(array $data): DataContainer;
   public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
+  public function getDefault($key, $default);
 }
 
 class RawDataContainer implements DataContainer {
@@ -201,6 +202,12 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   public function merge(DataContainer $addend): DataContainer {
     $this->firstRun();
     return static::assign($addend->getData());
+  }
+
+  public function getDefault($key, $default) {
+    $this->firstRun();
+    $data = $this->getData();
+    return array_key_exists($key, $data) ? $data[$key] : $default;
   }
 
   private function firstRun(): void {
