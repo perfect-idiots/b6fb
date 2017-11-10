@@ -89,12 +89,15 @@ class CaseConverter {
 
 interface DataContainer {
   public function getData(): array;
+  public function hasKey($key): bool;
+  public function hasValue($key): bool;
   public function get($key);
   public function set($key, $value): DataContainer;
   public function except($key): DataContainer;
   public function assign(array $data): DataContainer;
   public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
+  public function getDefault($key, $default);
 }
 
 class RawDataContainer implements DataContainer {
@@ -110,6 +113,14 @@ class RawDataContainer implements DataContainer {
 
   public function getData(): array {
     return $this->data;
+  }
+
+  public function hasKey($key): bool {
+    return array_key_exists($key, $this->getData());
+  }
+
+  public function hasValue($value): bool {
+    return in_array($value, $this->getData());
   }
 
   public function get($key) {
@@ -166,9 +177,23 @@ abstract class LazyLoadedDataContainer implements DataContainer {
     return '';
   }
 
+  static protected function transformParam($param) {
+    return $param;
+  }
+
   public function getData(): array {
     $this->firstRun();
     return $this->data;
+  }
+
+  public function hasKey($key): bool {
+    $this->firstRun();
+    return array_key_exists($key, $this->getData());
+  }
+
+  public function hasValue($value): bool {
+    $this->firstRun();
+    return in_array($value, $this->getData());
   }
 
   public function get($key) {
@@ -187,7 +212,11 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function assign(array $data): DataContainer {
     $this->firstRun();
-    return new static(true, null, array_merge($this->data, $data));
+    return new static(
+      true,
+      static::transformParam($this->param),
+      array_merge($this->data, $data)
+    );
   }
 
   public function without(array $keys): DataContainer {
@@ -201,6 +230,12 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   public function merge(DataContainer $addend): DataContainer {
     $this->firstRun();
     return static::assign($addend->getData());
+  }
+
+  public function getDefault($key, $default) {
+    $this->firstRun();
+    $data = $this->getData();
+    return array_key_exists($key, $data) ? $data[$key] : $default;
   }
 
   private function firstRun(): void {

@@ -3,8 +3,8 @@ require_once __DIR__ . '/../lib/utils.php';
 
 class Cookie extends LazyLoadedDataContainer {
   protected function load(): array {
-    self::extendExperity($__COOKIE);
-    return $__COOKIE;
+    self::extendExperity($_COOKIE);
+    return $_COOKIE;
   }
 
   static public function validateParam($param): string {
@@ -21,14 +21,14 @@ class Cookie extends LazyLoadedDataContainer {
   public function update(): void {
     $data = $this->getData();
 
-    $tobeset = array_diff_assoc($data, $__COOKIE);
+    $tobeset = array_diff_assoc($data, $_COOKIE);
     self::extendExperity($tobeset);
 
-    $tobeunset = array_diff_key($__COOKIE, $data);
+    $tobeunset = array_diff_key($_COOKIE, $data);
     self::unsetCookies(array_keys($tobeunset));
   }
 
-  static private function extendExperity(array $data): void {
+  private function extendExperity(array $data): void {
     $extend = $this->param['expiry-extend'];
     foreach ($data as $key => $value) {
       setcookie($key, $value, time() + $extend);
@@ -37,7 +37,7 @@ class Cookie extends LazyLoadedDataContainer {
 
   static private function unsetCookies(array $fields): void {
     foreach ($fields as $key) {
-      unset($__COOKIE[$key]);
+      unset($_COOKIE[$key]);
       setcookie($key, '', time() - 0xFFFF);
     }
   }
