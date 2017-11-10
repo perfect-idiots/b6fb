@@ -1,9 +1,10 @@
 <?php
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
+require_once __DIR__ . '/../lib/constants.php';
 
-function getThemeColorSet(UrlQuery $urlQuery): array {
-  $themeName = $urlQuery->getDefault('theme', 'light');
+function getThemeColorSet(Cookie $cookie): array {
+  $themeName = $cookie->getDefault('theme', 'light');
   $themeColorSet = null;
 
   switch ($themeName) {
@@ -14,10 +15,14 @@ function getThemeColorSet(UrlQuery $urlQuery): array {
       $themeColorSet = DarkThemeColors::create();
       break;
     default:
-      $urlQuery->set('theme', 'light')->redirect();
+      return [
+        'invalid' => true,
+        'new-cookie' => $cookie->set('theme', 'light'),
+      ];
   }
 
   return [
+    'invalid' => false,
     'name' => $themeName,
     'colors' => $themeColorSet->getData(),
   ];
@@ -34,12 +39,13 @@ function switchPage(array $data): Page {
   }
 }
 
-function sendHtml(UrlQuery $urlQuery): string {
-  $cookie = Cookie::instance([
-    'expiry-extend' => 30 * 24 * 3600, // 30 days
-  ]);
+function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
+  $themeColorSet = getThemeColorSet($cookie);
 
-  $themeColorSet = getThemeColorSet($urlQuery);
+  if ($themeColorSet['invalid']) {
+    $themeColorSet['new-cookie']->update();
+    $urlQuery->redirect();
+  }
 
   $data = [
     'title' => 'b6fb',
@@ -58,11 +64,16 @@ function sendHtml(UrlQuery $urlQuery): string {
 }
 
 function main(): string {
+  $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
+
+  $cookie = Cookie::instance([
+    'expiry-extend' => $constants->get('month'),
+  ]);
 
   switch ($urlQuery->getDefault('type', 'html')) {
     case 'html':
-      return sendHtml($urlQuery);
+      return sendHtml($urlQuery, $cookie);
     default:
       return ErrorPage::status(404)->render();
   }
