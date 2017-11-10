@@ -177,6 +177,10 @@ abstract class LazyLoadedDataContainer implements DataContainer {
     return '';
   }
 
+  static protected function transformParam($param) {
+    return $param;
+  }
+
   public function getData(): array {
     $this->firstRun();
     return $this->data;
@@ -208,7 +212,11 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function assign(array $data): DataContainer {
     $this->firstRun();
-    return new static(true, null, array_merge($this->data, $data));
+    return new static(
+      true,
+      static::transformParam($this->param),
+      array_merge($this->data, $data)
+    );
   }
 
   public function without(array $keys): DataContainer {
