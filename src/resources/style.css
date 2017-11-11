@@ -1,3 +1,7 @@
+* {
+  transition: all 0.30s ease-in-out;
+}
+
 html, body {
   margin: 0;
   border: 0;
@@ -25,6 +29,20 @@ body {
   text-decoration: none;
 }
 
+.x-component--search-box {
+  display: inline-block;
+}
+
+.x-component--search-box input {
+  background-color: [[search-box-background-color]];
+  border: none;
+}
+
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'], {
   display: none;
+}
+
+text-area:focus, input:focus {
+  outline: none !important;
+  box-shadow: inset 0 0 5px [[input-focused-box-shadow-color]];
 }
