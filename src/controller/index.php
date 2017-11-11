@@ -55,11 +55,14 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
 
   $sizeSet = SizeSet::instance();
 
+  $imageSet = ImageSet::instance($themeColorSet);
+
   $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
+    'images' => $imageSet->getData(),
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),

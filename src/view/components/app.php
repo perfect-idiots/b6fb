@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../lib/utils.php';
 class App extends RawDataContainer implements Component {
   public function render(): Component {
     $data = $this->getData();
-    $cssVars = array_merge($data['colors'], $data['sizes']);
+    $cssVars = array_merge($data['colors'], $data['sizes'], $data['images']);
 
     return HtmlElement::create('html', [
       'lang' => 'en',
