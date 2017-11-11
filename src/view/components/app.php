@@ -26,6 +26,7 @@ class App extends RawDataContainer implements Component {
         CssView::fromFile(__DIR__ . '/../../resources/style.css', $data['colors']),
         JsonDataEmbed::dump($data['cookie']->getData(), JSON_PRETTY_PRINT, ['id' => 'data-cookie']),
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
+        JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
       ]),
       HtmlElement::create('body', [
         new HeaderSection($data),

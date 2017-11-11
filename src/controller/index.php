@@ -52,11 +52,15 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
     $urlQuery->except('theme')->redirect();
   }
 
+  $sizeSet = SizeSet::instance();
+
   $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
+    'size-set' => $sizeSet,
+    'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
     'cookie' => $cookie,
   ];
