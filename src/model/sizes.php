@@ -12,7 +12,7 @@ class SizeSet extends LazyLoadedDataContainer {
       if (gettype($size) === 'array') {
         $middle["$prefix-width"] = $size[0];
         $middle["$prefix-height"] = $size[1];
-        $middle["$prefix-size-block"] = "width: {$size[0]}; height: {$size[1]};";
+        $middle["$prefix-size-block"] = $size;
       } else {
         $middle[$prefix] = $size;
       }
@@ -33,6 +33,10 @@ class SizeSet extends LazyLoadedDataContainer {
       case 'integer':
       case 'double':
         return "{$value}px";
+      case 'array':
+        $width = self::transform($value[0]);
+        $height = self::transform($value[1]);
+        return "width: $width; height: $height;";
       default:
         throw new TypeError('Cannot transform this type of value: ' . gettype($value));
     }
