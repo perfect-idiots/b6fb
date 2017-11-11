@@ -273,7 +273,7 @@ class Tree {
   public function flat(string $separator = '/', $omitsepon = null): iterable {
     foreach ($this->tree as $prefix => $outer) {
       if (is_iterable($outer)) {
-        $flatten = static::instance($outer, $omitsepon)->flat($separator);
+        $flatten = static::instance($outer, $omitsepon)->flat($separator, $omitsepon);
         foreach ($flatten as $suffix => $inner) {
           yield $prefix . ($suffix === $omitsepon ? '' : ($separator . $suffix)) => $inner;
         }
