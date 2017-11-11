@@ -10,6 +10,7 @@ require_once __DIR__ . '/../../lib/utils.php';
 class App extends RawDataContainer implements Component {
   public function render(): Component {
     $data = $this->getData();
+    $cssVars = array_merge($data['colors'], $data['sizes']);
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -23,7 +24,7 @@ class App extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', $data['title']),
-        CssView::fromFile(__DIR__ . '/../../resources/style.css', array_merge($data['colors'], $data['sizes'])),
+        CssView::fromFile(__DIR__ . '/../../resources/style.css', $cssVars),
         JsonDataEmbed::dump($data['cookie']->getData(), JSON_PRETTY_PRINT, ['id' => 'data-cookie']),
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
         JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
