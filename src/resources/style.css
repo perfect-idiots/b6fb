@@ -47,6 +47,7 @@ body {
 .x-component--search-box input {
   background-color: [[search-box-background-color]];
   border: none;
+  [[search-box-input-size-block]]
 }
 
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'], {
