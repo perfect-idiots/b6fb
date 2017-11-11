@@ -24,6 +24,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $begin = Tree::instance([
       'logo' => BlockSize::xy(2 * $unitSize, $unitSize),
       'logo-line-height' => 5 * $unitSize / 6,
+      'search-box' => BlockSize::xy(6 * $unitSize, $unitSize),
     ])->flat('-');
 
     $middle = [];

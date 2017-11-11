@@ -38,6 +38,7 @@ body {
 
 .x-component--search-box {
   display: inline-block;
+  [[search-box-size-block]]
 }
 
 .x-component--search-box input {
