@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
