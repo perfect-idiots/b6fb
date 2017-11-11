@@ -19,9 +19,11 @@ class VectorSize extends RawDataContainer {}
 
 class SizeSet extends LazyLoadedDataContainer {
   protected function load(): array {
+    $unitSize = 60;
+
     $begin = Tree::instance([
-      'logo' => BlockSize::xy(120, 60),
-      'logo-line-height' => 50,
+      'logo' => BlockSize::xy(2 * $unitSize, $unitSize),
+      'logo-line-height' => 5 * $unitSize / 6,
     ])->flat('-');
 
     $middle = [];
