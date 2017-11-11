@@ -18,6 +18,10 @@ body {
   background: [[header-background-color]];
 }
 
+.x-component--header-section, .x-component--header-section * {
+  vertical-align: middle;
+}
+
 .x-component--logo {
   display: inline-block;
   font-weight: normal;
@@ -27,7 +31,6 @@ body {
 
 .x-component--logo, .x-component--logo * {
   text-align: center;
-  vertical-align: middle;
   line-height: [[logo-line-height]];
 }
 
