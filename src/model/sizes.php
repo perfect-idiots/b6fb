@@ -64,6 +64,7 @@ class SizeSet extends LazyLoadedDataContainer {
         if ($value instanceof VectorSize) {
           return implode(' ', $value->getData());
         }
+        throw new TypeError('Cannot transform this type of object: ' . get_class($value));
       default:
         throw new TypeError('Cannot transform this type of value: ' . gettype($value));
     }
