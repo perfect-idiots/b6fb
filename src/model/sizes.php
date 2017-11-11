@@ -12,6 +12,7 @@ class SizeSet extends LazyLoadedDataContainer {
       if (gettype($size) === 'array') {
         $middle["$prefix-width"] = $size[0];
         $middle["$prefix-height"] = $size[1];
+        $middle["$prefix-size-block"] = "width: {$size[0]}; height: {$size[1]};";
       } else {
         $middle[$prefix] = $size;
       }
