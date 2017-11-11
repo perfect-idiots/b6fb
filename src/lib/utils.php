@@ -273,7 +273,8 @@ class Tree {
   public function flat(string $midfix = '/'): iterable {
     foreach ($this->tree as $prefix => $outer) {
       if (is_iterable($outer)) {
-        foreach (self::flat($outer) as $suffix => $inner) {
+        $flatten = static::instance($outer)->flat($midfix);
+        foreach ($flatten as $suffix => $inner) {
           yield $prefix . $midfix . $suffix => $inner;
         }
       } else {
