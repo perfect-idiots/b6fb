@@ -1,18 +1,39 @@
 <?php
 require_once __DIR__ . '/../lib/utils.php';
 
+class BlockSize extends RawDataContainer {
+  static public function xy($width, $height): self {
+    return new self([$width, $height]);
+  }
+
+  public function width(): int {
+    return static::get(0);
+  }
+
+  public function height(): int {
+    return static::get(1);
+  }
+}
+
+class VectorSize extends RawDataContainer {}
+
 class SizeSet extends LazyLoadedDataContainer {
   protected function load(): array {
-    $begin = [
-      'logo' => [120, 60],
-    ];
+    $begin = Tree::instance([
+      'logo' => BlockSize::xy(120, 60),
+    ])->flat('-');
 
     $middle = [];
     foreach ($begin as $prefix => $size) {
-      if (gettype($size) === 'array') {
-        $middle["$prefix-width"] = $size[0];
-        $middle["$prefix-height"] = $size[1];
+      if ($size instanceof BlockSize) {
+        $middle["$prefix-width"] = $size->width();
+        $middle["$prefix-height"] = $size->height();
         $middle["$prefix-size-block"] = $size;
+      } else if ($size instanceof VectorSize) {
+        foreach ($size->getData() as $index => $element) {
+          $middle["$prefix-$index"] = $element;
+        }
+        $middle["$prefix-size-vector"] = $size;
       } else {
         $middle[$prefix] = $size;
       }
@@ -33,10 +54,15 @@ class SizeSet extends LazyLoadedDataContainer {
       case 'integer':
       case 'double':
         return "{$value}px";
-      case 'array':
-        $width = self::transform($value[0]);
-        $height = self::transform($value[1]);
-        return "width: $width; height: $height;";
+      case 'object':
+        if ($value instanceof BlockSize) {
+          $width = self::transform($value->width());
+          $height = self::transform($value->height());
+          return "width: $width; height: $height;";
+        }
+        if ($value instanceof VectorSize) {
+          return implode(' ', $value->getData());
+        }
       default:
         throw new TypeError('Cannot transform this type of value: ' . gettype($value));
     }
