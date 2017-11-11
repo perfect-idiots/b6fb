@@ -22,11 +22,15 @@ class SizeSet extends LazyLoadedDataContainer {
     $unitSize = 60;
 
     $begin = Tree::instance([
-      'logo' => BlockSize::xy(2 * $unitSize, $unitSize),
-      'logo-line-height' => 5 * $unitSize / 6,
-      'search-box' => BlockSize::xy(6 * $unitSize, $unitSize),
-      'search-box-input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
-    ])->flat('-');
+      'logo' => [
+        '' => BlockSize::xy(2 * $unitSize, $unitSize),
+        'line-height' => 5 * $unitSize / 6,
+      ],
+      'search-box' => [
+        '' => BlockSize::xy(6 * $unitSize, $unitSize),
+        'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
+      ],
+    ])->flat('-', '');
 
     $middle = [];
     foreach ($begin as $prefix => $size) {
