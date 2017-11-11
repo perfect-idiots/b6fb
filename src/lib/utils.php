@@ -270,12 +270,12 @@ class Tree {
     return new static($tree);
   }
 
-  public function flat(string $midfix = '/'): iterable {
+  public function flat(string $midfix = '/', $omitsepon = null): iterable {
     foreach ($this->tree as $prefix => $outer) {
       if (is_iterable($outer)) {
         $flatten = static::instance($outer)->flat($midfix);
         foreach ($flatten as $suffix => $inner) {
-          yield $prefix . $midfix . $suffix => $inner;
+          yield $prefix . ($suffix === $omitsepon ? '' : ($midfix . $suffix)) => $inner;
         }
       } else {
         yield $prefix => $outer;
