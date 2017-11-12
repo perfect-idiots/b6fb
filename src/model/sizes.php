@@ -6,6 +6,10 @@ class BlockSize extends RawDataContainer {
     return new self([$width, $height]);
   }
 
+  static public function sqr($size): self {
+    return static::xy($size);
+  }
+
   public function width(): int {
     return static::get(0);
   }
@@ -29,6 +33,7 @@ class SizeSet extends LazyLoadedDataContainer {
       'search-box' => [
         '' => BlockSize::xy(6 * $unitSize, $unitSize),
         'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
+        'button' => BlockSize::xy($unitSize / 2, $unitSize / 2),
       ],
     ])->flat('-', '');
 
