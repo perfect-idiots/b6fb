@@ -9,8 +9,11 @@ html, body {
 }
 
 body {
-  color: [[text-color]];
   background-color: [[background-color]];
+}
+
+body, input {
+  color: [[text-color]];
   font-family: 'Arial', 'Helvatica', sans-serif;
 }
 
