@@ -3,7 +3,11 @@ require_once __DIR__ . '/../lib/utils.php';
 
 class BlockSize extends RawDataContainer {
   static public function xy($width, $height): self {
-    return new self([$width, $height]);
+    return new static([$width, $height]);
+  }
+
+  static public function sqr($size): self {
+    return static::xy($size);
   }
 
   public function width(): int {
@@ -19,10 +23,23 @@ class VectorSize extends RawDataContainer {}
 
 class SizeSet extends LazyLoadedDataContainer {
   protected function load(): array {
+    $unitSize = 60;
+    $searchBoxHeight = $unitSize / 2;
+    $searchBoxVerticalPadding = ($unitSize - $searchBoxHeight) / 2;
+
     $begin = Tree::instance([
-      'logo' => BlockSize::xy(120, 60),
-      'logo-line-height' => 50,
-    ])->flat('-');
+      'logo' => [
+        '' => BlockSize::xy(3 * $unitSize, $unitSize),
+        'line-height' => 5 * $unitSize / 6,
+      ],
+      'search-box' => [
+        '' => BlockSize::xy(6 * $unitSize, $unitSize),
+        'height' => $unitSize,
+        'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
+        'button' => BlockSize::xy($searchBoxHeight, $searchBoxHeight),
+        'vertical-padding' => $searchBoxVerticalPadding,
+      ],
+    ])->flat('-', '');
 
     $middle = [];
     foreach ($begin as $prefix => $size) {

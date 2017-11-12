@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -53,12 +54,14 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
   }
 
   $sizeSet = SizeSet::instance();
+  $imageSet = ImageSet::instance($themeColorSet);
 
   $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
+    'images' => $imageSet->getData(),
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
@@ -72,6 +75,26 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
   }
 }
 
+function sendImage(UrlQuery $urlQuery): string {
+  $requiredkeys = ['name', 'mime'];
+  foreach ($requiredkeys as $key) {
+    if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
+  }
+
+  $name = $urlQuery->get('name');
+  $mime = $urlQuery->get('mime');
+  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
+
+  $filename = __DIR__ . '/../resources/images/' . $name;
+  if (!file_exists($filename)) return ErrorPage::status(404)->render();
+
+  header('Content-Type: ' . $mime);
+  header('Content-Length: ' . filesize($filename));
+  header('Content-Disposition: inline');
+  readfile($filename);
+  exit;
+}
+
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
@@ -83,6 +106,8 @@ function main(): string {
   switch ($urlQuery->getDefault('type', 'html')) {
     case 'html':
       return sendHtml($urlQuery, $cookie);
+    case 'image':
+      return sendImage($urlQuery);
     default:
       return ErrorPage::status(404)->render();
   }
