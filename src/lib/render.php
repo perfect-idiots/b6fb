@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '../view/components/base.php';
+require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/component-base.php';
 
 class Renderer {
   private $production;
@@ -9,29 +10,54 @@ class Renderer {
   }
 
   public function render(Component $component): string {
-    return $this->renderLevel($component, 0);
+    return $this->renderLevel($component, 0, []);
   }
 
-  private function renderLevel(Component $component, int $level): string {
+  private function renderLevel(Component $component, int $level, array $compClassNames): string {
     if ($component instanceof PrimaryComponent) {
-      if ($component instanceof Element) return $this->renderElement($component, $level);
+      if ($component instanceof Element) return $this->renderElement($component, $level, $compClassNames);
       if ($component instanceof TextBase) return $this->renderText($component, $level);
 
       throw new TypeError('Cannot render custom PrimaryComponent');
     }
 
     if ($component instanceof Component) {
-      return $this->renderLevel($component->render(), $level);
+      $nextCompClassNames = array_merge($compClassNames, [get_class($component)]);
+      return $this->renderLevel($component->render(), $level, $nextCompClassNames);
     }
 
     throw new TypeError('Must be an instance of Component');
   }
 
-  private function renderElement(Element $element, int $level): string {
+  private function renderElement(Element $element, int $level, array $compClassNames): string {
     $tag = $element->tag;
-    $attributes = $this->renderAttributes($element->attributes);
-    $classes = $this->renderClassAttribute($element->classes);
+    $classmap = Renderer::makeComponentClassMap($compClassNames);
+
+    $attributes = $this->renderAttributes(array_merge(
+      $element->attributes,
+      [
+        'x-component-level' => (string) $level,
+        'x-component-set' => implode(' ', $classmap['set']),
+        'x-component-tree' => json_encode($classmap['tree']),
+      ]
+    ));
+
+    $classes = $this->renderClassAttribute(array_merge(
+      $element->classes,
+      ["x-component-level--$level"],
+
+      array_map(
+        function (string $name): string {
+          $kebab = CaseConverter::fromPascalCase($name)->toKebabCase();
+          return 'x-component--' . $kebab;
+        },
+
+        $classmap['set']
+      )
+    ));
+
     $style = $this->renderStyleAttribute($element->style);
+
     $data = $this->renderDatasetAttribute($element->dataset);
 
     $newlevel = $level + 1;
@@ -39,10 +65,10 @@ class Renderer {
     $indent = $this->indent($level);
 
     $open = Renderer::joinStringSegments(
-      array($tag, $attributes, $classes, $style, $data)
+      [$tag, $attributes, $classes, $style, $data]
     );
 
-    switch($element->tagClosingStyle()) {
+    switch ($element->tagClosingStyle()) {
       case 'self-close':
         return "$indent<$open />";
       case 'pair-close':
@@ -55,8 +81,8 @@ class Renderer {
 
     $result = "$indent<$open>$newline";
 
-    foreach($element->children as $child) {
-      $childHTML = $this->renderLevel($child, $newlevel);
+    foreach ($element->children as $child) {
+      $childHTML = $this->renderLevel($child, $newlevel, []);
       $result .= $childHTML . $newline;
     }
 
@@ -66,19 +92,19 @@ class Renderer {
   private function renderText(TextBase $text, int $level): string {
     $segments = explode("\n", $text->getText());
     $indent = $this->indent($level);
-    $result = array();
+    $result = [];
 
-    foreach($segments as $chunk) {
-      array_push($result, $indent . $chunk);
+    foreach ($segments as $chunk) {
+      array_push($result, $chunk ? $indent . $chunk : '');
     }
 
     return implode("\n", $result);
   }
 
   private function renderAttributes(array $attributes): string {
-    $result = array();
+    $result = [];
 
-    foreach($attributes as $key => $value) {
+    foreach ($attributes as $key => $value) {
       $actualKey = htmlspecialchars($key);
       $actualValue = htmlspecialchars($value);
 
@@ -105,7 +131,7 @@ class Renderer {
 
     $result = 'style="';
 
-    foreach($style as $key => $value) {
+    foreach ($style as $key => $value) {
       $actualKey = htmlspecialchars($key);
       $actualValue = htmlspecialchars(is_array($value) ? implode(' ', $value) : $value);
 
@@ -118,9 +144,9 @@ class Renderer {
   private function renderDatasetAttribute(array $dataset): string {
     if (!sizeof($dataset)) return '';
 
-    $result = array();
+    $result = [];
 
-    foreach($dataset as $key => $value) {
+    foreach ($dataset as $key => $value) {
       $result["data-$key"] = $value;
     }
 
@@ -145,6 +171,35 @@ class Renderer {
         }
       )
     );
+  }
+
+  static private function makeComponentClassMap(array $list): array {
+    $set = [];
+    $tree = [];
+
+    foreach ($list as $component) {
+      $checker = new ClassChecker($component);
+      if (!$checker->didImplemented('Component')) continue;
+      if ($checker->didExtended('PrimaryComponent')) continue;
+
+      $unit = array_merge(
+        [$component => $component],
+        array_filter(
+          $checker->getParents(),
+          function (string $class): bool {
+            return in_array('Component', class_implements($class));
+          }
+        )
+      );
+
+      $set = array_merge($set, $unit);
+      array_push($tree, array_values($unit));
+    }
+
+    return [
+      'set' => array_unique(array_values($set)),
+      'tree' => $tree,
+    ];
   }
 }
 ?>
