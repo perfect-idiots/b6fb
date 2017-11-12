@@ -3,7 +3,7 @@ require_once __DIR__ . '/../lib/utils.php';
 
 class BlockSize extends RawDataContainer {
   static public function xy($width, $height): self {
-    return new self([$width, $height]);
+    return new static([$width, $height]);
   }
 
   static public function sqr($size): self {
