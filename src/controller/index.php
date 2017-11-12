@@ -54,7 +54,6 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
   }
 
   $sizeSet = SizeSet::instance();
-
   $imageSet = ImageSet::instance($themeColorSet);
 
   $data = [
