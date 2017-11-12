@@ -8,32 +8,31 @@ class ImageUrlQuery extends UrlQuery {
   }
 }
 
-abstract class ThemedImageUrlQuery extends ImageUrlQuery {
-  abstract static protected function name(): string;
-  abstract static protected function ext(): string;
-  abstract static protected function mime(): string;
+abstract class FixedImageUrlQuery extends ImageUrlQuery {
+  abstract protected function mime(): string;
+  abstract protected function name(): string;
 
-  static public function theme(string $theme): self {
-    return new static([
-      'name' => implode('.', [static::name(), $theme, static::ext()]),
+  public function __construct(array $data) {
+    parent::__construct(array_merge($data, [
+      'name' => static::name(),
       'mime' => static::mime(),
-    ]);
+    ]));
+  }
+
+  static public function build(array $data = []): self {
+    return new static($data);
   }
 }
 
-abstract class ThemedSvgImage extends ThemedImageUrlQuery {
-  static protected function ext(): string {
-    return 'svg';
-  }
-
-  static protected function mime(): string {
+abstract class SvgImage extends FixedImageUrlQuery {
+  protected function mime(): string {
     return 'image/svg+xml';
   }
 }
 
-class SearchIcon extends ThemedSvgImage {
-  static protected function name(): string {
-    return 'search';
+class SearchIcon extends SvgImage {
+  protected function name(): string {
+    return 'search.svg';
   }
 }
 
@@ -48,7 +47,7 @@ class ImageSet extends LazyLoadedDataContainer {
     $result = [];
     foreach ($classes as $class) {
       $key = CaseConverter::fromPascalCase($class)->toKebabCase();
-      $result[$key] = $class::theme($theme)->getUrlQuery();
+      $result[$key] = $class::build()->getUrlQuery();
     }
 
     return $result;
