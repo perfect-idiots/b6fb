@@ -24,16 +24,20 @@ class VectorSize extends RawDataContainer {}
 class SizeSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $unitSize = 60;
+    $searchBoxHeight = $unitSize / 2;
+    $searchBoxVerticalPadding = ($unitSize - $searchBoxHeight) / 2;
 
     $begin = Tree::instance([
       'logo' => [
-        '' => BlockSize::xy(2 * $unitSize, $unitSize),
+        '' => BlockSize::xy(3 * $unitSize, $unitSize),
         'line-height' => 5 * $unitSize / 6,
       ],
       'search-box' => [
         '' => BlockSize::xy(6 * $unitSize, $unitSize),
+        'height' => $unitSize,
         'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
-        'button' => BlockSize::xy($unitSize / 2, $unitSize / 2),
+        'button' => BlockSize::xy($searchBoxHeight, $searchBoxHeight),
+        'vertical-padding' => $searchBoxVerticalPadding,
       ],
     ])->flat('-', '');
 

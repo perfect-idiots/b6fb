@@ -51,6 +51,14 @@ body {
   [[search-box-size-block]]
 }
 
+.x-component--search-box {
+  height: [[search-box-height]];
+  margin: 0;
+  box-sizing: border-box;
+  padding-top: [[search-box-vertical-padding]];
+  padding-bottom: [[search-box-vertical-padding]];
+}
+
 .x-component--search-box input {
   background-color: [[search-box-background-color]];
   border: none;
