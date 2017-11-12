@@ -46,7 +46,7 @@ abstract class ThemedSvgImage extends ThemedImageUrlQuery {
   }
 
   static protected function mime(): string {
-    return 'image/xml+svg';
+    return 'image/svg+xml';
   }
 }
 ?>
