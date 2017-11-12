@@ -259,6 +259,31 @@ abstract class FixedArrayLoader extends ArrayLoader {
   }
 }
 
+class Tree {
+  private $tree;
+
+  public function __construct(array $tree) {
+    $this->tree = $tree;
+  }
+
+  static public function instance(array $tree): self {
+    return new static($tree);
+  }
+
+  public function flat(string $separator = '/', $omitsepon = null): iterable {
+    foreach ($this->tree as $prefix => $outer) {
+      if (is_iterable($outer)) {
+        $flatten = static::instance($outer, $omitsepon)->flat($separator, $omitsepon);
+        foreach ($flatten as $suffix => $inner) {
+          yield $prefix . ($suffix === $omitsepon ? '' : ($separator . $suffix)) => $inner;
+        }
+      } else {
+        yield $prefix => $outer;
+      }
+    }
+  }
+}
+
 class HttpException extends Exception {}
 class NotFoundException extends HttpException {}
 ?>
