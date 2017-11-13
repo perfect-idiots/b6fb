@@ -88,7 +88,7 @@ abstract class Element extends PrimaryComponent {
       [
         'at-top' => $atTop,
         'at-bottom' => $atBottom,
-        'deep' => $deep,
+        'depth' => $depth,
       ] = $params;
 
       return array_merge(
@@ -202,7 +202,7 @@ class EmmetConstructTree extends EmmetConstruct {
 
   public function build(): Component {
     return self::nested($this->abbr, $this->fn, [
-      'deep' => 0,
+      'depth' => 0,
       'at-top' => true,
       'emmet-object' => $this,
       'emmet-class' => get_called_class(),
@@ -224,7 +224,7 @@ class EmmetConstructTree extends EmmetConstruct {
     $prefix = $nested[0];
     $midfix = $nestedCount > 1 ? $nested[1] : '';
     $suffix = $nestedCount > 2 ? $nested[2] : '';
-    ['deep' => $deep] = $params;
+    ['depth' => $depth] = $params;
 
     if (!$midfix) {
       return self::unnested($prefix, $fn, array_merge($params, [
@@ -256,7 +256,7 @@ class EmmetConstructTree extends EmmetConstruct {
     $commonParams = array_merge($params, [
       'at-top' => false,
       'next-abbr' => $suffix,
-      'deep' => $params['deep'] + 1,
+      'depth' => $params['depth'] + 1,
     ]);
 
     foreach (explode('+', $abbr) as $siblingid => $sibling) {
