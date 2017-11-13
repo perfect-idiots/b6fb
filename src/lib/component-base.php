@@ -73,7 +73,7 @@ abstract class Element extends PrimaryComponent {
     ;
   }
 
-  static public function emmet(string $abbr, callable $fn = null): Component {
+  static public function emmet(string $abbr, callable $fn = null): EmmetConstructTree {
     return EmmetConstructTree::instance(get_called_class(), $abbr, $fn);
   }
 
