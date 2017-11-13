@@ -77,6 +77,32 @@ abstract class Element extends PrimaryComponent {
     return EmmetConstructTree::instance(get_called_class(), $abbr, $fn);
   }
 
+  static public function emmetFromArray(string $abbr, array $attrTable): EmmetConstructTree {
+    $getAttrIf = function (bool $condition, string $key) use($attrTable) {
+      if (!$condition) return [];
+      if (!array_key_exists($key, $attrTable)) return [];
+      return $attrTable[$key];
+    };
+
+    $callback = function ($params) use($getAttrIf) {
+      [
+        'at-top' => $atTop,
+        'at-bottom' => $atBottom,
+        'deep' => $deep,
+      ] = $params;
+
+      return array_merge(
+        $getAttrIf($atTop, 'at-top'),
+        $getAttrIf($atBottom, 'at-bottom'),
+        $getAttrIf($atTop && $atBottom, 'no-children'),
+        $getAttrIf(!$atTop && !$atBottom, 'in-middle'),
+        $getAttrIf($atTop != $atBottom, 'at-both-ends')
+      );
+    };
+
+    return static::emmet($abbr, $callback);
+  }
+
   static private function getArrayKey(array $array, string $key): array {
     return array_key_exists($key, $array) && $array[$key] ? $array[$key] : [];
   }
