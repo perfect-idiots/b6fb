@@ -180,7 +180,7 @@ class EmmetConstructTree extends EmmetConstruct {
       'at-top' => true,
       'emmet-object' => $this,
       'emmet-class' => get_called_class(),
-      'attributes' => [],
+      'node-attributes' => [],
     ]);
   }
 
@@ -198,24 +198,28 @@ class EmmetConstructTree extends EmmetConstruct {
     $prefix = $nested[0];
     $midfix = $nestedCount > 1 ? $nested[1] : '';
     $suffix = $nestedCount > 2 ? $nested[2] : '';
+    ['deep' => $deep] = $params;
 
     if (!$midfix) {
       return self::unnested($prefix, $fn, array_merge($params, [
-        'deep' => $params['deep'] + 1,
         'at-bottom' => true,
       ]));
     }
 
-    $nodeAttributes = $fn(array_merge([
-      'at-top' => false,
-      ''
+    $nodeAttributes = $fn(array_merge($params, [
+      'at-bottom' => false,
     ]));
 
     $nestedfn = function (array $params) use($midfix, $suffix, $fn) {
-      return $params['emmet-class']::sibling($midfix, $suffix, $fn, $params);
+      $newParams = array_merge($params, [
+        'node-attributes' => [],
+      ]);
+      return $params['emmet-class']::sibling($midfix, $suffix, $fn, $newParams);
     };
 
-    return self::unnested($prefix, $nestedfn, $fn);
+    return self::unnested($prefix, $nestedfn, array_merge($params, [
+      'node-attributes' => $nodeAttributes,
+    ]));
   }
 
   static private function sibling(string $abbr, string $suffix, callable $fn, array $params): array {
@@ -236,8 +240,8 @@ class EmmetConstructTree extends EmmetConstruct {
         'sibling-abbr' => $sibling,
       ]);
 
-      if (preg_match('/\*/', $abbr)) {
-        [$repeated, $factor] = explode('*', $abbr);
+      if (preg_match('/\*/', $sibling)) {
+        [$repeated, $factor] = explode('*', $sibling);
 
         if (!preg_match('/^[0-9]+$/', $factor)) {
           throw new TypeError("Factor is not a number: '$factor'");
@@ -305,7 +309,7 @@ class EmmetConstructTree extends EmmetConstruct {
     $constructedComponent = $elementClass::create($tag, array_merge(
       $idAttr,
       $classesAttr,
-      $params['attributes'],
+      $params['node-attributes'],
       $extendedAttr
     ));
     return EmmetConstructNode::sharedCreate(['constructed' => $constructedComponent]);
