@@ -73,6 +73,10 @@ abstract class Element extends PrimaryComponent {
     ;
   }
 
+  static public function emmet(string $abbr, callable $fn = null): Component {
+    return EmmetConstructTree::instance(get_called_class(), $abbr, $fn);
+  }
+
   static private function getArrayKey(array $array, string $key): array {
     return array_key_exists($key, $array) && $array[$key] ? $array[$key] : [];
   }
@@ -123,6 +127,202 @@ class UnescapedText extends TextBase {
 
   public function getText(): string {
     return $this->text;
+  }
+}
+
+abstract class EmmetConstruct implements Component {
+  abstract public function build(): Component;
+  abstract static protected function sharedCreate(array $params): EmmetConstruct;
+
+  public function render(): Component {
+    return $this->build();
+  }
+}
+
+class EmmetConstructNode extends EmmetConstruct {
+  private $constructed;
+
+  private function __construct(Component $constructed) {
+    $this->constructed = $constructed;
+  }
+
+  static protected function sharedCreate(array $params): EmmetConstruct {
+    return new static($params['constructed']);
+  }
+
+  public function build(): Component {
+    return $this->constructed;
+  }
+}
+
+class EmmetConstructTree extends EmmetConstruct {
+  private $elementClass, $abbr, $fn;
+
+  public function __construct(string $elementClass, string $abbr, callable $fn) {
+    $this->elementClass = $elementClass;
+    $this->abbr = $abbr;
+    $this->fn = $fn;
+  }
+
+  static public function instance(string $elementClass, string $abbr, $fn): self {
+    if (!$fn) $fn = [get_called_class(), 'getEmptyArray'];
+    if (!is_callable($fn)) throw new TypeError('Callback must be callable');
+    return new static($elementClass, $abbr, $fn);
+  }
+
+  static private function getEmptyArray(): array {
+    return [];
+  }
+
+  public function build(): Component {
+    return self::nested($this->abbr, $this->fn, [
+      'deep' => 0,
+      'at-top' => true,
+      'emmet-object' => $this,
+      'emmet-class' => get_called_class(),
+      'attributes' => [],
+    ]);
+  }
+
+  static protected function sharedCreate(array $params): EmmetConstruct {
+    return static::instance(
+      $params['element-class'],
+      $params['abbr'],
+      $params['callback']
+    );
+  }
+
+  static private function nested(string $abbr, callable $fn, array $params): EmmetConstruct {
+    $nested = explode('>', $abbr, 3);
+    $nestedCount = sizeof($nested);
+    $prefix = $nested[0];
+    $midfix = $nestedCount > 1 ? $nested[1] : '';
+    $suffix = $nestedCount > 2 ? $nested[2] : '';
+
+    if (!$midfix) {
+      return self::unnested($prefix, $fn, array_merge($params, [
+        'deep' => $params['deep'] + 1,
+        'at-bottom' => true,
+      ]));
+    }
+
+    $nodeAttributes = $fn(array_merge([
+      'at-top' => false,
+      ''
+    ]));
+
+    $nestedfn = function (array $params) use($midfix, $suffix, $fn) {
+      return $params['emmet-class']::sibling($midfix, $suffix, $fn, $params);
+    };
+
+    return self::unnested($prefix, $nestedfn, $fn);
+  }
+
+  static private function sibling(string $abbr, string $suffix, callable $fn, array $params): array {
+    $children = [];
+    $childid = 0;
+    $abbrAddend = $suffix ? ">$suffix" : '';
+
+    $commonParams = array_merge($params, [
+      'at-top' => false,
+      'next-abbr' => $suffix,
+      'deep' => $params['deep'] + 1,
+    ]);
+
+    foreach (explode('+', $abbr) as $siblingid => $sibling) {
+      $siblingParams = array_merge($commonParams, [
+        'child-abbr' => $abbr,
+        'sibling-id' => $siblingid,
+        'sibling-abbr' => $sibling,
+      ]);
+
+      if (preg_match('/\*/', $abbr)) {
+        [$repeated, $factor] = explode('*', $abbr);
+
+        if (!preg_match('/^[0-9]+$/', $factor)) {
+          throw new TypeError("Factor is not a number: '$factor'");
+        }
+
+        $factor = (int) $factor;
+
+        foreach (range(0, $factor - 1) as $repeatedid) {
+          $nextAbbr = $repeated . $abbrAddend;
+
+          array_push($children, self::nested($nextAbbr, $fn, array_merge($siblingParams, [
+            'position' => 'repeated',
+            'child-id' => $childid,
+            'repeated-id' => $repeatedid,
+            'repeated-abbr' => $repeated,
+            'repeated-factor' => $factor,
+            'nested-abbr' => $nextAbbr,
+          ])));
+
+          $childid += 1;
+        }
+      } else {
+        $nextAbbr = $sibling . $abbrAddend;
+
+        array_push($children, self::nested($nextAbbr, $fn, array_merge($siblingParams, [
+          'position' => 'sibling',
+          'child-id' => $childid,
+          'nested-abbr' => $nextAbbr,
+        ])));
+
+        $childid += 1;
+      }
+    }
+
+    return $children;
+  }
+
+  static private function unnested(string $abbr, callable $fn, array $params): EmmetConstruct {
+    preg_match('/(^[^.#]*)/', $abbr, $taglist);
+    $tag = $taglist[0] ? $taglist[0] : $params['emmet-object']->defaultTagName();
+    self::validateTagAttrName($tag, 'tag name');
+
+    preg_match_all('/#([^.#]+)/', $abbr, $idmatches);
+    $idlist = $idmatches[1];
+    if (sizeof($idlist) > 1) throw new Error("Cannot specify more than 1 id: '$abbr'");
+    $id = sizeof($idlist) ? $idlist[0] : '';
+    $idAttr = $id ? ['id' => $id] : [];
+
+    preg_match_all('/\.([^.#]+)/', $abbr, $classmatches);
+    $classes = $classmatches[1];
+    $classesAttr = sizeof($classes)
+      ? ['classes' => $classes]
+      : []
+    ;
+
+    $extendedAttr = $fn(array_merge($params, [
+      'abbr' => $abbr,
+      'id' => $id,
+      'id-attr' => $idAttr,
+      'classes' => $classes,
+      'classes-attr' => $classesAttr,
+    ]));
+
+    $elementClass = $params['emmet-object']->elementClassName();
+    $constructedComponent = $elementClass::create($tag, array_merge(
+      $idAttr,
+      $classesAttr,
+      $params['attributes'],
+      $extendedAttr
+    ));
+    return EmmetConstructNode::sharedCreate(['constructed' => $constructedComponent]);
+  }
+
+  public function defaultTagName(): string {
+    return 'div';
+  }
+
+  public function elementClassName(): string {
+    return $this->elementClass;
+  }
+
+  static private function validateTagAttrName(string $name, string $role): void {
+    if (!preg_match('/^[a-z]([a-z0-9\-:]*[a-z0-9])?$/', $name)) {
+      throw new Error("'$name' is not a valid $role");
+    }
   }
 }
 ?>
