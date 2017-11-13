@@ -78,14 +78,9 @@ body {
 
 text-area:focus, input:focus, button:focus {
   outline: none !important;
-  box-shadow: inset 0 0 5px [[input-focused-box-shadow-color]];
+  box-shadow: inset 0 0 5px [[shadow-color]];
 }
 
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'] {
   display: none;
-}
-
-text-area:focus, input:focus, button:focus {
-  outline: none !important;
-  box-shadow: inset 0 0 5px [[input-focused-box-shadow-color]];
 }
