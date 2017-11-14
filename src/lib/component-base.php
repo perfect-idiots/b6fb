@@ -94,7 +94,7 @@ abstract class Element extends PrimaryComponent {
       if (gettype($container) !== 'array') throw new TypeError("Must pass an array into $key");
       $index = $params[$key];
       if (!array_key_exists($index, $container)) return [];
-      return $asArray($attrTable[$index]);
+      return $asArray($container[$index]);
     };
 
     $callback = function ($params) use($getAttrIf, $getAttrIndex) {
