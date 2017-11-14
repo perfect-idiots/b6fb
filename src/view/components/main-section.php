@@ -9,7 +9,6 @@ class MainSection extends RawDataContainer implements Component {
       'id' => 'main-section',
       "Current Page:",
       HtmlElement::nested(['i', 'u', 'code'], $page),
-      HtmlElement::emmetBottom('a-b-c>d-e-f>g-h-i', 'hello'),
     ]);
   }
 }
