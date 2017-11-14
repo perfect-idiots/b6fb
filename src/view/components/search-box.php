@@ -14,9 +14,7 @@ class SearchBox extends RawDataContainer implements Component {
         'type' => 'text',
         'placeholder' => 'Search',
       ]),
-      HtmlElement::create('button', [
-        'id' => 'search-box-button',
-      ]),
+      HtmlElement::emmet('button#search-box-button>.background-layer'),
       new HiddenInputSet(
         $this->get('url-query')->except('search')->getData()
       ),

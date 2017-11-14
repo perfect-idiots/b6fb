@@ -8,13 +8,12 @@ class ThemeSwitcher extends RawDataContainer implements Component {
     $currentTheme = $this->get('theme-name');
     $futureTheme = self::reverseTheme($currentTheme);
 
-    return HtmlElement::nested(['button', 'a'], [
+    return HtmlElement::emmetTop('a#theme-switcher>button#theme-switcher-button', [
       'href' => $urlQuery->set('theme', $futureTheme)->getUrlQuery(),
       'dataset' => [
         'current-theme' => $currentTheme,
         'future-theme' => $futureTheme,
       ],
-      'Switch Theme',
     ]);
   }
 
