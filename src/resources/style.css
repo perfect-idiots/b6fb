@@ -28,6 +28,12 @@ body {
   top: [[header-vertical-padding]];
 }
 
+.x-component--header-section .segment.middle-segment {
+  position: absolute;
+  left: [[logo-width]];
+  right: [[right-segment-width]];
+}
+
 .x-component--logo {
   display: inline-block;
   font-weight: normal;
@@ -58,7 +64,6 @@ body {
 
 .x-component--search-box {
   display: inline-block;
-  [[search-box-size-block]]
 }
 
 .x-component--search-box {
@@ -69,11 +74,16 @@ body {
   padding-bottom: [[header-vertical-padding]];
 }
 
-.x-component--search-box input {
+#search-box-input {
   background-color: [[search-box-background-color]];
   border: none;
   color: [[header-text-color]];
-  [[search-box-input-size-block]]
+  position: absolute;
+  width: 100%;
+  height: [[search-box-input-height]];
+  padding-left: [[search-box-input-padding-left]];
+  padding-right: [[search-box-input-padding-right]];
+  box-sizing: border-box;
 }
 
 #search-box-button, #theme-switcher-button {
@@ -82,15 +92,20 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   border: none;
-  [[square-button-size-block]]
+  [[search-box-button-size-block]]
 }
 
 #search-box-button {
+  background-color: [[search-box-button-background-color]];
   background-image: url([[search-icon]]);
+  position: absolute;
+  right: 0px;
+  top: [[header-vertical-padding]];
 }
 
 #theme-switcher-button {
   background-image: url([[night-mode-icon]]);
+  [[header-square-button-size-block]]
 }
 
 text-area:focus, input:focus, button:focus {

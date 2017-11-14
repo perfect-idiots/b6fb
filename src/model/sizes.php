@@ -7,7 +7,7 @@ class BlockSize extends RawDataContainer {
   }
 
   static public function sqr($size): self {
-    return static::xy($size);
+    return static::xy($size, $size);
   }
 
   public function width(): int {
@@ -17,6 +17,22 @@ class BlockSize extends RawDataContainer {
   public function height(): int {
     return static::get(1);
   }
+
+  public function switch(): self {
+    return static::xy($this->height(), $this->width());
+  }
+
+  public function times(float $nx, float $ny): self {
+    return static::xy($this->width() * $nx, $this->height() * $ny);
+  }
+
+  public function widthTimes(float $factor): self {
+    return $this->times($factor, 1);
+  }
+
+  public function heightTimes(float $factor): self {
+    return $this->times(1, $factor);
+  }
 }
 
 class VectorSize extends RawDataContainer {}
@@ -24,23 +40,37 @@ class VectorSize extends RawDataContainer {}
 class SizeSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $unitSize = 60;
-    $searchBoxHeight = $unitSize / 2;
-    $searchBoxVerticalPadding = ($unitSize - $searchBoxHeight) / 2;
+    $unitSquare = BlockSize::sqr($unitSize);
+    $headerSquareButtonSize = $unitSize / 2;
+    $headerSquareButton = BlockSize::sqr($headerSquareButtonSize);
+    $headerChildVerticalPadding = ($unitSize - $headerSquareButtonSize) / 2;
 
     $begin = Tree::instance([
+      'unit' => [
+        'size' => $unitSize,
+        'square' => $unitSquare,
+      ],
       'header' => [
-        'vertical-padding' => $searchBoxVerticalPadding,
+        'vertical-padding' => $headerChildVerticalPadding,
+        'child-height' => $headerSquareButtonSize,
+        'square-button' => $headerSquareButton,
+      ],
+      'right-segment' => [
+        '' => $unitSquare->times(3, 1),
       ],
       'logo' => [
-        '' => BlockSize::xy(3 * $unitSize, $unitSize),
+        '' => $unitSquare->times(3, 1),
         'line-height' => 5 * $unitSize / 6,
       ],
       'search-box' => [
-        '' => BlockSize::xy(6 * $unitSize, $unitSize),
         'height' => $unitSize,
-        'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
+        'button' => $headerSquareButton->times(2, 1),
+        'input' => [
+          'height' => $headerSquareButtonSize,
+          'padding-left' => 0,
+          'padding-right' => $headerSquareButtonSize,
+        ],
       ],
-      'square-button' => BlockSize::xy($searchBoxHeight, $searchBoxHeight),
     ])->flat('-', '');
 
     $middle = [];
