@@ -10,9 +10,15 @@ class HeaderSection extends RawDataContainer implements Component {
     return HtmlElement::create('header', [
       'id' => 'main-header',
       'classes' => ['header'],
-      new Logo($this->getData()),
-      new SearchBox($this->getData()),
-      new ThemeSwitcher($this->getData()),
+      HtmlElement::emmetBottom('.left-corner.segment', [
+        new Logo($this->getData()),
+      ]),
+      HtmlElement::emmetBottom('.middle-segment.segment', [
+        new SearchBox($this->getData()),
+      ]),
+      HtmlElement::emmetBottom('.right-corner.segment', [
+        new ThemeSwitcher($this->getData()),
+      ]),
     ]);
   }
 }

@@ -28,6 +28,9 @@ class SizeSet extends LazyLoadedDataContainer {
     $searchBoxVerticalPadding = ($unitSize - $searchBoxHeight) / 2;
 
     $begin = Tree::instance([
+      'header' => [
+        'vertical-padding' => $searchBoxVerticalPadding,
+      ],
       'logo' => [
         '' => BlockSize::xy(3 * $unitSize, $unitSize),
         'line-height' => 5 * $unitSize / 6,
@@ -36,7 +39,6 @@ class SizeSet extends LazyLoadedDataContainer {
         '' => BlockSize::xy(6 * $unitSize, $unitSize),
         'height' => $unitSize,
         'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
-        'vertical-padding' => $searchBoxVerticalPadding,
       ],
       'square-button' => BlockSize::xy($searchBoxHeight, $searchBoxHeight),
     ])->flat('-', '');
