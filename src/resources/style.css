@@ -66,14 +66,21 @@ body {
   [[search-box-input-size-block]]
 }
 
-#search-box-button {
+#search-box-button, #theme-switcher-button {
   background-color: transparent;
-  background-image: url([[search-icon]]);
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border: none;
-  [[search-box-button-size-block]]
+  [[square-button-size-block]]
+}
+
+#search-box-button {
+  background-image: url([[search-icon]]);
+}
+
+#theme-switcher-button {
+  background-image: url([[night-mode-icon]]);
 }
 
 text-area:focus, input:focus, button:focus {

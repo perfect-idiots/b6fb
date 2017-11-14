@@ -36,9 +36,9 @@ class SizeSet extends LazyLoadedDataContainer {
         '' => BlockSize::xy(6 * $unitSize, $unitSize),
         'height' => $unitSize,
         'input' => BlockSize::xy(5 * $unitSize, $unitSize / 2),
-        'button' => BlockSize::xy($searchBoxHeight, $searchBoxHeight),
         'vertical-padding' => $searchBoxVerticalPadding,
       ],
+      'square-button' => BlockSize::xy($searchBoxHeight, $searchBoxHeight),
     ])->flat('-', '');
 
     $middle = [];
