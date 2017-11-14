@@ -84,11 +84,20 @@ abstract class Element extends PrimaryComponent {
       return $attrTable[$key];
     };
 
-    $callback = function ($params) use($getAttrIf) {
+    $getAttrIndex = function (string $key, array $params) use($attrTable) {
+      if (!array_key_exists($key, $attrTable)) return [];
+      $container = $attrTable[$key];
+      if (gettype($container) !== 'array') throw new TypeError("Must pass an array into $key");
+      $index = $params[$key];
+      if (!array_key_exists($index, $container)) return [];
+      $res = $container[$index];
+      return gettype($res) === 'array' ? $res : [$res];
+    };
+
+    $callback = function ($params) use($getAttrIf, $getAttrIndex) {
       [
         'at-top' => $atTop,
         'at-bottom' => $atBottom,
-        'depth' => $depth,
       ] = $params;
 
       return array_merge(
@@ -96,7 +105,10 @@ abstract class Element extends PrimaryComponent {
         $getAttrIf($atBottom, 'at-bottom'),
         $getAttrIf($atTop && $atBottom, 'no-children'),
         $getAttrIf(!$atTop && !$atBottom, 'in-middle'),
-        $getAttrIf($atTop != $atBottom, 'at-both-ends')
+        $getAttrIf($atTop != $atBottom, 'at-both-ends'),
+        $getAttrIndex('depth', $params),
+        $getAttrIndex('sibling-id', $params),
+        $getAttrIndex('repeated-id', $params)
       );
     };
 
