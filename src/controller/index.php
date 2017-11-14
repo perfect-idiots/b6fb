@@ -44,8 +44,8 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   $username = $cookie->getDefault('username', null);
 
   $customized = $username
-    ? ['profile' => "$username's profile"]
-    : ['login' => 'Login']
+    ? ['profile' => 'Your Profile']
+    : ['explore' => 'Explore']
   ;
 
   $namemap = array_merge($customized, [
@@ -54,7 +54,11 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
     'history' => 'Recently Played',
   ]);
 
-  $result = [];
+  $result = [[
+    'page' => 'index',
+    'title' => 'Home',
+    'href' => '.',
+  ]];
 
   foreach ($namemap as $page => $title) {
     $href = $urlQuery->set('page', $page)->getUrlQuery();
