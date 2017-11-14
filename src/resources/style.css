@@ -149,9 +149,26 @@ nav li {
   margin: 5px;
 }
 
-nav ul a, nav li a {
-  color: [[text-color]];
+nav > ul > ul > li:hover {
+  background-color: [[navigation-hover-background-color]];
+}
+
+nav > ul > ul > li a {
+  color: [[clickable-text-color]];
   text-decoration: none;
+  width: [[logo-width]];
+  height: [[navigation-entry-height]];
+  vertical-align: middle;
+  line-height: [[navigation-entry-line-height]];
+  display: inline-block;
+}
+
+nav a[href]:hover {
+  color: [[hover-clickable-text-color]];
+}
+
+nav > ul > ul > li a[href]:hover {
+  filter: brightness(1.8);
 }
 
 main {
