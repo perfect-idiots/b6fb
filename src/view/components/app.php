@@ -3,6 +3,7 @@ require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/meta-element.php';
 require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/header-section.php';
+require_once __DIR__ . '/navigator-section.php';
 require_once __DIR__ . '/main-section.php';
 require_once __DIR__ . '/script-embed.php';
 require_once __DIR__ . '/../../lib/utils.php';
@@ -32,6 +33,7 @@ class App extends RawDataContainer implements Component {
       ]),
       HtmlElement::create('body', [
         new HeaderSection($data),
+        new NavigatorSection($data),
         new MainSection($data),
         HtmlElement::create('footer'),
       ])
