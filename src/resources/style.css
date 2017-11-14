@@ -14,6 +14,16 @@ body {
   background: [[header-background-color]];
 }
 
+.x-component--header-section {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100%;
+  height: [[unit-size]];
+  display: inline-block;
+}
+
 .x-component--header-section, .x-component--header-section * {
   vertical-align: middle;
 }
@@ -115,7 +125,14 @@ nav {
   text-transform: uppercase;
   position: absolute;
   width: [[logo-width]];
-  top: [[unit-size]];
+  height: 100%;
+  top: 0px;
+  z-index: 500;
+  background-color: [[navigation-background-color]];
+}
+
+nav > :first-child {
+  margin-top: [[unit-size]];
 }
 
 nav .subpage.title {
