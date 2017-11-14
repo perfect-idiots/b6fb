@@ -111,6 +111,37 @@ body {
   [[header-square-button-size-block]]
 }
 
+nav {
+  text-transform: uppercase;
+  position: absolute;
+  width: [[logo-width]];
+  top: [[unit-size]];
+}
+
+nav .subpage.title {
+  font-size: 0.7em;
+  display: inline-block;
+}
+
+nav ul, nav li {
+  list-style: none;
+  padding: 0px;
+}
+
+nav li {
+  margin: 5px;
+}
+
+nav ul a, nav li a {
+  color: [[text-color]];
+  text-decoration: none;
+}
+
+main {
+  display: inline-block;
+  padding-left: [[logo-width]];
+}
+
 text-area:focus, input:focus, button:focus {
   outline: none !important;
 }
