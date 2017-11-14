@@ -1,4 +1,33 @@
 <?php
+class ClassChecker {
+  private $parents, $implements;
+
+  public function __construct(string $subject) {
+    $this->parents = class_parents($subject);
+    $this->implements = class_implements($subject);
+  }
+
+  static public function instance(string $subject): self {
+    return new static($subject);
+  }
+
+  public function getParents(): array {
+    return $this->parents;
+  }
+
+  public function getImplements(): array {
+    return $this->implements;
+  }
+
+  public function didExtended(string $class): bool {
+    return in_array($class, $this->getParents());
+  }
+
+  public function didImplemented(string $interface): bool {
+    return in_array($interface, $this->getImplements());
+  }
+}
+
 class CaseConverter {
   private $words;
 
@@ -60,12 +89,15 @@ class CaseConverter {
 
 interface DataContainer {
   public function getData(): array;
+  public function hasKey($key): bool;
+  public function hasValue($key): bool;
   public function get($key);
   public function set($key, $value): DataContainer;
   public function except($key): DataContainer;
   public function assign(array $data): DataContainer;
   public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
+  public function getDefault($key, $default);
 }
 
 class RawDataContainer implements DataContainer {
@@ -81,6 +113,14 @@ class RawDataContainer implements DataContainer {
 
   public function getData(): array {
     return $this->data;
+  }
+
+  public function hasKey($key): bool {
+    return array_key_exists($key, $this->getData());
+  }
+
+  public function hasValue($value): bool {
+    return in_array($value, $this->getData());
   }
 
   public function get($key) {
@@ -126,14 +166,34 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   }
 
   static public function instance($param = null): self {
+    $error = static::validateParam($param);
+    if ($error) throw new Error($error);
     return new static(false, $param, []);
   }
 
   abstract protected function load(): array;
 
+  static public function validateParam($param): string {
+    return '';
+  }
+
+  static protected function transformParam($param) {
+    return $param;
+  }
+
   public function getData(): array {
     $this->firstRun();
     return $this->data;
+  }
+
+  public function hasKey($key): bool {
+    $this->firstRun();
+    return array_key_exists($key, $this->getData());
+  }
+
+  public function hasValue($value): bool {
+    $this->firstRun();
+    return in_array($value, $this->getData());
   }
 
   public function get($key) {
@@ -152,7 +212,11 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function assign(array $data): DataContainer {
     $this->firstRun();
-    return new static(true, null, array_merge($this->data, $data));
+    return new static(
+      true,
+      static::transformParam($this->param),
+      array_merge($this->data, $data)
+    );
   }
 
   public function without(array $keys): DataContainer {
@@ -166,6 +230,12 @@ abstract class LazyLoadedDataContainer implements DataContainer {
   public function merge(DataContainer $addend): DataContainer {
     $this->firstRun();
     return static::assign($addend->getData());
+  }
+
+  public function getDefault($key, $default) {
+    $this->firstRun();
+    $data = $this->getData();
+    return array_key_exists($key, $data) ? $data[$key] : $default;
   }
 
   private function firstRun(): void {
@@ -186,6 +256,31 @@ abstract class FixedArrayLoader extends ArrayLoader {
 
   static public function create(): self {
     return static::instance(static::filename());
+  }
+}
+
+class Tree {
+  private $tree;
+
+  public function __construct(array $tree) {
+    $this->tree = $tree;
+  }
+
+  static public function instance(array $tree): self {
+    return new static($tree);
+  }
+
+  public function flat(string $separator = '/', $omitsepon = null): iterable {
+    foreach ($this->tree as $prefix => $outer) {
+      if (is_iterable($outer)) {
+        $flatten = static::instance($outer, $omitsepon)->flat($separator, $omitsepon);
+        foreach ($flatten as $suffix => $inner) {
+          yield $prefix . ($suffix === $omitsepon ? '' : ($separator . $suffix)) => $inner;
+        }
+      } else {
+        yield $prefix => $outer;
+      }
+    }
   }
 }
 

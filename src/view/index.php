@@ -46,11 +46,9 @@ class ErrorPage extends Page {
         new CharsetMetaElement('utf-8'),
         new NamedMetaElement('status', $status),
         HtmlElement::create('title', "$status: $message"),
-        CssView::fromFile(__DIR__ . '/../resources/style.css', [
+        CssView::fromFile(__DIR__ . '/../resources/error.css', [
           'text-color' => 'black',
           'background-color' => 'white',
-          'logo-text-color' => 'black',
-          'logo-background-color' => 'white',
           'header-background-color' => 'white',
         ]),
       ]),
