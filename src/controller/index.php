@@ -57,15 +57,13 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   $result = [];
 
   foreach ($namemap as $page => $title) {
-    $targetUrlQuery = $urlQuery->set('page', $page);
-    $href = $targetUrlQuery->getUrlQuery();
+    $href = $urlQuery->set('page', $page)->getUrlQuery();
 
-    $result[$page] = [
+    array_push($result, [
       'page' => $page,
       'title' => $title,
-      'url-query' => $targetUrlQuery,
       'href' => $href,
-    ];
+    ]);
   }
 
   return $result;
