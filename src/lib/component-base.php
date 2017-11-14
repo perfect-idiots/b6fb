@@ -78,20 +78,23 @@ abstract class Element extends PrimaryComponent {
   }
 
   static public function emmetFromArray(string $abbr, array $attrTable): EmmetConstructTree {
-    $getAttrIf = function (bool $condition, string $key) use($attrTable) {
-      if (!$condition) return [];
-      if (!array_key_exists($key, $attrTable)) return [];
-      return $attrTable[$key];
+    $asArray = function ($value) {
+      return gettype($value) === 'array' ? $value : [$value];
     };
 
-    $getAttrIndex = function (string $key, array $params) use($attrTable) {
+    $getAttrIf = function (bool $condition, string $key) use($attrTable, $asArray) {
+      if (!$condition) return [];
+      if (!array_key_exists($key, $attrTable)) return [];
+      return $asArray($attrTable[$key]);
+    };
+
+    $getAttrIndex = function (string $key, array $params) use($attrTable, $asArray) {
       if (!array_key_exists($key, $attrTable)) return [];
       $container = $attrTable[$key];
       if (gettype($container) !== 'array') throw new TypeError("Must pass an array into $key");
       $index = $params[$key];
       if (!array_key_exists($index, $container)) return [];
-      $res = $container[$index];
-      return gettype($res) === 'array' ? $res : [$res];
+      return $asArray($attrTable[$index]);
     };
 
     $callback = function ($params) use($getAttrIf, $getAttrIndex) {
