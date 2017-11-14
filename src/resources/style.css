@@ -12,6 +12,17 @@ body {
 
 .x-component--header-section {
   background: [[header-background-color]];
+  box-shadow: 0px 1px 2px black;
+}
+
+.x-component--header-section {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100%;
+  height: [[unit-size]];
+  display: inline-block;
 }
 
 .x-component--header-section, .x-component--header-section * {
@@ -115,7 +126,15 @@ nav {
   text-transform: uppercase;
   position: absolute;
   width: [[logo-width]];
-  top: [[unit-size]];
+  height: 100%;
+  top: 0px;
+  z-index: 500;
+  background-color: [[navigation-background-color]];
+  box-shadow: 0px 0px 1px black;
+}
+
+nav > :first-child {
+  margin-top: [[unit-size]];
 }
 
 nav .subpage.title {
@@ -132,14 +151,33 @@ nav li {
   margin: 5px;
 }
 
-nav ul a, nav li a {
-  color: [[text-color]];
+nav > ul > ul > li:hover {
+  background-color: [[navigation-hover-background-color]];
+}
+
+nav > ul > ul > li a {
+  color: [[clickable-text-color]];
   text-decoration: none;
+  width: [[logo-width]];
+  height: [[navigation-entry-height]];
+  vertical-align: middle;
+  line-height: [[navigation-entry-line-height]];
+  display: inline-block;
+}
+
+nav a[href]:hover {
+  color: [[hover-clickable-text-color]];
+}
+
+nav > ul > ul > li a[href]:hover {
+  filter: brightness(1.8);
 }
 
 main {
   display: inline-block;
-  padding-left: [[logo-width]];
+  margin-left: [[logo-width]];
+  margin-top: [[unit-size]];
+  padding: 15px;
 }
 
 text-area:focus, input:focus, button:focus {
