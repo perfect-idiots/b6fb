@@ -40,6 +40,37 @@ function switchPage(array $data): Page {
   }
 }
 
+function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
+  $username = $cookie->getDefault('username', null);
+
+  $customized = $username
+    ? ['profile' => "$username's profile"]
+    : ['login' => 'Login']
+  ;
+
+  $namemap = array_merge($customized, [
+    'preferences' => 'Preferences',
+    'favourite' => 'Starred',
+    'history' => 'Recently Played',
+  ]);
+
+  $result = [];
+
+  foreach ($namemap as $page => $title) {
+    $targetUrlQuery = $urlQuery->set('page', $page);
+    $href = $targetUrlQuery->getUrlQuery();
+
+    $result[$page] = [
+      'page' => $page,
+      'title' => $title,
+      'url-query' => $targetUrlQuery,
+      'href' => $href,
+    ];
+  }
+
+  return $result;
+}
+
 function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
@@ -66,6 +97,7 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
     'cookie' => $cookie,
+    'subpages' => createSubpageList($urlQuery, $cookie),
   ];
 
   try {
