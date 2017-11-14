@@ -115,6 +115,18 @@ abstract class Element extends PrimaryComponent {
     return static::emmet($abbr, $callback);
   }
 
+  static public function emmetTop(string $abbr, $content): EmmetConstructTree {
+    return static::emmetFromArray($abbr, ['at-top' => $content]);
+  }
+
+  static public function emmetBottom(string $abbr, $content): EmmetConstructTree {
+    return static::emmetFromArray($abbr, ['at-bottom' => $content]);
+  }
+
+  static public function emmetDepth(string $abbr, array $depth): EmmetConstructTree {
+    return static::emmetFromArray($abbr, ['depth' => $depth]);
+  }
+
   static private function getArrayKey(array $array, string $key): array {
     return array_key_exists($key, $array) && $array[$key] ? $array[$key] : [];
   }
