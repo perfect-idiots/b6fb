@@ -18,6 +18,16 @@ body {
   vertical-align: middle;
 }
 
+.x-component--header-section .segment {
+  display: inline-block;
+}
+
+.x-component--header-section .segment.right-corner {
+  position: absolute;
+  right: 0px;
+  top: [[header-vertical-padding]];
+}
+
 .x-component--logo {
   display: inline-block;
   font-weight: normal;
@@ -55,8 +65,8 @@ body {
   height: [[search-box-height]];
   margin: 0;
   box-sizing: border-box;
-  padding-top: [[search-box-vertical-padding]];
-  padding-bottom: [[search-box-vertical-padding]];
+  padding-top: [[header-vertical-padding]];
+  padding-bottom: [[header-vertical-padding]];
 }
 
 .x-component--search-box input {
@@ -66,14 +76,21 @@ body {
   [[search-box-input-size-block]]
 }
 
-#search-box-button {
+#search-box-button, #theme-switcher-button {
   background-color: transparent;
-  background-image: url([[search-icon]]);
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border: none;
-  [[search-box-button-size-block]]
+  [[square-button-size-block]]
+}
+
+#search-box-button {
+  background-image: url([[search-icon]]);
+}
+
+#theme-switcher-button {
+  background-image: url([[night-mode-icon]]);
 }
 
 text-area:focus, input:focus, button:focus {

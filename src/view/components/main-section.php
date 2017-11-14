@@ -8,7 +8,7 @@ class MainSection extends RawDataContainer implements Component {
     return HtmlElement::create('main', [
       'id' => 'main-section',
       "Current Page:",
-      HtmlElement::nested(['i', 'u', 'code'], $page),
+      HtmlElement::emmetBottom('i>u>code', $page),
     ]);
   }
 }
