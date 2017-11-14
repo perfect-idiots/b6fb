@@ -175,7 +175,9 @@ nav > ul > ul > li a[href]:hover {
 
 main {
   display: inline-block;
-  padding-left: [[logo-width]];
+  margin-left: [[logo-width]];
+  margin-top: [[unit-size]];
+  padding: 15px;
 }
 
 text-area:focus, input:focus, button:focus {
