@@ -5,11 +5,11 @@ class MainSection extends RawDataContainer implements Component {
   public function render(): Component {
     $data = $this->getData();
     $page = $data['page'];
-    return HtmlElement::create('main', array(
+    return HtmlElement::create('main', [
       'id' => 'main-section',
       "Current Page:",
-      HtmlElement::nested(array('i', 'u', 'code'), $page),
-    ));
+      HtmlElement::emmetBottom('i>u>code', $page),
+    ]);
   }
 }
 ?>

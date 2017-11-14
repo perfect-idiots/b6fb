@@ -36,12 +36,19 @@ class SearchIcon extends SvgImage {
   }
 }
 
+class NightModeIcon extends SvgImage {
+  protected function name(): string {
+    return 'night-mode.svg';
+  }
+}
+
 class ImageSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $theme = $this->param['name'];
 
     $classes = [
       'SearchIcon',
+      'NightModeIcon',
     ];
 
     $result = [];
