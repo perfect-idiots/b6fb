@@ -18,6 +18,22 @@ body {
   vertical-align: middle;
 }
 
+.x-component--header-section .segment {
+  display: inline-block;
+}
+
+.x-component--header-section .segment.right-corner {
+  position: absolute;
+  right: 0px;
+  top: [[header-vertical-padding]];
+}
+
+.x-component--header-section .segment.middle-segment {
+  position: absolute;
+  left: [[middle-segment-padding]];
+  right: [[middle-segment-padding]];
+}
+
 .x-component--logo {
   display: inline-block;
   font-weight: normal;
@@ -48,44 +64,97 @@ body {
 
 .x-component--search-box {
   display: inline-block;
-  [[search-box-size-block]]
 }
 
 .x-component--search-box {
   height: [[search-box-height]];
   margin: 0;
   box-sizing: border-box;
-  padding-top: [[search-box-vertical-padding]];
-  padding-bottom: [[search-box-vertical-padding]];
+  padding-top: [[header-vertical-padding]];
+  padding-bottom: [[header-vertical-padding]];
 }
 
-.x-component--search-box input {
+#search-box-input {
   background-color: [[search-box-background-color]];
   border: none;
   color: [[header-text-color]];
-  [[search-box-input-size-block]]
+  position: absolute;
+  width: 100%;
+  height: [[search-box-input-height]];
+  padding-left: [[search-box-input-padding-left]];
+  padding-right: [[search-box-input-padding-right]];
+  box-sizing: border-box;
 }
 
-#search-box-button {
+#search-box-button, #theme-switcher-button {
   background-color: transparent;
-  background-image: url([[search-icon]]);
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  background-origin: content-box;
+  margin: 0px;
+  padding: 3px;
   border: none;
   [[search-box-button-size-block]]
 }
 
+#search-box-button {
+  background-color: [[search-box-button-background-color]];
+  background-image: url([[search-icon]]);
+  position: absolute;
+  right: 0px;
+  top: [[header-vertical-padding]];
+}
+
+#theme-switcher-button {
+  background-image: url([[night-mode-icon]]);
+  [[header-square-button-size-block]]
+}
+
+nav {
+  text-transform: uppercase;
+  position: absolute;
+  width: [[logo-width]];
+  top: [[unit-size]];
+}
+
+nav .subpage.title {
+  font-size: 0.7em;
+  display: inline-block;
+}
+
+nav ul, nav li {
+  list-style: none;
+  padding: 0px;
+}
+
+nav li {
+  margin: 5px;
+}
+
+nav ul a, nav li a {
+  color: [[text-color]];
+  text-decoration: none;
+}
+
+main {
+  display: inline-block;
+  padding-left: [[logo-width]];
+}
+
 text-area:focus, input:focus, button:focus {
   outline: none !important;
-  box-shadow: inset 0 0 5px [[input-focused-box-shadow-color]];
+}
+
+text-area:focus, input:focus {
+  box-shadow: inset 0 0 5px [[shadow-color]];
+}
+
+button:hover {
+  filter: brightness(1.2) drop-shadow(1px 1px 2px [[shadow-color]]);
+  box-shadow: 0px 0px 3px [[shadow-color]];
 }
 
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'] {
   display: none;
-}
-
-text-area:focus, input:focus, button:focus {
-  outline: none !important;
-  box-shadow: inset 0 0 5px [[input-focused-box-shadow-color]];
 }
