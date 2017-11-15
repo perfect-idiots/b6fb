@@ -165,6 +165,14 @@ nav > ul > ul > li a {
   display: inline-block;
 }
 
+nav > ul > ul > li.current-page {
+  background-color: [[navigation-activated-background-color]];
+}
+
+nav > ul > ul > li.current-page a[href] {
+  color: [[hover-clickable-text-color]];
+}
+
 nav a[href]:hover {
   color: [[hover-clickable-text-color]];
 }
