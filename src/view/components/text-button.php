@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/base.php';
 
-class Button implements Component {
+class TextButton implements Component {
   private $attr;
 
   public function __construct($attr = []) {
@@ -13,6 +13,6 @@ class Button implements Component {
   }
 }
 
-class PrimaryButton extends Button {}
-class SecondaryButton extends Button {}
+class PrimaryButton extends TextButton {}
+class SecondaryButton extends TextButton {}
 ?>
