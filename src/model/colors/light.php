@@ -9,6 +9,7 @@ return [
   'search-box-background-color' => '#3030de',
   'search-box-button-background-color' => '#3535f5',
   'navigation-background-color' => '#f2f2f2',
+  'navigation-activated-background-color' => '#cacaca',
   'navigation-hover-background-color' => '#dadaf0',
   'shadow-color' => 'rgba(100, 100, 100, 0.5)',
 ];
