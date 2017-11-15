@@ -45,6 +45,9 @@ class SizeSet extends LazyLoadedDataContainer {
     $headerSquareButton = BlockSize::sqr($headerSquareButtonSize);
     $headerVerticalPadding = ($unitSize - $headerSquareButtonSize) / 2;
     $navigationEntryHeight = 2 * $unitSize / 3;
+    $textButtonWidth = 2 * $unitSize;
+    $textButtonHeight = $headerSquareButtonSize;
+    $textButton = BlockSize::xy($textButtonWidth, $textButtonHeight);
 
     $begin = Tree::instance([
       'unit' => [
@@ -78,6 +81,9 @@ class SizeSet extends LazyLoadedDataContainer {
       'navigation' => [
         'entry-height' => $navigationEntryHeight,
         'entry-line-height' => $navigationEntryHeight,
+      ],
+      'text-button' => [
+        '' => $textButton,
       ],
     ])->flat('-', '');
 
