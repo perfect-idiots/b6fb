@@ -32,6 +32,10 @@ function getThemeColorSet(Cookie $cookie): array {
 function switchPage(array $data): Page {
   switch ($data['page']) {
     case 'index':
+    case 'profile':
+    case 'explore':
+    case 'favourite':
+    case 'history':
       return MainPage::instance($data);
     case 'admin':
       return AdminPage::instance($data);
