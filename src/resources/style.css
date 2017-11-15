@@ -12,6 +12,17 @@ body {
 
 .x-component--header-section {
   background: [[header-background-color]];
+  box-shadow: 0px 1px 2px black;
+}
+
+.x-component--header-section {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100%;
+  height: [[unit-size]];
+  display: inline-block;
 }
 
 .x-component--header-section, .x-component--header-section * {
@@ -74,6 +85,10 @@ body {
   padding-bottom: [[header-vertical-padding]];
 }
 
+#theme-switcher {
+  text-decoration: none;
+}
+
 #search-box-input {
   background-color: [[search-box-background-color]];
   border: none;
@@ -115,7 +130,15 @@ nav {
   text-transform: uppercase;
   position: absolute;
   width: [[logo-width]];
-  top: [[unit-size]];
+  height: 100%;
+  top: 0px;
+  z-index: 500;
+  background-color: [[navigation-background-color]];
+  box-shadow: 0px 0px 1px black;
+}
+
+nav > :first-child {
+  margin-top: [[unit-size]];
 }
 
 nav .subpage.title {
@@ -132,14 +155,41 @@ nav li {
   margin: 5px;
 }
 
-nav ul a, nav li a {
-  color: [[text-color]];
+nav > ul > ul > li:hover {
+  background-color: [[navigation-hover-background-color]];
+}
+
+nav > ul > ul > li a {
+  color: [[clickable-text-color]];
   text-decoration: none;
+  width: [[logo-width]];
+  height: [[navigation-entry-height]];
+  vertical-align: middle;
+  line-height: [[navigation-entry-line-height]];
+  display: inline-block;
+}
+
+nav > ul > ul > li.current-page {
+  background-color: [[navigation-activated-background-color]];
+}
+
+nav > ul > ul > li.current-page a[href] {
+  color: [[hover-clickable-text-color]];
+}
+
+nav a[href]:hover {
+  color: [[hover-clickable-text-color]];
+}
+
+nav > ul > ul > li a[href]:hover {
+  filter: brightness(1.8);
 }
 
 main {
   display: inline-block;
-  padding-left: [[logo-width]];
+  margin-left: [[logo-width]];
+  margin-top: [[unit-size]];
+  padding: 15px;
 }
 
 text-area:focus, input:focus, button:focus {
@@ -153,6 +203,37 @@ text-area:focus, input:focus {
 button:hover {
   filter: brightness(1.2) drop-shadow(1px 1px 2px [[shadow-color]]);
   box-shadow: 0px 0px 3px [[shadow-color]];
+}
+
+.x-component--text-button {
+  text-transform: uppercase;
+  border: 0px;
+  [[text-button-size-block]]
+}
+
+.x-component--primary-button {
+  box-shadow: 0px 1px 2px black;
+  color: [[primary-button-text-color]];
+  background-color: [[primary-button-background-color]];
+}
+
+.x-component--primary-button:hover {
+  box-shadow: 0px 2px 3px black;
+  background-color: [[primary-button-hover-background-color]];
+}
+
+.x-component--primary-button:active {
+  box-shadow: 0px 0px 0px;
+}
+
+.x-component--secondary-button {
+  color: [[secondary-button-text-color]];
+  background-color: transparent;
+}
+
+.x-component--secondary-button:hover {
+  filter: none;
+  background-color: [[secondary-button-hover-background-color]];
 }
 
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'] {
