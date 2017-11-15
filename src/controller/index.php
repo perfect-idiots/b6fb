@@ -49,7 +49,6 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   ;
 
   $namemap = array_merge($customized, [
-    'preferences' => 'Cài đặt',
     'favourite' => 'Yêu thích',
     'history' => 'Lịch sử',
   ]);
