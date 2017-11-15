@@ -26,7 +26,7 @@ class NavigatorSection extends RawDataContainer implements Component {
     );
 
     return HtmlElement::emmetBottom('nav>ul', [
-      HtmlElement::emmetTop('li#subpage-navigator-title.subpage.title', 'Navigation'),
+      HtmlElement::emmetTop('li#subpage-navigator-title.subpage.title', []),
       HtmlElement::emmetTop('ul#subpage-navigator.subpage', $subpageitems),
     ]);
   }
