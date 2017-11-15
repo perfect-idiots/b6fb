@@ -32,6 +32,10 @@ function getThemeColorSet(Cookie $cookie): array {
 function switchPage(array $data): Page {
   switch ($data['page']) {
     case 'index':
+    case 'profile':
+    case 'explore':
+    case 'favourite':
+    case 'history':
       return MainPage::instance($data);
     case 'admin':
       return AdminPage::instance($data);
@@ -44,19 +48,18 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   $username = $cookie->getDefault('username', null);
 
   $customized = $username
-    ? ['profile' => 'Your Profile']
-    : ['explore' => 'Explore']
+    ? ['profile' => 'Tài khoản']
+    : ['explore' => 'Khám phá']
   ;
 
   $namemap = array_merge($customized, [
-    'preferences' => 'Preferences',
-    'favourite' => 'Starred',
-    'history' => 'Recently Played',
+    'favourite' => 'Yêu thích',
+    'history' => 'Lịch sử',
   ]);
 
   $result = [[
     'page' => 'index',
-    'title' => 'Home',
+    'title' => 'Trang chủ',
     'href' => '.',
   ]];
 
