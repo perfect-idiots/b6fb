@@ -44,19 +44,19 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   $username = $cookie->getDefault('username', null);
 
   $customized = $username
-    ? ['profile' => 'Your Profile']
-    : ['explore' => 'Explore']
+    ? ['profile' => 'Tài khoản']
+    : ['explore' => 'Khám phá']
   ;
 
   $namemap = array_merge($customized, [
-    'preferences' => 'Preferences',
-    'favourite' => 'Starred',
-    'history' => 'Recently Played',
+    'preferences' => 'Cài đặt',
+    'favourite' => 'Yêu thích',
+    'history' => 'Lịch sử',
   ]);
 
   $result = [[
     'page' => 'index',
-    'title' => 'Home',
+    'title' => 'Trang chủ',
     'href' => '.',
   ]];
 
