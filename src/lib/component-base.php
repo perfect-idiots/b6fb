@@ -73,8 +73,61 @@ abstract class Element extends PrimaryComponent {
     ;
   }
 
-  static public function emmet(string $abbr, callable $fn = null): Component {
+  static public function emmet(string $abbr, callable $fn = null): EmmetConstructTree {
     return EmmetConstructTree::instance(get_called_class(), $abbr, $fn);
+  }
+
+  static public function emmetFromArray(string $abbr, array $attrTable): EmmetConstructTree {
+    $asArray = function ($value) {
+      return gettype($value) === 'array' ? $value : [$value];
+    };
+
+    $getAttrIf = function (bool $condition, string $key) use($attrTable, $asArray) {
+      if (!$condition) return [];
+      if (!array_key_exists($key, $attrTable)) return [];
+      return $asArray($attrTable[$key]);
+    };
+
+    $getAttrIndex = function (string $key, array $params) use($attrTable, $asArray) {
+      if (!array_key_exists($key, $attrTable)) return [];
+      $container = $attrTable[$key];
+      if (gettype($container) !== 'array') throw new TypeError("Must pass an array into $key");
+      $index = $params[$key];
+      if (!array_key_exists($index, $container)) return [];
+      return $asArray($container[$index]);
+    };
+
+    $callback = function ($params) use($getAttrIf, $getAttrIndex) {
+      [
+        'at-top' => $atTop,
+        'at-bottom' => $atBottom,
+      ] = $params;
+
+      return array_merge(
+        $getAttrIf($atTop, 'at-top'),
+        $getAttrIf($atBottom, 'at-bottom'),
+        $getAttrIf($atTop && $atBottom, 'no-children'),
+        $getAttrIf(!$atTop && !$atBottom, 'in-middle'),
+        $getAttrIf($atTop != $atBottom, 'at-both-ends'),
+        $getAttrIndex('depth', $params),
+        $getAttrIndex('sibling-id', $params),
+        $getAttrIndex('repeated-id', $params)
+      );
+    };
+
+    return static::emmet($abbr, $callback);
+  }
+
+  static public function emmetTop(string $abbr, $content): EmmetConstructTree {
+    return static::emmetFromArray($abbr, ['at-top' => $content]);
+  }
+
+  static public function emmetBottom(string $abbr, $content): EmmetConstructTree {
+    return static::emmetFromArray($abbr, ['at-bottom' => $content]);
+  }
+
+  static public function emmetDepth(string $abbr, array $depth): EmmetConstructTree {
+    return static::emmetFromArray($abbr, ['depth' => $depth]);
   }
 
   static private function getArrayKey(array $array, string $key): array {
@@ -176,7 +229,7 @@ class EmmetConstructTree extends EmmetConstruct {
 
   public function build(): Component {
     return self::nested($this->abbr, $this->fn, [
-      'deep' => 0,
+      'depth' => 0,
       'at-top' => true,
       'emmet-object' => $this,
       'emmet-class' => get_called_class(),
@@ -198,7 +251,7 @@ class EmmetConstructTree extends EmmetConstruct {
     $prefix = $nested[0];
     $midfix = $nestedCount > 1 ? $nested[1] : '';
     $suffix = $nestedCount > 2 ? $nested[2] : '';
-    ['deep' => $deep] = $params;
+    ['depth' => $depth] = $params;
 
     if (!$midfix) {
       return self::unnested($prefix, $fn, array_merge($params, [
@@ -230,7 +283,7 @@ class EmmetConstructTree extends EmmetConstruct {
     $commonParams = array_merge($params, [
       'at-top' => false,
       'next-abbr' => $suffix,
-      'deep' => $params['deep'] + 1,
+      'depth' => $params['depth'] + 1,
     ]);
 
     foreach (explode('+', $abbr) as $siblingid => $sibling) {
