@@ -22,14 +22,27 @@ class LabeledInput extends RawDataContainer implements Component {
     ]);
   }
 
-  static public function text(string $id, string $label, string $placeholder = ''): self {
-    return new LabeledInput([
+  static public function text(string $id, string $label): self {
+    return new static([
       'id' => $id,
       'label' => $label,
-      'input-attr' => [
-        'placeholder' => $placeholder,
-      ],
+      'input-attr' => static::textInputAttr(),
+      'label-attr' => static::textLabelAttr(),
     ]);
+  }
+
+  static protected function textLabelAttr(): array {
+    return [];
+  }
+
+  static protected function textInputAttr(): array {
+    return [];
+  }
+}
+
+class RequiredLabeledInput extends LabeledInput {
+  static protected function textInputAttr(): array {
+    return ['required' => true];
   }
 }
 ?>
