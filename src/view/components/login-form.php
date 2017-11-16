@@ -2,12 +2,14 @@
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/labeled-input.php';
 require_once __DIR__ . '/text-button.php';
+require_once __DIR__ . '/hidden-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class LoginForm extends RawDataContainer implements Component {
   public function render(): Component {
     $action = $this->getDefault('action', '.');
     $signup = $this->getDefault('sign-up', null);
+    $hidden = $this->getDefault('hidden-values', []);
 
     return HtmlElement::emmetTop('form', [
       'action' => $action,
@@ -32,6 +34,7 @@ class LoginForm extends RawDataContainer implements Component {
           ])
         ,
       ]),
+      new HiddenInputSet($hidden),
     ]);
   }
 }
