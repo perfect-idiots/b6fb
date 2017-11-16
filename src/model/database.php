@@ -92,7 +92,7 @@ class DatabaseConnection extends DatabaseInfo {
 class DatabaseQuerySet extends DatabaseConnection {
   private function createQueries(mysqli $link): array {
     $login = function ($table) {
-      return "SELECT count(*) as ok FROM {$table} WHERE username = ? and hashed_password = ?";
+      return "SELECT count(*) as ok FROM $table WHERE username = ? and hashed_password = ?";
     };
 
     $queries = [
