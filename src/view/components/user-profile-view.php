@@ -12,7 +12,7 @@ class UserProfileView extends RawDataContainer implements Component {
         'page' => 'login',
         'previous-page' => $this->get('page'),
       ])->getUrlQuery(),
-      new PrimaryButton('Login'),
+      new PrimaryButton('Đăng nhập'),
     ]);
   }
 }
