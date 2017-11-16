@@ -1,6 +1,6 @@
 # Notes
 
-Create `database.php` with the following structure:
+Create `database.php` in this folder with the following structure:
 
 ```php
 <?php
