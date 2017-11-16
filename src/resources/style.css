@@ -126,6 +126,10 @@ body {
   [[header-square-button-size-block]]
 }
 
+#login-anchor, #login-anchor button {
+  cursor: pointer;
+}
+
 nav {
   text-transform: uppercase;
   position: absolute;
