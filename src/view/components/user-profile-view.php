@@ -8,7 +8,10 @@ class UserProfileView extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('a#login-anchor.login', [
-      'href' => $urlQuery->set('page', 'login')->getUrlQuery(),
+      'href' => $urlQuery->assign([
+        'page' => 'login',
+        'previous-page' => $this->get('page'),
+      ])->getUrlQuery(),
       new PrimaryButton('Login'),
     ]);
   }
