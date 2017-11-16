@@ -18,7 +18,7 @@ class LoginUserInterface extends RawDataContainer implements Component {
         new CssView(__DIR__ . '/../../resources/style.css', $cssVars),
       ]),
       HtmlElement::create('body', [
-        HtmlElement::emmetTop('header>h1', 'Đăng nhập'),
+        HtmlElement::emmetBottom('header>h1', 'Đăng nhập'),
         HtmlElement::create('main', [
           new LoginForm($this->assign([
             'action' => '.',
