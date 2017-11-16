@@ -37,6 +37,8 @@ function switchPage(array $data): Page {
     case 'favourite':
     case 'history':
       return MainPage::instance($data);
+    case 'login':
+      return LoginPage::instance($data);
     case 'admin':
       return AdminPage::instance($data);
     default:
