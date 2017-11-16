@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../lib/utils.php';
 class LoginForm extends RawDataContainer implements Component {
   public function render(): Component {
     $action = $this->getDefault('action', '.');
-    $signup = $this->getDefault('sign-up', '.');
+    $signup = $this->getDefault('sign-up', null);
 
     return HtmlElement::emmetTop('form', [
       'action' => $action,
@@ -24,10 +24,13 @@ class LoginForm extends RawDataContainer implements Component {
           'type' => 'reset',
           'Xóa',
         ]),
-        HtmlElement::emmetTop('a#sign-up-anchor.sign-up', [
-          'href' => $signup,
-          'Tạo tài khoản',
-        ]),
+        $signup === null
+          ? ''
+          : HtmlElement::emmetTop('a#sign-up-anchor.sign-up', [
+            'href' => $signup,
+            'Tạo tài khoản',
+          ])
+        ,
       ]),
     ]);
   }
