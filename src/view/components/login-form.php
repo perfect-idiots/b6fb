@@ -23,10 +23,6 @@ class LoginForm extends RawDataContainer implements Component {
           'type' => 'submit',
           'Đăng nhập',
         ]),
-        new PrimaryButton([
-          'type' => 'reset',
-          'Xóa',
-        ]),
         $signup === null
           ? ''
           : HtmlElement::emmetTop('a#sign-up-anchor.sign-up', [
