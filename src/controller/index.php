@@ -91,6 +91,21 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
+  if ($postData->hasKey('logged-in')) {
+    $cookie->assign([
+      'username' => $postData->get('username'),
+      'password' => $postData->get('password'),
+    ])->update();
+
+    $postData->without([
+      'logged-in',
+      'username',
+      'password',
+    ])->update($_POST);
+
+    $urlQuery->redirect();
+  }
+
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
