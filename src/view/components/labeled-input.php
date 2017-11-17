@@ -17,7 +17,7 @@ class LabeledInput extends RawDataContainer implements Component {
         $id ? ['for' => $id] : []
       )),
       HtmlElement::create($tagName, array_merge($inputAttr, array_merge(
-        $id ? ['id' => $id] : [],
+        $id ? ['id' => $id, 'name' => $id] : [],
         $type ? ['type' => $type] : []
       ))),
     ]);
