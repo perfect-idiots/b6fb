@@ -104,7 +104,20 @@ class RawDataContainer implements DataContainer {
   private $data;
 
   public function __construct(array $data = []) {
+    static::verifyFields($data);
     $this->data = $data;
+  }
+
+  static protected function verifyFields(array $data): void {
+    $schema = static::requiredFieldSchema();
+    foreach ($schema as $key => $type) {
+      if (!array_key_exists($key, $data)) throw new TypeError("Field '$key' is not provided");
+      if (gettype($data[$key]) !== $type) throw new TypeError("Field '$key' is not a(n) $type");
+    }
+  }
+
+  static protected function requiredFieldSchema(): array {
+    return [];
   }
 
   static public function instance(array $data = []): DataContainer {
