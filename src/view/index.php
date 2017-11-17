@@ -33,6 +33,16 @@ class LoginPage extends Page {
   }
 }
 
+class LogoutPage extends Page {
+  protected function component(): Component {
+    $this->get('logout')->act();
+    $prev = $this->getDefault('previous-page', 'index');
+    $next = $this->get('url-query')->set('page', $prev);
+    $next->redirect();
+    return new RedirectPage($next->getUrlQuery());
+  }
+}
+
 class AdminPage extends Page {
   protected function component(): Component {
     return new AdminUserInterface($this->getData());
