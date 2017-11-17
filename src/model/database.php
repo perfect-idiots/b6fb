@@ -105,17 +105,7 @@ class DatabaseQuerySet extends DatabaseConnection {
 
     return array_map(
       function ($desc) use($link) {
-        ['template' => $template, 'format' => $format] = $desc;
-        $statement = $link->prepare($template);
-        return array_merge($desc, [
-          'statement' => $statement,
-          'bind-param' => function (array $args) use($statement, $format) {
-            return call_user_func_array(
-              [$statement, 'bind_param'],
-              array_merge([$format], $args)
-            );
-          }
-        ]);
+        return new DatabaseQueryStatement(array_merge($desc, ['link' => $link]));
       },
       $queries
     );
