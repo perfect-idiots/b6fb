@@ -13,6 +13,7 @@ class LoginForm extends RawDataContainer implements Component {
 
     return HtmlElement::emmetTop('form', [
       'action' => $action,
+      'method' => 'POST',
       HtmlElement::emmetTop('.input-container', [
         RequiredLabeledInput::text('username', 'Tên đăng nhập', '', true),
         RequiredLabeledInput::text('password', 'Mật khẩu', '', true),
