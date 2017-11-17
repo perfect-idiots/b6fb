@@ -7,11 +7,12 @@ class UserProfileView extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
     $login = $this->get('login');
+    $images = $this->get('images');
 
     return $login->isLoggedIn()
       ? HtmlElement::emmetTop('#user-profile-view.logged-in', [
         HtmlElement::emmetBottom('button#profile-button>img#profile-image', [
-          'src' => 'Your Image Here...',
+          'src' => $images['default-avatar-image'],
         ]),
         HtmlElement::emmetTop('#profile-setting', [
           HtmlElement::emmetBottom('button.logout>a', [
