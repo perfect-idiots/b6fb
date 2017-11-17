@@ -93,6 +93,7 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
 
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
+  $dbQuerySet = DatabaseQuerySet::instance();
 
   $data = [
     'title' => 'b6fb',
@@ -105,6 +106,7 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
     'page' => $urlQuery->getDefault('page', 'index'),
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
+    'db-query-set' => $dbQuerySet,
   ];
 
   try {
