@@ -110,9 +110,15 @@ class RawDataContainer implements DataContainer {
 
   static protected function verifyFields(array $data): void {
     $schema = static::requiredFieldSchema();
+
     foreach ($schema as $key => $type) {
-      if (!array_key_exists($key, $data)) throw new TypeError("Field '$key' is not provided");
-      if (gettype($data[$key]) !== $type) throw new TypeError("Field '$key' is not a(n) $type");
+      if (!array_key_exists($key, $data)) {
+        throw new TypeError("Field '$key' is not provided");
+      }
+
+      if ($type && gettype($data[$key]) !== $type && !($data[$key] instanceof $type)) {
+        throw new TypeError("Field '$key' is not a(n) $type");
+      }
     }
   }
 
