@@ -9,6 +9,7 @@ class LoginUserInterface extends RawDataContainer implements Component {
     $data = $this->getData();
     $cssVars = array_merge($data['colors'], $data['sizes'], $data['images']);
     $urlQuery = $this->get('url-query');
+    $prevPage = $urlQuery->getDefault('previous-page', 'index');
 
     return HtmlElement::emmetTop('html.login.user-account', [
       'lang' => 'en',
@@ -18,12 +19,16 @@ class LoginUserInterface extends RawDataContainer implements Component {
         new CssView(__DIR__ . '/../../resources/style.css', $cssVars),
       ]),
       HtmlElement::create('body', [
-        HtmlElement::emmetTop('header>h1', 'Đăng nhập'),
+        HtmlElement::emmetBottom('header>h1', 'Đăng nhập'),
         HtmlElement::create('main', [
           new LoginForm($this->assign([
             'action' => '.',
             'sign-up' => $urlQuery->set('sign-up', 'sign-up')->getUrlQuery(),
-          ])->getData())
+          ])->getData()),
+          HtmlElement::emmetBottom('button#back>a', [
+            'href' => $urlQuery->except('previous-page')->set('page', $prevPage)->getUrlQuery(),
+            'Quay lại',
+          ]),
         ]),
         HtmlElement::create('footer'),
       ]),
