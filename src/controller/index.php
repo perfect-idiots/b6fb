@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/system-requirements.php';
+require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -91,25 +92,15 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
-  if ($postData->getDefault('logged-in', 'off') === 'on') {
-    $cookie->assign([
-      'logged-in' => 'on',
-      'username' => $postData->get('username'),
-      'password' => $postData->get('password'),
-    ])->update();
-
-    $postData->without([
-      'logged-in',
-      'username',
-      'password',
-    ])->update($_POST);
-
-    $urlQuery->redirect();
-  }
-
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
+
+  $login = Login::instance([
+    'post-data' => $postData,
+    'cookie' => $cookie,
+    'db-query-set' => $dbQuerySet,
+  ])->verify();
 
   $data = [
     'title' => 'b6fb',
@@ -124,6 +115,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
     'db-query-set' => $dbQuerySet,
+    'login' => $login,
   ];
 
   try {
