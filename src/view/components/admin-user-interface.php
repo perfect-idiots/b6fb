@@ -15,7 +15,14 @@ class AdminUserInterface extends RawDataContainer implements Component {
         CssView::fromFile(__DIR__ . '/../../resources/admin.css'),
       ]),
       HtmlElement::create('body', [
-        'This is admin site'
+        HtmlElement::emmetBottom('header>h1', 'Đăng nhập'),
+        HtmlElement::create('main', [
+          new LoginForm([
+            'hidden-values' => [
+              'page' => 'admin',
+            ],
+          ]),
+        ]),
       ]),
     ]);
   }
