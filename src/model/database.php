@@ -92,7 +92,10 @@ class DatabaseConnection extends DatabaseInfo {
 class DatabaseQuerySet extends DatabaseConnection {
   private function createQueries(mysqli $link): array {
     $login = function ($table) {
-      return "SELECT count(*) as ok FROM $table WHERE username = ? and password_hash = ?";
+      return [
+        'template' => "SELECT count(*) as ok FROM $table WHERE username = ? and password_hash = ?",
+        'format' => 'ss',
+      ];
     };
 
     $queries = [
@@ -101,11 +104,88 @@ class DatabaseQuerySet extends DatabaseConnection {
     ];
 
     return array_map(
-      function ($query) use($link) {
-        return $link->prepare($query);
+      function ($desc) use($link) {
+        ['template' => $template, 'format' => $format] = $desc;
+        $statement = $link->prepare($template);
+        return array_merge($desc, [
+          'statement' => $statement,
+          'bind-param' => function (array $args) use($statement, $format) {
+            return call_user_func_array(
+              [$statement, 'bind_param'],
+              array_merge([$format], $args)
+            );
+          }
+        ]);
       },
       $queries
     );
+  }
+}
+
+class DatabaseQueryStatement extends RawDataContainer {
+  private $statement = null;
+
+  public function __construct(array $desc) {
+    parent::__construct($desc);
+    $this->init();
+  }
+
+  public function __destruct() {
+    $this->clear();
+  }
+
+  private function init(): void {
+    $this->clear();
+    $this->statement = $link->prepare($desc['template']);
+  }
+
+  private function clear(): void {
+    if ($this->statement) $this->statement->close();
+    $this->statement = null;
+  }
+
+  static protected function requiredFieldSchema(): array {
+    return [
+      'template' => 'string',
+      'format' => 'string',
+      'link' => 'mysqli',
+    ];
+  }
+
+  public function executeOnce(array $param): array {
+    $statement = $this->statement;
+
+    $bindSuccess = call_user_func_array(
+      [$statement, 'bind_param'],
+      array_merge([$this->get('format')], $param)
+    );
+
+    if (!$bindSuccess) throw new Exception('Cannot bind param');
+
+    return [
+      'success' => $statement->execute(),
+      'statement' => $statement,
+    ];
+  }
+
+  public function executeMultipleTimes(array $param): array {
+    $statement = $this->statement;
+    $success = [];
+
+    foreach ($param as $index => $subparam) {
+      $bindSuccess = call_user_func_array(
+        [$statement, 'bind_param'],
+        array_merge([$this->get('format')], $param)
+      );
+
+      if (!$bindSuccess) throw new Exception("Cannot bind param[$index]");
+      $success[$index] = $statement->execute();
+    }
+
+    return [
+      'success' => $success,
+      'statement' => $statement,
+    ];
   }
 }
 ?>
