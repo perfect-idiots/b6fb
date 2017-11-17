@@ -15,6 +15,7 @@ class UserProfileView extends RawDataContainer implements Component {
           'src' => $images['default-avatar-image'],
         ]),
         HtmlElement::emmetTop('#profile-setting', [
+          'hidden' => true,
           HtmlElement::emmetBottom('button.logout>a', [
             'href' => $urlQuery->assign([
               'page' => 'logout',
