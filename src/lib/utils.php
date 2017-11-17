@@ -94,6 +94,7 @@ interface DataContainer {
   public function get($key);
   public function set($key, $value): DataContainer;
   public function except($key): DataContainer;
+  public function clone(): DataContainer;
   public function assign(array $data): DataContainer;
   public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
@@ -152,6 +153,10 @@ class RawDataContainer implements DataContainer {
 
   public function except($key): DataContainer {
     return static::without([$key]);
+  }
+
+  public function clone(): DataContainer {
+    return new static($this->getData());
   }
 
   public function assign(array $data): DataContainer {
@@ -227,6 +232,15 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function except($key): DataContainer {
     return static::without([$key]);
+  }
+
+  public function clone(): DataContainer {
+    $param = static::transformParam($this->param);
+
+    return $this->state
+      ? new static(true, $param, $this->getData())
+      : new static(false, $param, [])
+    ;
   }
 
   public function assign(array $data): DataContainer {
