@@ -34,7 +34,7 @@ class LoginForm extends RawDataContainer implements Component {
           ])
         ,
       ]),
-      new HiddenInputSet($hidden),
+      new HiddenInputSet(array_merge($hidden, ['logged-in' => 'on'])),
     ]);
   }
 }
