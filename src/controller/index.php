@@ -91,8 +91,9 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
-  if ($postData->hasKey('logged-in')) {
+  if ($postData->getDefault('logged-in', 'off') === 'on') {
     $cookie->assign([
+      'logged-in' => 'on',
       'username' => $postData->get('username'),
       'password' => $postData->get('password'),
     ])->update();
