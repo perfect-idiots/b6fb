@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/system-requirements.php';
+require_once __DIR__ . '/login.php';
+require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -37,6 +39,12 @@ function switchPage(array $data): Page {
     case 'favourite':
     case 'history':
       return MainPage::instance($data);
+    case 'login':
+      return LoginPage::instance($data);
+    case 'logout':
+      return LogoutPage::instance(array_merge($data, [
+        'logout' => Logout::instance($data),
+      ]));
     case 'admin':
       return AdminPage::instance($data);
     default:
@@ -76,7 +84,7 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   return $result;
 }
 
-function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
+function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
     $urlQuery->except('theme')->redirect();
@@ -91,10 +99,19 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
 
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
+  $dbQuerySet = DatabaseQuerySet::instance();
+
+  $login = Login::instance([
+    'post-data' => $postData,
+    'cookie' => $cookie,
+    'db-query-set' => $dbQuerySet,
+    'url-query' => $urlQuery,
+  ])->verify();
 
   $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
+    'post-data' => $postData,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -103,6 +120,8 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
     'page' => $urlQuery->getDefault('page', 'index'),
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
+    'db-query-set' => $dbQuerySet,
+    'login' => $login,
   ];
 
   try {
@@ -135,6 +154,7 @@ function sendImage(UrlQuery $urlQuery): string {
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
+  $postData = new HttpData($_POST);
 
   $cookie = Cookie::instance([
     'expiry-extend' => $constants->get('month'),
@@ -142,7 +162,7 @@ function main(): string {
 
   switch ($urlQuery->getDefault('type', 'html')) {
     case 'html':
-      return sendHtml($urlQuery, $cookie);
+      return sendHtml($urlQuery, $postData, $cookie);
     case 'image':
       return sendImage($urlQuery);
     default:
