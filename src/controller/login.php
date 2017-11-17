@@ -30,7 +30,7 @@ class Login extends RawDataContainer {
       ] = $cookie->getData();
 
       return new LoginInfo([
-        'logged-in' => 'on',
+        'logged-in' => true,
         'username' => $username,
         'password' => $password,
       ]);
@@ -42,7 +42,7 @@ class Login extends RawDataContainer {
 
 class LoginInfo extends RawDataContainer {
   public function isLoggedIn(): bool {
-    return $this->getDefault('logged-in', 'off') === 'on';
+    return $this->get('logged-in');
   }
 
   public function username(): string {
