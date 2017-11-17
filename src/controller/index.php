@@ -78,7 +78,7 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   return $result;
 }
 
-function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
+function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
     $urlQuery->except('theme')->redirect();
@@ -91,6 +91,22 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
     $urlQuery->except('theme')->redirect();
   }
 
+  if ($postData->getDefault('logged-in', 'off') === 'on') {
+    $cookie->assign([
+      'logged-in' => 'on',
+      'username' => $postData->get('username'),
+      'password' => $postData->get('password'),
+    ])->update();
+
+    $postData->without([
+      'logged-in',
+      'username',
+      'password',
+    ])->update($_POST);
+
+    $urlQuery->redirect();
+  }
+
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
@@ -98,6 +114,7 @@ function sendHtml(UrlQuery $urlQuery, Cookie $cookie): string {
   $data = [
     'title' => 'b6fb',
     'url-query' => $urlQuery,
+    'post-data' => $postData,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -139,6 +156,7 @@ function sendImage(UrlQuery $urlQuery): string {
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
+  $postData = new HttpData($_POST);
 
   $cookie = Cookie::instance([
     'expiry-extend' => $constants->get('month'),
@@ -146,7 +164,7 @@ function main(): string {
 
   switch ($urlQuery->getDefault('type', 'html')) {
     case 'html':
-      return sendHtml($urlQuery, $cookie);
+      return sendHtml($urlQuery, $postData, $cookie);
     case 'image':
       return sendImage($urlQuery);
     default:

@@ -13,11 +13,12 @@ class LabeledInput extends RawDataContainer implements Component {
 
     return HtmlElement::create('div', [
       HtmlElement::create('label', array_merge(
+        [$label],
         $labelAttr,
         $id ? ['for' => $id] : []
       )),
       HtmlElement::create($tagName, array_merge($inputAttr, array_merge(
-        $id ? ['id' => $id] : [],
+        $id ? ['id' => $id, 'name' => $id] : [],
         $type ? ['type' => $type] : []
       ))),
     ]);
