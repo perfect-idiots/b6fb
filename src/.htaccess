@@ -1,2 +1,3 @@
 RedirectMatch 403 /(lib|vendor|model|view|controller|\.git)/
 RedirectMatch 403 \.(styl|stylus|htaccess|editorconfig|gitmodules)
+RedirectMatch 403 /README/
