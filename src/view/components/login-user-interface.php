@@ -6,8 +6,6 @@ require_once __DIR__ . '/../../lib/utils.php';
 
 class LoginUserInterface extends RawDataContainer implements Component {
   public function render(): Component {
-    $data = $this->getData();
-    $cssVars = array_merge($data['colors'], $data['sizes'], $data['images']);
     $urlQuery = $this->get('url-query');
     $prevPage = $urlQuery->getDefault('previous-page', 'index');
 
@@ -16,20 +14,23 @@ class LoginUserInterface extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', 'Đăng nhập'),
-        new CssView(__DIR__ . '/../../resources/style.css', $cssVars),
+        CssView::fromFile(__DIR__ . '/../../resources/login.css'),
       ]),
-      HtmlElement::create('body', [
-        HtmlElement::emmetBottom('header>h1', 'Đăng nhập'),
-        HtmlElement::create('main', [
-          new LoginForm($this->assign([
-            'action' => '.',
-            'sign-up' => $urlQuery->set('sign-up', 'sign-up')->getUrlQuery(),
-          ])->getData()),
-          HtmlElement::emmetBottom('button#back>a', [
-            'href' => $urlQuery->except('previous-page')->set('page', $prevPage)->getUrlQuery(),
-            'Quay lại',
+      HtmlElement::emmetBottom('body#login-page>#page.aligner', [
+        HtmlElement::emmetTop('.top-aligned.aligned-item', []),
+        HtmlElement::emmetTop('.middle-aligned.aligned-item', [
+          HtmlElement::create('header', Logo::instance($this->getData())),
+          HtmlElement::emmetBottom('section#main-section', [
+            HtmlElement::emmetTop('h1#login-title', 'Đăng nhập'),
+            HtmlElement::create('main', [
+              new LoginForm($this->assign([
+                'action' => '.',
+                'sign-up' => $urlQuery->set('page', 'sign-up')->getUrlQuery(),
+              ])->getData()),
+            ]),
           ]),
         ]),
+        HtmlElement::emmetTop('.bottom-aligned.aligned-item', []),
         HtmlElement::create('footer'),
       ]),
     ]);
