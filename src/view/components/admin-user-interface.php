@@ -29,7 +29,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
       ]),
       $isLoggedIn
         ? HtmlElement::emmetBottom('body#admin-page>#page', [
-          
+            
         ])
         : HtmlElement::emmetBottom('body#login-page>#page.aligner', [
           HtmlElement::emmetTop('.top-aligned.aligned-item', []),
