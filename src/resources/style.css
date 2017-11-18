@@ -145,8 +145,21 @@ body {
 #profile-setting {
   position: absolute;
   overflow: hidden;
-  top: [[unit-size]];
   right: 0px;
+  top: [[unit-size]];
+  width: [[profile-setting-width]];
+}
+
+#popup-profile-view {
+  display: block;
+}
+
+#popup-profile-view > * {
+  display: inline-block;
+}
+
+#popup-profile-image {
+  [[profile-setting-avatar-size-block]]
 }
 
 nav {
