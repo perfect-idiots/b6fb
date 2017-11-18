@@ -39,7 +39,8 @@ class App extends RawDataContainer implements Component {
         new NavigatorSection($data),
         new MainSection($data),
         HtmlElement::create('footer'),
-      ])
+      ]),
+      JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
     ]);
   }
 }
