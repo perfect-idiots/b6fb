@@ -8,6 +8,11 @@ html, body {
   font-size: 17px;
 }
 
+#main-logo a {
+  color: blue;
+  text-decoration: none;
+}
+
 #page {
   width: 500px;
   height: 100%;
@@ -16,6 +21,15 @@ html, body {
 
 #login-title {
   font-size: 25px;
+}
+
+#login-title span {
+  display: block;
+}
+
+#login-title span.login-subtitle {
+  font-size: 23px;
+  color: #ee0000;
 }
 
 .aligner {
