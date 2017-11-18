@@ -13,18 +13,15 @@ class LoginForm extends RawDataContainer implements Component {
 
     return HtmlElement::emmetTop('form', [
       'action' => $action,
+      'method' => 'POST',
       HtmlElement::emmetTop('.input-container', [
-        RequiredLabeledInput::text('username', 'Tên đăng nhập', '', true),
-        RequiredLabeledInput::text('password', 'Mật khẩu', '', true),
+        PlainLabeledInput::text('username', 'Tên đăng nhập', '', true),
+        SecretLabeledInput::text('password', 'Mật khẩu', '', true),
       ]),
       HtmlElement::emmetTop('.button-container', [
         new PrimaryButton([
           'type' => 'submit',
           'Đăng nhập',
-        ]),
-        new PrimaryButton([
-          'type' => 'reset',
-          'Xóa',
         ]),
         $signup === null
           ? ''
@@ -34,7 +31,7 @@ class LoginForm extends RawDataContainer implements Component {
           ])
         ,
       ]),
-      new HiddenInputSet($hidden),
+      new HiddenInputSet(array_merge($hidden, ['logged-in' => 'on'])),
     ]);
   }
 }

@@ -12,14 +12,17 @@ class App extends RawDataContainer implements Component {
   public function render(): Component {
     $data = $this->getData();
     $cssVars = array_merge($data['colors'], $data['sizes'], $data['images']);
+    $login = $data['login'];
 
     return HtmlElement::create('html', [
       'lang' => 'en',
       'dataset' => [
         'theme-name' => $data['theme-name'],
+        'username' => $login->username(),
       ],
       'classes' => [
         "theme-{$data['theme-name']}",
+        $login->isLoggedIn() ? 'logged-in' : 'anonymous',
       ],
 
       HtmlElement::create('head', [
@@ -36,7 +39,8 @@ class App extends RawDataContainer implements Component {
         new NavigatorSection($data),
         new MainSection($data),
         HtmlElement::create('footer'),
-      ])
+      ]),
+      JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
     ]);
   }
 }
