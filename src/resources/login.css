@@ -111,3 +111,10 @@ button {
 button:hover {
   background-color: #0000D0;
 }
+
+#sign-up-anchor {
+  width: 100%;
+  line-height: 60px;
+  display: block;
+  text-align: center;
+}
