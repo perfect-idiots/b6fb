@@ -2,7 +2,7 @@
 $verstr = phpversion();
 $verarr = explode('.', $verstr);
 
-if ($verarr[0] < 7 || $verarr[1] < 1) {
+if ($verarr[0] < 7 || ($verarr[0] === 7 && $verarr[1] < 1)) {
   http_response_code(500);
 
   die("
