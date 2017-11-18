@@ -46,7 +46,11 @@ function switchPage(array $data): Page {
         'logout' => Logout::instance($data),
       ]));
     case 'admin':
-      return AdminPage::instance($data);
+      return AdminPage::instance(array_merge($data, [
+        'login' => Login::instance(array_merge($data, [
+          'is-admin' => true,
+        ]))->verify(),
+      ]));
     default:
       throw new NotFoundException();
   }
