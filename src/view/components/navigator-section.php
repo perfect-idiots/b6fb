@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/sidebar-navigator.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class NavigatorSection extends RawDataContainer implements Component {
@@ -7,32 +8,18 @@ class NavigatorSection extends RawDataContainer implements Component {
     $currentpage = $this->get('page');
     $subpagetmpls = $this->get('subpages');
 
-    $subpageitems = array_map(
-      function ($tmpl) use($currentpage) {
-        $page = $tmpl['page'];
-
-        return HtmlElement::emmetDepth(
-          "li#to-$page>a",
-          [
-            [
-              'dataset' => $tmpl,
-              'classes' => $currentpage === $page ? ['current-page'] : [],
-            ],
-            [
-              'href' => $tmpl['href'],
-              $tmpl['title'],
-            ],
-          ]
-        );
+    return new SidebarNavigator(
+      $subpagetmpls,
+      function ($tmpl) {
+        return [
+          'href' => $tmpl['href'],
+          $tmpl['title']
+        ];
       },
-
-      $subpagetmpls
+      function ($tmpl) use($currentpage) {
+        return $tmpl['page'] === $currentpage;
+      }
     );
-
-    return HtmlElement::emmetBottom('nav>ul', [
-      HtmlElement::emmetTop('li#subpage-navigator-title.subpage.title', []),
-      HtmlElement::emmetTop('ul#subpage-navigator.subpage', $subpageitems),
-    ]);
   }
 }
 ?>
