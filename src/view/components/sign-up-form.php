@@ -19,7 +19,7 @@ class SignUpForm extends RawDataContainer implements Component {
           'Tạo tài khoản',
         ]),
         new PrimaryButton([
-          'type' => 'clear',
+          'type' => 'reset',
           'Xóa',
         ]),
       ]),
