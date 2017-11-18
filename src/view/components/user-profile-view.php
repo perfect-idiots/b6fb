@@ -26,12 +26,14 @@ class UserProfileView extends RawDataContainer implements Component {
               ]),
             ]),
           ]),
-          HtmlElement::emmetBottom('button.logout>a', [
-            'href' => $urlQuery->assign([
-              'page' => 'logout',
-              'previous-page' => $this->get('page'),
-            ])->getUrlQuery(),
-            'Đăng xuất',
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::emmetBottom('button.logout>a', [
+              'href' => $urlQuery->assign([
+                'page' => 'logout',
+                'previous-page' => $this->get('page'),
+              ])->getUrlQuery(),
+              'Đăng xuất',
+            ]),
           ]),
         ]),
       ])

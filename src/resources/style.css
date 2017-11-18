@@ -148,10 +148,12 @@ body {
   right: 0px;
   top: [[unit-size]];
   width: [[profile-setting-width]];
+  background-color: [[profile-setting-background-color]];
 }
 
 #popup-profile-view {
   display: block;
+  background-color: [[profile-setting-avatar-background-color]];
 }
 
 #popup-profile-view > * {
@@ -160,6 +162,34 @@ body {
 
 #popup-profile-image {
   [[profile-setting-avatar-size-block]]
+}
+
+#profile-setting .button-container {
+  display: block;
+
+}
+
+#profile-setting .button-container button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: [[profile-setting-width]];
+  height: [[header-child-height]];
+}
+
+#profile-setting .button-container button:hover {
+  background-color: [[profile-setting-hover-background-color]];
+  box-shadow: none;
+  filter: none;
+}
+
+#profile-setting .button-container button a {
+  text-decoration: none;
+  display: inline-block;
+  line-height: [[header-child-height]];
+  color: [[text-color]];
+  width: [[profile-setting-width]];
+  height: [[header-child-height]];
 }
 
 nav {
