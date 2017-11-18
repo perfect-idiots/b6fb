@@ -6,6 +6,7 @@ class Login extends RawDataContainer {
   public function verify(): LoginInfo {
     $postData = $this->get('post-data');
     $cookie = $this->get('cookie');
+    $urlQuery = $this->get('url-query');
 
     if ($postData->getDefault('logged-in', 'off') === 'on') {
       $cookie->assign([
@@ -30,19 +31,19 @@ class Login extends RawDataContainer {
       ] = $cookie->getData();
 
       return new LoginInfo([
-        'logged-in' => 'on',
+        'logged-in' => true,
         'username' => $username,
         'password' => $password,
       ]);
     }
 
-    return new LoginInfo(['logged-in' => 'off']);
+    return new LoginInfo(['logged-in' => false]);
   }
 }
 
 class LoginInfo extends RawDataContainer {
   public function isLoggedIn(): bool {
-    return $this->getDefault('logged-in', 'off') === 'on';
+    return $this->get('logged-in');
   }
 
   public function username(): string {

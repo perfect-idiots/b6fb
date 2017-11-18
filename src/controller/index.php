@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/login.php';
+require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -40,6 +41,10 @@ function switchPage(array $data): Page {
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
+    case 'logout':
+      return LogoutPage::instance(array_merge($data, [
+        'logout' => Logout::instance($data),
+      ]));
     case 'admin':
       return AdminPage::instance($data);
     default:
@@ -100,6 +105,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
+    'url-query' => $urlQuery,
   ])->verify();
 
   $data = [
