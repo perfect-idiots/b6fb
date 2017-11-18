@@ -45,6 +45,8 @@ function switchPage(array $data): Page {
       return LogoutPage::instance(array_merge($data, [
         'logout' => Logout::instance($data),
       ]));
+    case 'sign-up':
+      return SignUpPage::instance($data);
     case 'admin':
       return AdminPage::instance(array_merge($data, [
         'login' => Login::instance(array_merge($data, [

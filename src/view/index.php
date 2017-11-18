@@ -6,6 +6,7 @@ require_once __DIR__ . '/components/base.php';
 require_once __DIR__ . '/components/app.php';
 require_once __DIR__ . '/components/admin-user-interface.php';
 require_once __DIR__ . '/components/login-user-interface.php';
+require_once __DIR__ . '/components/sign-up-user-interface.php';
 require_once __DIR__ . '/components/meta-element.php';
 require_once __DIR__ . '/components/css-view.php';
 require_once __DIR__ . '/components/script-embed.php';
@@ -40,6 +41,12 @@ class LogoutPage extends Page {
     $next = $this->get('url-query')->set('page', $prev);
     $next->redirect();
     return new RedirectPage($next->getUrlQuery());
+  }
+}
+
+class SignUpPage extends Page {
+  protected function component(): Component {
+    return new SignUpUserInterface($this->getData());
   }
 }
 
