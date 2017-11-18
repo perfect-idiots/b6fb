@@ -24,7 +24,7 @@ class LoginUserInterface extends RawDataContainer implements Component {
         HtmlElement::create('main', [
           new LoginForm($this->assign([
             'action' => '.',
-            'sign-up' => $urlQuery->set('sign-up', 'sign-up')->getUrlQuery(),
+            'sign-up' => $urlQuery->set('page', 'sign-up')->getUrlQuery(),
           ])->getData()),
           HtmlElement::emmetBottom('button#back>a', [
             'href' => $urlQuery->except('previous-page')->set('page', $prevPage)->getUrlQuery(),
