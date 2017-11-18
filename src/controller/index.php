@@ -2,6 +2,7 @@
 require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
+require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
