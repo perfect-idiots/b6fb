@@ -14,8 +14,18 @@ class UserProfileView extends RawDataContainer implements Component {
         HtmlElement::emmetBottom('button#profile-button>img#profile-image', [
           'src' => $images['default-avatar-image'],
         ]),
-        HtmlElement::emmetTop('#profile-setting', [
+        HtmlElement::emmetTop('#profile-setting.popup', [
           'hidden' => true,
+          HtmlElement::emmetTop('#popup-profile-view', [
+            HtmlElement::emmetTop('img#popup-profile-image', [
+              'src' => $images['default-avatar-image'],
+            ]),
+            HtmlElement::emmetTop('#popup-profile-identity', [
+              HtmlElement::emmetTop('span#popup-username', [
+                '@' . $login->username()
+              ]),
+            ]),
+          ]),
           HtmlElement::emmetBottom('button.logout>a', [
             'href' => $urlQuery->assign([
               'page' => 'logout',
