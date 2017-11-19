@@ -90,6 +90,26 @@ class DatabaseConnection extends DatabaseInfo {
 }
 
 class DatabaseQuerySet extends DatabaseConnection {
+  protected function load(): array {
+    $data = parent::load();
+    $link = $data['link'];
+    $queries = $this->createQueries($link);
+
+    return array_merge($data, $queries, [
+      'source' => $data,
+      'link' => $link,
+      'queries' => $queries,
+    ]);
+  }
+
+  public function queries(): array {
+    return $this->get('queries');
+  }
+
+  public function query(string $name): DatabaseQueryStatement {
+    return $this->queries()[$name];
+  }
+
   private function createQueries(mysqli $link): array {
     $login = function ($table) {
       return [
@@ -98,9 +118,9 @@ class DatabaseQuerySet extends DatabaseConnection {
       ];
     };
 
-    $queries = [
-      'verify-admin-login' => 'ss',
-      'verify-user-login' => 'ss',
+    $queryFormats = [
+      'verify-admin-account' => 'ss',
+      'verify-user-account' => 'ss',
       'create-account' => 'sss'
     ];
 
@@ -134,8 +154,10 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   private function init(): void {
+    $link = $this->get('link');
+    $template = $this->get('template');
     $this->clear();
-    $this->statement = $link->prepare($desc['template']);
+    $this->statement = $link->prepare($template);
   }
 
   private function clear(): void {
