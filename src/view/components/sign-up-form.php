@@ -2,11 +2,14 @@
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/labeled-input.php';
 require_once __DIR__ . '/text-button.php';
+require_once __DIR__ . '/hidden-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class SignUpForm extends RawDataContainer implements Component {
   public function render(): Component {
     return HtmlElement::create('form', [
+      'method' => 'POST',
+      'action' => '',
       HtmlElement::emmetTop('.input-container', [
         PlainLabeledInput::text('fullname', 'Họ và Tên'),
         PlainLabeledInput::text('username', 'Tên tài khoản'),
@@ -19,10 +22,11 @@ class SignUpForm extends RawDataContainer implements Component {
           'Tạo tài khoản',
         ]),
         new PrimaryButton([
-          'type' => 'clear',
+          'type' => 'reset',
           'Xóa',
         ]),
       ]),
+      new HiddenInputSet(['signed-up' => 'on']),
     ]);
   }
 }

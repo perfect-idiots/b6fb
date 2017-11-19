@@ -2,6 +2,7 @@
 require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
+require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -133,12 +134,15 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
-  $login = Login::instance([
+  $accountParams = [
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
     'url-query' => $urlQuery,
-  ])->verify();
+  ];
+
+  $signup = SignUp::instance($accountParams)->verify();
+  $login = Login::instance($accountParams)->verify();
 
   $data = [
     'title' => 'b6fb',
@@ -155,6 +159,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'signup' => $signup,
     'login' => $login,
   ];
 
