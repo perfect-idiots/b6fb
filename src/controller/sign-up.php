@@ -47,8 +47,6 @@ class SignUp extends RawDataContainer {
           'password' => $password,
         ]);
 
-        var_dump($dbQuerySet->getData());
-
         $query = $dbQuerySet->get('create-account');
         $dbResponse = $query->executeOnce([
           $fullname,
