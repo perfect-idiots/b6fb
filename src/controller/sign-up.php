@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../lib/utils.php';
+require_once __DIR__ . '/login.php';
 
 class SignUp extends RawDataContainer {
   public function verify(): SignUpInfo {
@@ -7,13 +8,17 @@ class SignUp extends RawDataContainer {
     $postData = $this->get('post-data');
     $cookie = $this->get('cookie');
     $urlQuery = $this->get('url-query');
+    $fullname = $postData->getDefault('fullname', '');
+    $username = $postData->getDefault('username', '');
+    $password = $postData->getDefault('password', '');
+    $rePassword = $postData->getDefault('re-password', '');
 
     if ($postData->getDefault('signed-up', 'off') === 'on') {
       $signup = static::checkSignUp([
-        'fullname' => $postData->getDefault('fullname', ''),
-        'username' => $postData->getDefault('username', ''),
-        'password' => $postData->getDefault('password', ''),
-        're-password' => $postData->getDefault('re-password', ''),
+        'fullname' => $fullname,
+        'username' => $username,
+        'password' => $password,
+        're-password' => $rePassword,
       ]);
 
       if ($signup->succeed()) {
@@ -30,6 +35,17 @@ class SignUp extends RawDataContainer {
           'sign-up-error-reason',
         ])->update();
 
+        $cookie->assign([
+          'logged-in' => 'on',
+          'username' => $username,
+          'password' => $password,
+        ])->update();
+
+        $login = LoginInfo::instance([
+          'username' => $username,
+          'password' => $password,
+        ]);
+
         $urlQuery->set('page', $urlQuery->get('previous-page'))->redirect();
       } else {
         $error = $signup->error();
@@ -39,10 +55,12 @@ class SignUp extends RawDataContainer {
           'sign-up-error-field' => $error['field'],
           'sign-up-error-reason' => $error['reason'],
         ])->update();
+
+        return $signup;
       }
     }
 
-    return new SignUpInfo();
+    return SignUpInfo::instance();
   }
 
   static public function checkSignUp(array $param): SignUpInfo {
