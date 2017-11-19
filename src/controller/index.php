@@ -108,6 +108,13 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
+  $signup = SignUp::instance([
+    'post-data' => $postData,
+    'cookie' => $cookie,
+    'db-query-set' => $dbQuerySet,
+    'url-query' => $urlQuery,
+  ])->verify();
+
   $login = Login::instance([
     'post-data' => $postData,
     'cookie' => $cookie,
@@ -128,6 +135,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
     'db-query-set' => $dbQuerySet,
+    'signup' => $signup,
     'login' => $login,
   ];
 
