@@ -8,6 +8,7 @@ class SignUp extends RawDataContainer {
     $postData = $this->get('post-data');
     $cookie = $this->get('cookie');
     $urlQuery = $this->get('url-query');
+    $dbQuerySet = $this->get('db-query-set');
     $fullname = $postData->getDefault('fullname', '');
     $username = $postData->getDefault('username', '');
     $password = $postData->getDefault('password', '');
@@ -44,6 +45,15 @@ class SignUp extends RawDataContainer {
         $login = LoginInfo::instance([
           'username' => $username,
           'password' => $password,
+        ]);
+
+        var_dump($dbQuerySet->getData());
+
+        $query = $dbQuerySet->get('create-account');
+        $dbResponse = $query->executeOnce([
+          $fullname,
+          $username,
+          $password,
         ]);
 
         $urlQuery->set('page', $urlQuery->get('previous-page'))->redirect();
