@@ -174,7 +174,7 @@ class DatabaseQueryStatement extends RawDataContainer {
     ];
   }
 
-  public function executeOnce(array $param, int $columns = 0): array {
+  public function executeOnce(array $param, int $columns = 0): DatabaseQuerySingleResult {
     $refs = $this->arrOfRefs($param);
     $statement = $this->statement;
 
@@ -270,7 +270,7 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
 
     foreach (range(0, $columns - 1) as $index) {
       $buffer[$index] = null;
-      $refs = &$buffer[$index];
+      $refs[$index] = &$buffer[$index];
     }
 
     call_user_func_array([$statement, 'bind_result'], $refs);
