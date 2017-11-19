@@ -90,6 +90,32 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   return $result;
 }
 
+function createAdminSubpageList(UrlQuery $urlQuery) {
+  $namemap = [
+    'games' => 'Trò chơi',
+    'users' => 'Người dùng',
+    'advanced' => 'Nâng cao',
+  ];
+
+  $result = [[
+    'subpage' => 'dashboard',
+    'title' => 'Bảng điều khiển',
+    'href' => UrlQuery::instance(['page' => 'admin'])->getUrlQuery(),
+  ]];
+
+  foreach ($namemap as $page => $title) {
+    $href = $urlQuery->set('subpage', $page)->getUrlQuery();
+
+    array_push($result, [
+      'subpage' => $page,
+      'title' => $title,
+      'href' => $href,
+    ]);
+  }
+
+  return $result;
+}
+
 function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
@@ -126,6 +152,8 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'page' => $urlQuery->getDefault('page', 'index'),
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
+    'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
+    'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
     'login' => $login,
   ];
