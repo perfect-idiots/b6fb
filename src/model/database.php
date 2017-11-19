@@ -90,6 +90,26 @@ class DatabaseConnection extends DatabaseInfo {
 }
 
 class DatabaseQuerySet extends DatabaseConnection {
+  protected function load(): array {
+    $data = parent::load();
+    $link = $data['link'];
+    $queries = $this->createQueries($link);
+
+    return array_merge($data, $queries, [
+      'source' => $data,
+      'link' => $link,
+      'queries' => $queries,
+    ]);
+  }
+
+  public function queries(): array {
+    return $this->get('queries');
+  }
+
+  public function query(string $name): DatabaseQueryStatement {
+    return $this->queries()[$name];
+  }
+
   private function createQueries(mysqli $link): array {
     $login = function ($table) {
       return [
@@ -98,9 +118,9 @@ class DatabaseQuerySet extends DatabaseConnection {
       ];
     };
 
-    $queries = [
-      'verify-admin-login' => 'ss',
-      'verify-user-login' => 'ss',
+    $queryFormats = [
+      'verify-admin-account' => 'ss',
+      'verify-user-account' => 'ss',
       'create-account' => 'sss'
     ];
 
@@ -134,8 +154,10 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   private function init(): void {
+    $link = $this->get('link');
+    $template = $this->get('template');
     $this->clear();
-    $this->statement = $link->prepare($desc['template']);
+    $this->statement = $link->prepare($template);
   }
 
   private function clear(): void {
@@ -152,11 +174,12 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   public function executeOnce(array $param): array {
+    $refs = &$this->arrOfRefs($param);
     $statement = $this->statement;
 
     $bindSuccess = call_user_func_array(
       [$statement, 'bind_param'],
-      array_merge([$this->get('format')], $param)
+      array_merge([$this->get('format')], $refs)
     );
 
     if (!$bindSuccess) throw new Exception('Cannot bind param');
@@ -168,13 +191,14 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   public function executeMultipleTimes(array $param): array {
+    $refs = &$this->arrOfRefs($param);
     $statement = $this->statement;
     $success = [];
 
     foreach ($param as $index => $subparam) {
       $bindSuccess = call_user_func_array(
         [$statement, 'bind_param'],
-        array_merge([$this->get('format')], $param)
+        array_merge([$this->get('format')], $refs)
       );
 
       if (!$bindSuccess) throw new Exception("Cannot bind param[$index]");
@@ -185,6 +209,14 @@ class DatabaseQueryStatement extends RawDataContainer {
       'success' => $success,
       'statement' => $statement,
     ];
+  }
+
+  private function arrOfRefs(array $array): array {
+    $refs = [];
+    foreach ($array as $key => &$value) {
+      $refs[$key] = &$value;
+    }
+    return $refs;
   }
 }
 ?>
