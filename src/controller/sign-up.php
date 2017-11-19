@@ -9,12 +9,37 @@ class SignUp extends RawDataContainer {
     $urlQuery = $this->get('url-query');
 
     if ($postData->getDefault('signed-up', 'off') === 'on') {
-      return static::checkSignUp([
+      $signup = static::checkSignUp([
         'fullname' => $postData->getDefault('fullname', ''),
         'username' => $postData->getDefault('username', ''),
         'password' => $postData->getDefault('password', ''),
         're-password' => $postData->getDefault('re-password', ''),
       ]);
+
+      if ($signup->succeed()) {
+        $session->without([
+          'fullname',
+          'username',
+          'password',
+          're-password',
+        ])->update();
+
+        $session->without([
+          'sign-up-succeed',
+          'sign-up-error-field',
+          'sign-up-error-reason',
+        ])->update();
+
+        $urlQuery->set('page', $urlQuery->get('previous-page'))->redirect();
+      } else {
+        $error = $signup->error();
+
+        $session->assign([
+          'sign-up-succeed' => 'off',
+          'sign-up-error-field' => $error['field'],
+          'sign-up-error-reason' => $error['reason'],
+        ])->update();
+      }
     }
 
     return new SignUpInfo();
