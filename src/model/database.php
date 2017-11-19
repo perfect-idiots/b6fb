@@ -174,7 +174,7 @@ class DatabaseQueryStatement extends RawDataContainer {
     ];
   }
 
-  public function executeOnce(array $param): array {
+  public function executeOnce(array $param, int $columns = 0): array {
     $refs = $this->arrOfRefs($param);
     $statement = $this->statement;
 
@@ -188,6 +188,7 @@ class DatabaseQueryStatement extends RawDataContainer {
     return DatabaseQuerySingleResult::instance([
       'success' => $statement->execute(),
       'statement' => $statement,
+      'columns' => $columns,
     ]);
   }
 
