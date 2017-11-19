@@ -121,7 +121,7 @@ class DatabaseQuerySet extends DatabaseConnection {
     $queryFormats = [
       'verify-admin-account' => 'ss',
       'verify-user-account' => 'ss',
-      'create-account' => 'sss'
+      'create-account' => 'sss',
     ];
 
     $queries = [];
