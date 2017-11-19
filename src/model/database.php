@@ -219,4 +219,69 @@ class DatabaseQueryStatement extends RawDataContainer {
     return $refs;
   }
 }
+
+abstract class DatabaseQueryResult extends RawDataContainer {}
+
+class DatabaseQuerySingleResult extends DatabaseQueryResult {
+  private $result = null;
+
+  static protected function requiredFieldSchema(): array {
+    return [
+      'success' => 'bool',
+      'statement' => 'mysqli_stmt',
+      'columns' => 'int',
+    ];
+  }
+
+  public function fetch(): array {
+    if ($this->result) return $this->result;
+    $this->result = $this->fetchMain();
+    return $this->result;
+  }
+
+  public function success(): bool {
+    return $this->get('success');
+  }
+
+  public function statement(): mysqli_stmt {
+    return $this->get('statement');
+  }
+
+  public function columns(): int {
+    return $this->get('columns');
+  }
+
+  private function fetchMain(): array {
+    [
+      'success' => $success,
+      'statement' => $statement,
+      'columns' => $columns,
+    ] = $this->getData();
+
+    if (!$success) {
+      throw new Exception('Atempt to fetch result of an unsuccessful execution');
+    }
+
+    $result = []; // array of arrays
+    $buffer = []; // array to be referered to
+    $refs = []; // array of references
+
+    foreach (range(0, $columns - 1) as $index) {
+      $buffer[$index] = null;
+      $refs = &$buffer[$index];
+    }
+
+    call_user_func_array([$statement, 'bind_result'], $refs);
+
+    while ($statement->fetch()) {
+      $row = [];
+      foreach ($buffer as $key => $value) {
+        $row[$key] = $value;
+      }
+      array_push($result, $row);
+    }
+
+    return $result;
+  }
+}
 ?>
