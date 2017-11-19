@@ -94,6 +94,7 @@ interface DataContainer {
   public function get($key);
   public function set($key, $value): DataContainer;
   public function except($key): DataContainer;
+  public function clone(): DataContainer;
   public function assign(array $data): DataContainer;
   public function without(array $data): DataContainer;
   public function merge(DataContainer $addend): DataContainer;
@@ -104,7 +105,26 @@ class RawDataContainer implements DataContainer {
   private $data;
 
   public function __construct(array $data = []) {
+    static::verifyFields($data);
     $this->data = $data;
+  }
+
+  static protected function verifyFields(array $data): void {
+    $schema = static::requiredFieldSchema();
+
+    foreach ($schema as $key => $type) {
+      if (!array_key_exists($key, $data)) {
+        throw new TypeError("Field '$key' is not provided");
+      }
+
+      if ($type && gettype($data[$key]) !== $type && !($data[$key] instanceof $type)) {
+        throw new TypeError("Field '$key' is not a(n) $type");
+      }
+    }
+  }
+
+  static protected function requiredFieldSchema(): array {
+    return [];
   }
 
   static public function instance(array $data = []): DataContainer {
@@ -133,6 +153,10 @@ class RawDataContainer implements DataContainer {
 
   public function except($key): DataContainer {
     return static::without([$key]);
+  }
+
+  public function clone(): DataContainer {
+    return new static($this->getData());
   }
 
   public function assign(array $data): DataContainer {
@@ -208,6 +232,15 @@ abstract class LazyLoadedDataContainer implements DataContainer {
 
   public function except($key): DataContainer {
     return static::without([$key]);
+  }
+
+  public function clone(): DataContainer {
+    $param = static::transformParam($this->param);
+
+    return $this->state
+      ? new static(true, $param, $this->getData())
+      : new static(false, $param, [])
+    ;
   }
 
   public function assign(array $data): DataContainer {

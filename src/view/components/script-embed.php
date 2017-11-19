@@ -30,6 +30,10 @@ abstract class TypedScriptEmbed extends ScriptEmbed {
     return new static(array_merge($left, $right));
   }
 
+  static public function file(string $filename, array $attr = []): self {
+    return static::text(file_get_contents($filename), $attr);
+  }
+
   abstract static function type(): string;
 }
 

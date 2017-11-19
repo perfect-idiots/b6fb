@@ -45,6 +45,12 @@ class SizeSet extends LazyLoadedDataContainer {
     $headerSquareButton = BlockSize::sqr($headerSquareButtonSize);
     $headerVerticalPadding = ($unitSize - $headerSquareButtonSize) / 2;
     $navigationEntryHeight = 2 * $unitSize / 3;
+    $profileSettingWidth = 4 * $unitSize;
+    $profileSettingAvatarSize = $profileSettingWidth / 4;
+    $profileSettingIdentityWidth = $profileSettingWidth - $profileSettingAvatarSize;
+    $textButtonWidth = 2 * $unitSize;
+    $textButtonHeight = $headerSquareButtonSize;
+    $textButton = BlockSize::xy($textButtonWidth, $textButtonHeight);
 
     $begin = Tree::instance([
       'unit' => [
@@ -75,9 +81,20 @@ class SizeSet extends LazyLoadedDataContainer {
           'padding-right' => $headerSquareButtonSize,
         ],
       ],
+      'profile-setting' => [
+        'width' => $profileSettingWidth,
+        'avatar' => [
+          '' => BlockSize::sqr($profileSettingAvatarSize),
+          'size' => $profileSettingAvatarSize,
+        ],
+        'identity' => BlockSize::xy($profileSettingIdentityWidth, $profileSettingAvatarSize),
+      ],
       'navigation' => [
         'entry-height' => $navigationEntryHeight,
         'entry-line-height' => $navigationEntryHeight,
+      ],
+      'text-button' => [
+        '' => $textButton,
       ],
     ])->flat('-', '');
 

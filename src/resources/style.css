@@ -85,6 +85,10 @@ body {
   padding-bottom: [[header-vertical-padding]];
 }
 
+#theme-switcher {
+  text-decoration: none;
+}
+
 #search-box-input {
   background-color: [[search-box-background-color]];
   border: none;
@@ -117,9 +121,75 @@ body {
   top: [[header-vertical-padding]];
 }
 
+#theme-switcher, #user-profile-view {
+  display: inline-block;
+}
+
 #theme-switcher-button {
   background-image: url([[night-mode-icon]]);
   [[header-square-button-size-block]]
+}
+
+#login-anchor, #login-anchor button {
+  cursor: pointer;
+}
+
+#profile-button, #profile-image {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  background-color: transparent;
+  [[header-square-button-size-block]]
+}
+
+#profile-setting {
+  position: absolute;
+  overflow: hidden;
+  right: 0px;
+  top: [[unit-size]];
+  width: [[profile-setting-width]];
+  background-color: [[profile-setting-background-color]];
+}
+
+#popup-profile-view {
+  display: block;
+  background-color: [[profile-setting-avatar-background-color]];
+}
+
+#popup-profile-view > * {
+  display: inline-block;
+}
+
+#popup-profile-image {
+  [[profile-setting-avatar-size-block]]
+}
+
+#profile-setting .button-container {
+  display: block;
+
+}
+
+#profile-setting .button-container button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: [[profile-setting-width]];
+  height: [[header-child-height]];
+}
+
+#profile-setting .button-container button:hover {
+  background-color: [[profile-setting-hover-background-color]];
+  box-shadow: none;
+  filter: none;
+}
+
+#profile-setting .button-container button a {
+  text-decoration: none;
+  display: inline-block;
+  line-height: [[header-child-height]];
+  color: [[text-color]];
+  width: [[profile-setting-width]];
+  height: [[header-child-height]];
 }
 
 nav {
@@ -165,6 +235,14 @@ nav > ul > ul > li a {
   display: inline-block;
 }
 
+nav > ul > ul > li.current-page {
+  background-color: [[navigation-activated-background-color]];
+}
+
+nav > ul > ul > li.current-page a[href] {
+  color: [[hover-clickable-text-color]];
+}
+
 nav a[href]:hover {
   color: [[hover-clickable-text-color]];
 }
@@ -191,6 +269,37 @@ text-area:focus, input:focus {
 button:hover {
   filter: brightness(1.2) drop-shadow(1px 1px 2px [[shadow-color]]);
   box-shadow: 0px 0px 3px [[shadow-color]];
+}
+
+.x-component--text-button {
+  text-transform: uppercase;
+  border: 0px;
+  [[text-button-size-block]]
+}
+
+.x-component--primary-button {
+  box-shadow: 0px 1px 2px black;
+  color: [[primary-button-text-color]];
+  background-color: [[primary-button-background-color]];
+}
+
+.x-component--primary-button:hover {
+  box-shadow: 0px 2px 3px black;
+  background-color: [[primary-button-hover-background-color]];
+}
+
+.x-component--primary-button:active {
+  box-shadow: 0px 0px 0px;
+}
+
+.x-component--secondary-button {
+  color: [[secondary-button-text-color]];
+  background-color: transparent;
+}
+
+.x-component--secondary-button:hover {
+  filter: none;
+  background-color: [[secondary-button-hover-background-color]];
 }
 
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'] {
