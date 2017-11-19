@@ -130,11 +130,13 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
+  $session = Session::instance();
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
   $accountParams = [
+    'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
