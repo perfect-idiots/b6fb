@@ -241,6 +241,10 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
     return $this->result;
   }
 
+  public function rows(): int {
+    return sizeof($this->fetch());
+  }
+
   public function success(): bool {
     return $this->get('success');
   }
