@@ -228,7 +228,7 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
 
   static protected function requiredFieldSchema(): array {
     return [
-      'success' => 'bool',
+      'success' => 'boolean',
       'statement' => 'mysqli_stmt',
       'columns' => 'int',
     ];
