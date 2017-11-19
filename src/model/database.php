@@ -122,6 +122,7 @@ class DatabaseQuerySet extends DatabaseConnection {
       'verify-admin-account' => 'ss',
       'verify-user-account' => 'ss',
       'create-account' => 'sss',
+      'user-account-existence' => 's',
     ];
 
     $queries = [];
