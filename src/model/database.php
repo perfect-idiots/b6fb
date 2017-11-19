@@ -101,6 +101,10 @@ class DatabaseQuerySet extends DatabaseConnection {
     $queries = [
       'verify-admin-login' => $login('admin_accounts'),
       'verify-user-login' => $login('user_accounts'),
+      'create-account' => [
+        'template' => 'INSERT INTO user_accounts (fullname, username, password_hash) VALUES (?, ?, ?)',
+        'format' => 'sss',
+      ],
     ];
 
     return array_map(
