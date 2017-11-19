@@ -2,6 +2,7 @@
 require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
+require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -45,8 +46,14 @@ function switchPage(array $data): Page {
       return LogoutPage::instance(array_merge($data, [
         'logout' => Logout::instance($data),
       ]));
+    case 'sign-up':
+      return SignUpPage::instance($data);
     case 'admin':
-      return AdminPage::instance($data);
+      return AdminPage::instance(array_merge($data, [
+        'login' => Login::instance(array_merge($data, [
+          'is-admin' => true,
+        ]))->verify(),
+      ]));
     default:
       throw new NotFoundException();
   }
@@ -84,6 +91,32 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   return $result;
 }
 
+function createAdminSubpageList(UrlQuery $urlQuery) {
+  $namemap = [
+    'games' => 'Trò chơi',
+    'users' => 'Người dùng',
+    'advanced' => 'Nâng cao',
+  ];
+
+  $result = [[
+    'subpage' => 'dashboard',
+    'title' => 'Bảng điều khiển',
+    'href' => UrlQuery::instance(['page' => 'admin'])->getUrlQuery(),
+  ]];
+
+  foreach ($namemap as $page => $title) {
+    $href = $urlQuery->set('subpage', $page)->getUrlQuery();
+
+    array_push($result, [
+      'subpage' => $page,
+      'title' => $title,
+      'href' => $href,
+    ]);
+  }
+
+  return $result;
+}
+
 function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
@@ -97,16 +130,21 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
+  $session = Session::instance();
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
-  $login = Login::instance([
+  $accountParams = [
+    'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
     'url-query' => $urlQuery,
-  ])->verify();
+  ];
+
+  $signup = SignUp::instance($accountParams)->verify();
+  $login = Login::instance($accountParams)->verify();
 
   $data = [
     'title' => 'b6fb',
@@ -118,9 +156,13 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
+    'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
+    'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
+    'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'signup' => $signup,
     'login' => $login,
   ];
 

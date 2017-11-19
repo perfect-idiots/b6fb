@@ -6,5 +6,22 @@ class Session extends LazyLoadedDataContainer {
     session_start();
     return $_SESSION;
   }
+
+  public function update(): void {
+    session_unset();
+    foreach ($this->getData() as $key => $value) {
+      $_SESSION[$key] = $value;
+    }
+  }
+
+  private function addSessionValues(array $tobeset): void {
+    foreach ($tobeset as $key => $value) {
+      $_SESSION[$key] = $value;
+    }
+  }
+
+  public function destroy(): bool {
+    return session_destroy();
+  }
 }
 ?>

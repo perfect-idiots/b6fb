@@ -29,14 +29,17 @@ class AdminUserInterface extends RawDataContainer implements Component {
       ]),
       $isLoggedIn
         ? HtmlElement::emmetBottom('body#admin-page>#page', [
-          
+            
         ])
         : HtmlElement::emmetBottom('body#login-page>#page.aligner', [
           HtmlElement::emmetTop('.top-aligned.aligned-item', []),
           HtmlElement::emmetTop('.middle-aligned.aligned-item', [
             HtmlElement::create('header', Logo::instance($this->getData())),
             HtmlElement::emmetBottom('section#main-section', [
-              HtmlElement::emmetTop('h1#login-title', 'Đăng nhập'),
+              HtmlElement::emmetTop('h1#login-title', [
+                HtmlElement::emmetTop('span.login-title', 'Đăng nhập'),
+                HtmlElement::emmetTop('span.login-subtitle', '(Admin)'),
+              ]),
               HtmlElement::create('main', [
                 new LoginForm([
                   'action' => $urlQuery->getUrlQuery(),
