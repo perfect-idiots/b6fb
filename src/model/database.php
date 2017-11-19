@@ -206,10 +206,10 @@ class DatabaseQueryStatement extends RawDataContainer {
       $success[$index] = $statement->execute();
     }
 
-    return [
+    return DatabaseQuerySingleResult::instance([
       'success' => $success,
       'statement' => $statement,
-    ];
+    ]);
   }
 
   private function arrOfRefs(array $array): array {
