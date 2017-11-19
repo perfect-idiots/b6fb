@@ -99,13 +99,18 @@ class DatabaseQuerySet extends DatabaseConnection {
     };
 
     $queries = [
-      'verify-admin-login' => $login('admin_accounts'),
-      'verify-user-login' => $login('user_accounts'),
-      'create-account' => [
-        'template' => 'INSERT INTO user_accounts (fullname, username, password_hash) VALUES (?, ?, ?)',
-        'format' => 'sss',
-      ],
+      'verify-admin-login' => 'ss',
+      'verify-user-login' => 'ss',
+      'create-account' => 'sss'
     ];
+
+    $queries = [];
+    foreach ($queryFormats as $name => $format) {
+      $queries[$name] = [
+        'template' => file_get_contents(__DIR__ . "/db-queries/$name.sql"),
+        'format' => $format,
+      ];
+    }
 
     return array_map(
       function ($desc) use($link) {
