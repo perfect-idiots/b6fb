@@ -108,19 +108,15 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
-  $signup = SignUp::instance([
+  $accountParams = [
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
     'url-query' => $urlQuery,
-  ])->verify();
+  ];
 
-  $login = Login::instance([
-    'post-data' => $postData,
-    'cookie' => $cookie,
-    'db-query-set' => $dbQuerySet,
-    'url-query' => $urlQuery,
-  ])->verify();
+  $signup = SignUp::instance($accountParams)->verify();
+  $login = Login::instance($accountParams)->verify();
 
   $data = [
     'title' => 'b6fb',
