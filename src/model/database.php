@@ -175,7 +175,7 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   public function executeOnce(array $param): array {
-    $refs = &$this->arrOfRefs($param);
+    $refs = $this->arrOfRefs($param);
     $statement = $this->statement;
 
     $bindSuccess = call_user_func_array(
@@ -192,7 +192,7 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   public function executeMultipleTimes(array $param): array {
-    $refs = &$this->arrOfRefs($param);
+    $refs = $this->arrOfRefs($param);
     $statement = $this->statement;
     $success = [];
 
@@ -212,7 +212,7 @@ class DatabaseQueryStatement extends RawDataContainer {
     ]);
   }
 
-  private function arrOfRefs(array $array): array {
+  private function arrOfRefs(array &$array): array {
     $refs = [];
     foreach ($array as $key => &$value) {
       $refs[$key] = &$value;
