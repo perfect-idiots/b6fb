@@ -156,6 +156,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
+    'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
