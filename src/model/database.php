@@ -231,7 +231,7 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
     return [
       'success' => 'boolean',
       'statement' => 'mysqli_stmt',
-      'columns' => 'int',
+      'columns' => 'integer',
     ];
   }
 
