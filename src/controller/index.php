@@ -143,6 +143,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
 
   $signup = SignUp::instance($accountParams)->verify();
   $login = Login::instance($accountParams)->verify();
+  $logout = Logout::instance();
 
   $data = [
     'title' => 'b6fb',
@@ -161,6 +162,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'db-query-set' => $dbQuerySet,
     'signup' => $signup,
     'login' => $login,
+    'logout' => $logout,
   ];
 
   try {
