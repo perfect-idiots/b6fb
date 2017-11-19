@@ -20,6 +20,7 @@ class SignUp extends RawDataContainer {
         'username' => $username,
         'password' => $password,
         're-password' => $rePassword,
+        'db-query-set' => $dbQuerySet,
       ]);
 
       if ($signup->succeed()) {
@@ -77,10 +78,18 @@ class SignUp extends RawDataContainer {
       'username' => $username,
       'password' => $password,
       're-password' => $rePassword,
+      'db-query-set' => $dbQuerySet,
     ] = $param;
+
+    $userAccountExistence = $dbQuerySet
+      ->get('user-account-existence')
+      ->executeOnce([$username], 1)
+      ->rows()
+    ;
 
     if (!$fullname) return SignUpInfo::mkerror('fullname', 'empty');
     if (!$username) return SignUpInfo::mkerror('username', 'empty');
+    if ($userAccountExistence) return SignUpInfo::mkerror('username', 'taken');
     if (!$password) return SignUpInfo::mkerror('password', 'empty');
     if (strlen($password) < 6) return SignUpInfo::mkerror('password', 'insufficient-lenth');
     if ($password !== $rePassword) return SignUpInfo::mkerror('re-password', 'mismatch');
