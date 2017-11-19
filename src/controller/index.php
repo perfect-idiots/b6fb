@@ -130,11 +130,13 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
+  $session = Session::instance();
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
   $accountParams = [
+    'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
@@ -155,6 +157,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
+    'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
