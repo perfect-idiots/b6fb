@@ -115,8 +115,11 @@ class SignUpInfo extends RawDataContainer {
 
   static public function mkerror(string $field, string $reason): self {
     return self::instance([
-      'field' => $field,
-      'reason' => $reason,
+      'succeed' => false,
+      'error' => [
+        'field' => $field,
+        'reason' => $reason,
+      ],
     ]);
   }
 }
