@@ -7,8 +7,8 @@ class Session extends LazyLoadedDataContainer {
     return $_SESSION;
   }
 
-  public function destroy(): void {
-    session_destroy();
+  public function destroy(): bool {
+    return session_destroy();
   }
 }
 ?>
