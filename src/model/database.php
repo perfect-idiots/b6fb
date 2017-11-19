@@ -185,10 +185,10 @@ class DatabaseQueryStatement extends RawDataContainer {
 
     if (!$bindSuccess) throw new Exception('Cannot bind param');
 
-    return [
+    return DatabaseQuerySingleResult::instance([
       'success' => $statement->execute(),
       'statement' => $statement,
-    ];
+    ]);
   }
 
   public function executeMultipleTimes(array $param): array {
@@ -206,10 +206,10 @@ class DatabaseQueryStatement extends RawDataContainer {
       $success[$index] = $statement->execute();
     }
 
-    return DatabaseQuerySingleResult::instance([
+    return [
       'success' => $success,
       'statement' => $statement,
-    ]);
+    ];
   }
 
   private function arrOfRefs(array &$array): array {
