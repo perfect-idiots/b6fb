@@ -23,7 +23,7 @@ class UserProfileUpdater extends LoginDoubleChecker {
     $profile = UserInfo::instance([
       'username' => $username,
       'db-query-set' => $dbQuerySet,
-    ]);
+    ])->fetch();
 
     [
       'fullname' => $fullname,
