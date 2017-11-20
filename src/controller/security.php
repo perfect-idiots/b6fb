@@ -10,6 +10,10 @@ abstract class LoginDoubleChecker extends RawDataContainer {
     ];
   }
 
+  public function verify(): void {
+    if (!$this->checkAll()) throw SecurityException::permission();
+  }
+
   public function checkAll(): bool {
     return $this->checkLogin() && $this->checkPermission();
   }
