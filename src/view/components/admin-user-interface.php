@@ -212,6 +212,19 @@ class AdminGames extends RawDataContainer implements Component {
 
 class AdminUsers extends RawDataContainer implements Component {
   public function render(): Component {
+    $users = $this->get('db-query-set')->get('list-users')->executeOnce([], 2)->fetch();
+
+    $children = array_map(
+      function (array $userinfo) {
+        [$username, $fullname] = $userinfo;
+        return HtmlElement::create('tr', [
+          HtmlElement::create('td', $username),
+          HtmlElement::create('td', $fullname),
+        ]);
+      },
+      $users
+    );
+
     return HtmlElement::emmetBottom('#user-account', [
       HtmlElement::emmetTop('#header-user-page.header-subpage', [
         HtmlElement::create('h1', 'Tài khoản User'),
@@ -222,6 +235,15 @@ class AdminUsers extends RawDataContainer implements Component {
           ]),
         ]),
       ]),
+      HtmlElement::emmetTop('.body-subpage', [
+        HtmlElement::emmetTop('table#tb-games', [
+         HtmlElement::emmetBottom('thead>tr.class-tr-games', [
+           HtmlElement::emmetTop('th', ['Tên người dùng']),
+           HtmlElement::emmetTop('th', ['Tên đầy đủ']),
+         ]),
+         HtmlElement::create('tbody', $children),
+       ]),
+     ]),
     ]);
   }
 }
