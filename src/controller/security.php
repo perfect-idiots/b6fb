@@ -19,6 +19,8 @@ abstract class LoginDoubleChecker extends RawDataContainer {
     )->isLoggedIn();
   }
 
-  abstract public function checkPermission(): bool;
+  public function checkPermission(): bool {
+    return $this->get('login')->isAdmin();
+  }
 }
 ?>
