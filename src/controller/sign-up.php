@@ -91,7 +91,7 @@ class SignUp extends RawDataContainer {
     if (!$username) return SignUpInfo::mkerror('username', 'empty');
     if ($userAccountExistence) return SignUpInfo::mkerror('username', 'taken');
     if (!$password) return SignUpInfo::mkerror('password', 'empty');
-    if (strlen($password) < 6) return SignUpInfo::mkerror('password', 'insufficient-lenth');
+    if (strlen($password) < 6) return SignUpInfo::mkerror('password', 'insufficient-length');
     if ($password !== $rePassword) return SignUpInfo::mkerror('re-password', 'mismatch');
 
     return SignUpInfo::instance(array_merge($param, [

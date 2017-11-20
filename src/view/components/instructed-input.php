@@ -24,7 +24,7 @@ abstract class InstructedInput extends RawDataContainer implements Component {
     ]);
   }
 
-  static public function text(string $id, string $label, string $instruction, string $alert): self {
+  static public function text(string $id, string $label, string $instruction, $alert): self {
     return static::instance([
       'id' => $id,
       'label' => $label,
