@@ -206,7 +206,7 @@ function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
-      $dbQuerySet->get('update-user-fullname')->executeOnce([$fullname, $username]);
+      $dbQuerySet->get('update-user-profile')->executeOnce([$fullname, $username]);
       $urlQuery->without([
         'fullname',
         'previous-page',

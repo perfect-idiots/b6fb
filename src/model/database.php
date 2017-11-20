@@ -126,7 +126,7 @@ class DatabaseQuerySet extends DatabaseConnection {
       'list-genres' => '',
       'add-game' => 'ssss',
       'user-info' => 's',
-      'update-user-fullname' => 'ss',
+      'update-user-profile' => 'ss',
     ];
 
     $queries = [];
