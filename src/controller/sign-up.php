@@ -52,7 +52,7 @@ class SignUp extends RawDataContainer {
         $dbResponse = $query->executeOnce([
           $fullname,
           $username,
-          $password,
+          password_hash($password, PASSWORD_BCRYPT),
         ]);
 
         $urlQuery->set('page', $urlQuery->get('previous-page'))->redirect();

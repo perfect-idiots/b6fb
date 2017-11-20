@@ -111,19 +111,15 @@ class DatabaseQuerySet extends DatabaseConnection {
   }
 
   private function createQueries(mysqli $link): array {
-    $login = function ($table) {
-      return [
-        'template' => "SELECT count(*) as ok FROM $table WHERE username = ? and password_hash = ?",
-        'format' => 'ss',
-      ];
-    };
-
     $queryFormats = [
-      'verify-admin-account' => 'ss',
-      'verify-user-account' => 'ss',
+      'user-password' => 's',
+      'admin-password' => 's',
       'create-account' => 'sss',
       'user-account-existence' => 's',
       'list-games' => '',
+      'list-users' => '',
+      'list-genres' => '',
+      'add-game' => 'ssss',
     ];
 
     $queries = [];
