@@ -1,0 +1,27 @@
+* {
+  transition: all 0.30s ease-in-out;
+}
+
+html, body {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+body {
+  color: [[text-color]];
+  background-color: [[background-color]];
+  font-family: 'Arial', 'Helvatica', sans-serif;
+}
+
+.x-component--header-section {
+  background: [[header-background-color]];
+}
+
+.x-component--header-section, .x-component--header-section * {
+  vertical-align: middle;
+}
+
+[hidden], [hidden] *, input[type='hidden'], button[type='hidden'], {
+  display: none;
+}
