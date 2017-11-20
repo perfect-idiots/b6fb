@@ -48,6 +48,12 @@ class DefaultAvatarImage extends SvgImage {
   }
 }
 
+class GamepadImage extends SvgImage {
+  protected function name(): string {
+    return 'gamepad.svg';
+  }
+}
+
 class ImageSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $theme = $this->param['name'];
@@ -56,6 +62,7 @@ class ImageSet extends LazyLoadedDataContainer {
       'SearchIcon',
       'NightModeIcon',
       'DefaultAvatarImage',
+      'GamepadImage',
     ];
 
     $result = [];
