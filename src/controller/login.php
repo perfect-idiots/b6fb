@@ -37,32 +37,46 @@ class Login extends RawDataContainer {
         $ckpassword => $password,
       ] = $cookie->getData();
 
-      $dbResult = $query->executeOnce([$username], 1)->fetch();
-
-      if (!sizeof($dbResult)) {
-        return new LoginInfo([
-          'logged-in' => false,
-          'error-reason' => 'invalid-username',
-        ]);
-      }
-
-      [[$hash]] = $dbResult;
-
-      if (!password_verify($password, $hash)) {
-        return new LoginInfo([
-          'logged-in' => false,
-          'error-reason' => 'invalid-password',
-        ]);
-      }
-
-      return new LoginInfo([
-        'logged-in' => true,
+      return self::checkLogin([
         'username' => $username,
         'password' => $password,
+        'db-query-set' => $dbQuerySet,
       ]);
     }
 
     return new LoginInfo(['logged-in' => false]);
+  }
+
+  static public function checkLogin(array $param): LoginInfo {
+    [
+      'username' => $username,
+      'password' => $password,
+      'db-query-set' => $dbQuerySet,
+    ] = $param;
+
+    $dbResult = $query->executeOnce([$username], 1)->fetch();
+
+    if (!sizeof($dbResult)) {
+      return new LoginInfo([
+        'logged-in' => false,
+        'error-reason' => 'invalid-username',
+      ]);
+    }
+
+    [[$hash]] = $dbResult;
+
+    if (!password_verify($password, $hash)) {
+      return new LoginInfo([
+        'logged-in' => false,
+        'error-reason' => 'invalid-password',
+      ]);
+    }
+
+    return new LoginInfo([
+      'logged-in' => true,
+      'username' => $username,
+      'password' => $password,
+    ]);
   }
 }
 
