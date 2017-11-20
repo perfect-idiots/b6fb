@@ -27,4 +27,6 @@ abstract class LoginDoubleChecker extends RawDataContainer {
     return $this->get('login')->isAdmin();
   }
 }
+
+class SecurityException extends Exception {}
 ?>
