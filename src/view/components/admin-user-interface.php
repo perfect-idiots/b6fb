@@ -315,7 +315,7 @@ class AdminEditUser extends RawDataContainer implements Component {
           HiddenInputSet::instance($urlQuery->assign([
             'type' => 'action',
             'action' => 'edit-user',
-            'previous-page' => 'edit-user',
+            'previous-page' => 'users',
             'username' => $username,
           ])->getData()),
         ]),
