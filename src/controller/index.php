@@ -2,6 +2,8 @@
 require_once __DIR__ . '/system-requirements.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
+require_once __DIR__ . '/sign-up.php';
+require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -90,6 +92,32 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   return $result;
 }
 
+function createAdminSubpageList(UrlQuery $urlQuery) {
+  $namemap = [
+    'games' => 'Trò chơi',
+    'users' => 'Người dùng',
+    'advanced' => 'Nâng cao',
+  ];
+
+  $result = [[
+    'subpage' => 'dashboard',
+    'title' => 'Bảng điều khiển',
+    'href' => UrlQuery::instance(['page' => 'admin'])->getUrlQuery(),
+  ]];
+
+  foreach ($namemap as $page => $title) {
+    $href = $urlQuery->set('subpage', $page)->getUrlQuery();
+
+    array_push($result, [
+      'subpage' => $page,
+      'title' => $title,
+      'href' => $href,
+    ]);
+  }
+
+  return $result;
+}
+
 function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
@@ -103,16 +131,22 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
+  $session = Session::instance();
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
-  $login = Login::instance([
+  $accountParams = [
+    'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
     'url-query' => $urlQuery,
-  ])->verify();
+  ];
+
+  $signup = SignUp::instance($accountParams)->verify();
+  $login = Login::instance($accountParams)->verify();
+  $logout = Logout::instance($accountParams);
 
   $data = [
     'title' => 'b6fb',
@@ -124,10 +158,16 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
     'page' => $urlQuery->getDefault('page', 'index'),
+    'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
+    'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
+    'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'game-inserter' => new GameInserter($dbQuerySet),
+    'signup' => $signup,
     'login' => $login,
+    'logout' => $logout,
   ];
 
   try {
@@ -157,6 +197,29 @@ function sendImage(UrlQuery $urlQuery): string {
   exit;
 }
 
+function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
+  $action = $urlQuery->getDefault('action', '');
+  $dbQuerySet = DatabaseQuerySet::instance();
+
+  switch ($action) {
+    case 'edit-user':
+      $username = $urlQuery->getDefault('username', '');
+      $fullname = $urlQuery->getDefault('fullname', '');
+      if (!$username || !$fullname) return ErrorPage::status(400)->render();
+      $dbQuerySet->get('update-user-fullname')->executeOnce([$fullname, $username]);
+      $urlQuery->without([
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => $urlQuery->get('previous-page'),
+      ])->redirect();
+      break;
+    default:
+      return ErrorPage::status(400)->render();
+  }
+}
+
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
@@ -171,6 +234,8 @@ function main(): string {
       return sendHtml($urlQuery, $postData, $cookie);
     case 'image':
       return sendImage($urlQuery);
+    case 'action':
+      return sendAction($urlQuery, $cookie);
     default:
       return ErrorPage::status(404)->render();
   }

@@ -8,10 +8,12 @@ class Login extends RawDataContainer {
     $cookie = $this->get('cookie');
     $urlQuery = $this->get('url-query');
     $isAdmin = $this->getDefault('is-admin', false);
+    $dbQuerySet = $this->get('db-query-set');
     $ckprfx = $isAdmin ? 'admin-' : '';
     $ckloggedin = $ckprfx . 'logged-in';
     $ckusername = $ckprfx . 'username';
     $ckpassword = $ckprfx . 'password';
+    $query = $dbQuerySet->get($isAdmin ? 'admin-password' : 'user-password');
 
     if ($postData->getDefault('logged-in', 'off') === 'on') {
       $cookie->assign([
@@ -35,14 +37,46 @@ class Login extends RawDataContainer {
         $ckpassword => $password,
       ] = $cookie->getData();
 
-      return new LoginInfo([
-        'logged-in' => true,
+      return self::checkLogin([
         'username' => $username,
         'password' => $password,
+        'db-query-set' => $dbQuerySet,
       ]);
     }
 
     return new LoginInfo(['logged-in' => false]);
+  }
+
+  static public function checkLogin(array $param): LoginInfo {
+    [
+      'username' => $username,
+      'password' => $password,
+      'db-query-set' => $dbQuerySet,
+    ] = $param;
+
+    $dbResult = $query->executeOnce([$username], 1)->fetch();
+
+    if (!sizeof($dbResult)) {
+      return new LoginInfo([
+        'logged-in' => false,
+        'error-reason' => 'invalid-username',
+      ]);
+    }
+
+    [[$hash]] = $dbResult;
+
+    if (!password_verify($password, $hash)) {
+      return new LoginInfo([
+        'logged-in' => false,
+        'error-reason' => 'invalid-password',
+      ]);
+    }
+
+    return new LoginInfo([
+      'logged-in' => true,
+      'username' => $username,
+      'password' => $password,
+    ]);
   }
 }
 
