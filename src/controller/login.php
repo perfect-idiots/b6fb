@@ -37,12 +37,19 @@ class Login extends RawDataContainer {
         $ckpassword => $password,
       ] = $cookie->getData();
 
-      [[$hash]] = $query->executeOnce([$username], 1)->fetch();
+      $dbResult = $query->executeOnce([$username], 1)->fetch();
+
+      if (!sizeof($dbResult)) {
+        return new LoginInfo([
+          'logged-in' => false,
+          'error-reason' => 'invalid-username',
+        ]);
+      }
 
       if (!password_verify($password, $hash)) {
         return new LoginInfo([
           'logged-in' => false,
-          'error-reason' => 'invalid',
+          'error-reason' => 'invalid-password',
         ]);
       }
 
