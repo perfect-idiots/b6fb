@@ -238,6 +238,8 @@ function main(): string {
     }
   } catch (NotFoundException $err) {
     return ErrorPage::status(404)->render();
+  } catch (SecurityException $err) {
+    return ErrorPage::status(401)->render();
   }
 }
 ?>
