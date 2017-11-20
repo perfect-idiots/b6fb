@@ -54,6 +54,12 @@ class GamepadImage extends SvgImage {
   }
 }
 
+class MultiUsersImage extends SvgImage {
+  protected function name(): string {
+    return 'multi-users.svg';
+  }
+}
+
 class ImageSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $theme = $this->param['name'];
@@ -63,6 +69,7 @@ class ImageSet extends LazyLoadedDataContainer {
       'NightModeIcon',
       'DefaultAvatarImage',
       'GamepadImage',
+      'MultiUsersImage',
     ];
 
     $result = [];
