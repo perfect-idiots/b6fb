@@ -74,6 +74,7 @@ class Login extends RawDataContainer {
 
     return new LoginInfo([
       'logged-in' => true,
+      'is-admin' => $isAdmin,
       'username' => $username,
       'password' => $password,
     ]);
@@ -83,6 +84,10 @@ class Login extends RawDataContainer {
 class LoginInfo extends RawDataContainer {
   public function isLoggedIn(): bool {
     return $this->get('logged-in');
+  }
+
+  public function isAdmin(): bool {
+    return $this->get('is-admin');
   }
 
   public function username(): string {
