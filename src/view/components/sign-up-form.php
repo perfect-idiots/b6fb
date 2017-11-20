@@ -13,41 +13,33 @@ class SignUpForm extends RawDataContainer implements Component {
       'method' => 'POST',
       'action' => '',
       HtmlElement::emmetTop('.input-container', [
-        PlainInstructedInput::text(
+        new SignUpField(
+          'PlainInstructedInput',
           'fullname',
           'Họ và Tên',
           'Họ tên đầy đủ',
-          new SignUpAlert(
-            $sessionData,
-            'fullname'
-          )
+          $sessionData
         ),
-        PlainInstructedInput::text(
+        new SignUpField(
+          'PlainInstructedInput',
           'username',
-          'Tên tài khoản',
           'Tên đăng nhập',
-          new SignUpAlert(
-            $sessionData,
-            'username'
-          )
+          'Tên tài khoản',
+          $sessionData
         ),
-        SecretInstructedInput::text(
+        new SignUpField(
+          'SecretInstructedInput',
           'password',
           'Mật khẩu',
           'Hơn 6 ký tự, bao gồm kí tự số, chữ thường, chữ hoa',
-          new SignUpAlert(
-            $sessionData,
-            'password'
-          )
+          $sessionData
         ),
-        SecretInstructedInput::text(
+        new SignUpField(
+          'SecretInstructedInput',
           're-password',
           'Nhập lại mật khẩu',
           'Nhập lại mật khẩu vừa nhập',
-          new SignUpAlert(
-            $sessionData,
-            're-password'
-          )
+          $sessionData
         ),
       ]),
       HtmlElement::emmetTop('.button-container', [
@@ -67,6 +59,35 @@ class SignUpForm extends RawDataContainer implements Component {
   static private function error(array $data, string $field): string {}
 }
 
+class SignUpField implements Component {
+  private $component, $field, $label, $instruction, $data;
+
+  public function __construct(string $component, string $field, string $label, string $instruction, array $data) {
+    $this->component = $component;
+    $this->field = $field;
+    $this->label = $label;
+    $this->instruction = $instruction;
+    $this->data = $data;
+  }
+
+  public function render(): Component {
+    $alert = new SignUpAlert($this->data, $this->field);
+    $component = $this->component;
+
+    $child = $component::text(
+      $this->field,
+      $this->label,
+      $this->instruction,
+      $alert
+    );
+
+    return HtmlElement::create('div', [
+      'classes' => $alert->isMarked() ? ['invalid'] : [],
+      $child
+    ]);
+  }
+}
+
 class SignUpAlert implements Component {
   private $data, $field;
   const MSGMAP = [
@@ -79,17 +100,20 @@ class SignUpAlert implements Component {
   public function __construct(array $data, string $field) {
     $this->data = new RawDataContainer($data);
     $this->field = $field;
+    $error = $this->data->getDefault('sign-up-succeed', 'on') === 'off';
+    $field = $this->data->getDefault('sign-up-error-field', '') === $this->field;
+    $this->marked = $error && $field;
   }
 
   public function render(): Component {
-    $error = $this->data->getDefault('sign-up-succeed', 'on') === 'off';
-    $field = $this->data->getDefault('sign-up-error-field', '') === $this->field;
-    $print = $error && $field;
-
-    return $print
+    return $this->isMarked()
       ? HtmlElement::emmetTop('span.error-message', $this->message())
       : new TextNode('')
     ;
+  }
+
+  public function isMarked(): bool {
+    return $this->marked;
   }
 
   private function message(): string {
