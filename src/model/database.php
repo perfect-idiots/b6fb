@@ -117,6 +117,8 @@ class DatabaseQuerySet extends DatabaseConnection {
       'create-account' => 'sss',
       'user-account-existence' => 's',
       'list-games' => '',
+      'list-users' => '',
+      'list-genres' => '',
       'add-game' => 'ssss',
     ];
 
