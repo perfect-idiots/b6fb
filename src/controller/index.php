@@ -170,11 +170,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'logout' => $logout,
   ];
 
-  try {
-    return switchPage($data)->render();
-  } catch (NotFoundException $error) {
-    return ErrorPage::status(404)->render();
-  }
+  return switchPage($data)->render();
 }
 
 function sendImage(UrlQuery $urlQuery): string {
@@ -188,7 +184,7 @@ function sendImage(UrlQuery $urlQuery): string {
   if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
 
   $filename = __DIR__ . '/../resources/images/' . $name;
-  if (!file_exists($filename)) return ErrorPage::status(404)->render();
+  if (!file_exists($filename)) throw new NotFoundException();
 
   header('Content-Type: ' . $mime);
   header('Content-Length: ' . filesize($filename));
@@ -216,7 +212,7 @@ function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
       ])->redirect();
       break;
     default:
-      return ErrorPage::status(400)->render();
+      throw new NotFoundException();
   }
 }
 
@@ -229,15 +225,19 @@ function main(): string {
     'expiry-extend' => $constants->get('month'),
   ]);
 
-  switch ($urlQuery->getDefault('type', 'html')) {
-    case 'html':
-      return sendHtml($urlQuery, $postData, $cookie);
-    case 'image':
-      return sendImage($urlQuery);
-    case 'action':
-      return sendAction($urlQuery, $cookie);
-    default:
-      return ErrorPage::status(404)->render();
+  try {
+    switch ($urlQuery->getDefault('type', 'html')) {
+      case 'html':
+        return sendHtml($urlQuery, $postData, $cookie);
+      case 'image':
+        return sendImage($urlQuery);
+      case 'action':
+        return sendAction($urlQuery, $cookie);
+      default:
+        throw new NotFoundException();
+    }
+  } catch (NotFoundException $err) {
+    return ErrorPage::status(404)->render();
   }
 }
 ?>
