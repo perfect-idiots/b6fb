@@ -2,11 +2,12 @@
 require_once __DIR__ . '/../model/database.php';
 
 class GameInserter {
-  private $statement;
+  private $addingQuery, $checkingQuery;
   const GENRE_SEPARATOR = ',';
 
   public function __construct(DatabaseQuerySet $dbQuerySet) {
-    $this->statement = $dbQuerySet->get('add-game');
+    $this->addingQuery = $dbQuerySet->get('add-game');
+    $this->checkingQuery = $dbQuerySet->get('game-existence');
   }
 
   public function add(array $param): DatabaseQuerySingleResult {
@@ -24,7 +25,7 @@ class GameInserter {
       $description,
     ];
 
-    return $this->statement->executeOnce($args);
+    return $this->addingQuery->executeOnce($args);
   }
 
   static private function serializeGenres(array $genres): string {
@@ -33,6 +34,11 @@ class GameInserter {
 
   static private function unserializeGenres(string $genres): array {
     return explode(static::GENRE_SEPARATOR, $genres);
+  }
+
+  public function exists(string $id): bool {
+    [[$existence]] = $this->checkingQuery->executeOnce([$id], 1);
+    return $existence > 0;
   }
 }
 ?>
