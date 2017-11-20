@@ -8,6 +8,7 @@ class SignUp extends RawDataContainer {
     $postData = $this->get('post-data');
     $cookie = $this->get('cookie');
     $urlQuery = $this->get('url-query');
+    $dbQuerySet = $this->get('db-query-set');
     $fullname = $postData->getDefault('fullname', '');
     $username = $postData->getDefault('username', '');
     $password = $postData->getDefault('password', '');
@@ -19,6 +20,7 @@ class SignUp extends RawDataContainer {
         'username' => $username,
         'password' => $password,
         're-password' => $rePassword,
+        'db-query-set' => $dbQuerySet,
       ]);
 
       if ($signup->succeed()) {
@@ -46,6 +48,13 @@ class SignUp extends RawDataContainer {
           'password' => $password,
         ]);
 
+        $query = $dbQuerySet->get('create-account');
+        $dbResponse = $query->executeOnce([
+          $fullname,
+          $username,
+          $password,
+        ]);
+
         $urlQuery->set('page', $urlQuery->get('previous-page'))->redirect();
       } else {
         $error = $signup->error();
@@ -69,10 +78,18 @@ class SignUp extends RawDataContainer {
       'username' => $username,
       'password' => $password,
       're-password' => $rePassword,
+      'db-query-set' => $dbQuerySet,
     ] = $param;
+
+    $userAccountExistence = $dbQuerySet
+      ->get('user-account-existence')
+      ->executeOnce([$username], 1)
+      ->rows()
+    ;
 
     if (!$fullname) return SignUpInfo::mkerror('fullname', 'empty');
     if (!$username) return SignUpInfo::mkerror('username', 'empty');
+    if ($userAccountExistence) return SignUpInfo::mkerror('username', 'taken');
     if (!$password) return SignUpInfo::mkerror('password', 'empty');
     if (strlen($password) < 6) return SignUpInfo::mkerror('password', 'insufficient-lenth');
     if ($password !== $rePassword) return SignUpInfo::mkerror('re-password', 'mismatch');
@@ -98,8 +115,11 @@ class SignUpInfo extends RawDataContainer {
 
   static public function mkerror(string $field, string $reason): self {
     return self::instance([
-      'field' => $field,
-      'reason' => $reason,
+      'succeed' => false,
+      'error' => [
+        'field' => $field,
+        'reason' => $reason,
+      ],
     ]);
   }
 }
