@@ -20,6 +20,7 @@ class SignUp extends RawDataContainer {
         'username' => $username,
         'password' => $password,
         're-password' => $rePassword,
+        'db-query-set' => $dbQuerySet,
       ]);
 
       if ($signup->succeed()) {
@@ -46,8 +47,6 @@ class SignUp extends RawDataContainer {
           'username' => $username,
           'password' => $password,
         ]);
-
-        var_dump($dbQuerySet->getData());
 
         $query = $dbQuerySet->get('create-account');
         $dbResponse = $query->executeOnce([
@@ -79,12 +78,20 @@ class SignUp extends RawDataContainer {
       'username' => $username,
       'password' => $password,
       're-password' => $rePassword,
+      'db-query-set' => $dbQuerySet,
     ] = $param;
+
+    $userAccountExistence = $dbQuerySet
+      ->get('user-account-existence')
+      ->executeOnce([$username], 1)
+      ->rows()
+    ;
 
     if (!$fullname) return SignUpInfo::mkerror('fullname', 'empty');
     if (!$username) return SignUpInfo::mkerror('username', 'empty');
+    if ($userAccountExistence) return SignUpInfo::mkerror('username', 'taken');
     if (!$password) return SignUpInfo::mkerror('password', 'empty');
-    if (strlen($password) < 6) return SignUpInfo::mkerror('password', 'insufficient-lenth');
+    if (strlen($password) < 6) return SignUpInfo::mkerror('password', 'insufficient-length');
     if ($password !== $rePassword) return SignUpInfo::mkerror('re-password', 'mismatch');
 
     return SignUpInfo::instance(array_merge($param, [
@@ -108,8 +115,11 @@ class SignUpInfo extends RawDataContainer {
 
   static public function mkerror(string $field, string $reason): self {
     return self::instance([
-      'field' => $field,
-      'reason' => $reason,
+      'succeed' => false,
+      'error' => [
+        'field' => $field,
+        'reason' => $reason,
+      ],
     ]);
   }
 }

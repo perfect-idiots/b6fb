@@ -9,6 +9,11 @@ class Session extends LazyLoadedDataContainer {
 
   public function update(): void {
     session_unset();
+
+    foreach (array_keys($_SESSION) as $key) {
+      unset($_SESSION[$key]);
+    }
+
     foreach ($this->getData() as $key => $value) {
       $_SESSION[$key] = $value;
     }
