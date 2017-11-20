@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 19, 2017 at 04:14 PM
+-- Generation Time: Nov 20, 2017 at 08:20 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -28,8 +28,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admin_accounts` (
   `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `password_hash` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `salt_input` varchar(32) COLLATE utf8_unicode_ci NOT NULL
+  `password_hash` varchar(60) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -65,7 +64,6 @@ CREATE TABLE `genres` (
 CREATE TABLE `user_accounts` (
   `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `password_hash` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `salt_input` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `fullname` varchar(24) COLLATE utf8_unicode_ci NOT NULL,
   `favourite_games` varchar(512) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

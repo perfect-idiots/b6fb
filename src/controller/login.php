@@ -8,10 +8,12 @@ class Login extends RawDataContainer {
     $cookie = $this->get('cookie');
     $urlQuery = $this->get('url-query');
     $isAdmin = $this->getDefault('is-admin', false);
+    $dbQuerySet = $this->get('db-query-set');
     $ckprfx = $isAdmin ? 'admin-' : '';
     $ckloggedin = $ckprfx . 'logged-in';
     $ckusername = $ckprfx . 'username';
     $ckpassword = $ckprfx . 'password';
+    $query = $dbQuerySet->get($isAdmin ? 'admin-password' : 'user-password');
 
     if ($postData->getDefault('logged-in', 'off') === 'on') {
       $cookie->assign([
@@ -34,6 +36,15 @@ class Login extends RawDataContainer {
         $ckusername => $username,
         $ckpassword => $password,
       ] = $cookie->getData();
+
+      [[$hash]] = $query->executeOnce([$username], 1)->fetch();
+
+      if (!password_verify($password, $hash)) {
+        return new LoginInfo([
+          'logged-in' => false,
+          'error-reason' => 'invalid',
+        ]);
+      }
 
       return new LoginInfo([
         'logged-in' => true,
