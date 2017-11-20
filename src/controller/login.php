@@ -46,6 +46,8 @@ class Login extends RawDataContainer {
         ]);
       }
 
+      [[$hash]] = $dbResult;
+
       if (!password_verify($password, $hash)) {
         return new LoginInfo([
           'logged-in' => false,
