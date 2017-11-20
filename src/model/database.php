@@ -112,8 +112,8 @@ class DatabaseQuerySet extends DatabaseConnection {
 
   private function createQueries(mysqli $link): array {
     $queryFormats = [
-      'verify-admin-account' => 'ss',
-      'verify-user-account' => 'ss',
+      'user-password' => 's',
+      'admin-password' => 's',
       'create-account' => 'sss',
       'user-account-existence' => 's',
       'list-games' => '',
