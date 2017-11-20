@@ -197,6 +197,29 @@ function sendImage(UrlQuery $urlQuery): string {
   exit;
 }
 
+function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
+  $action = $urlQuery->getDefault('action', '');
+  $dbQuerySet = DatabaseQuerySet::instance();
+
+  switch ($action) {
+    case 'edit-user':
+      $username = $urlQuery->getDefault('username', '');
+      $fullname = $urlQuery->getDefault('fullname', '');
+      if (!$username || !$fullname) return ErrorPage::status(400)->render();
+      $dbQuerySet->get('update-user-fullname')->executeOnce([$fullname, $username]);
+      $urlQuery->without([
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => $urlQuery->get('previous-page'),
+      ])->redirect();
+      break;
+    default:
+      return ErrorPage::status(400)->render();
+  }
+}
+
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
@@ -211,6 +234,8 @@ function main(): string {
       return sendHtml($urlQuery, $postData, $cookie);
     case 'image':
       return sendImage($urlQuery);
+    case 'action':
+      return sendAction($urlQuery, $cookie);
     default:
       return ErrorPage::status(404)->render();
   }

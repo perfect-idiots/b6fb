@@ -80,6 +80,10 @@ class DatabaseConnection extends DatabaseInfo {
       ");
     }
 
+    $link->query('set character_set_results=utf8');
+    mb_language('uni');
+    mb_internal_encoding('UTF-8');
+    $link->query('set names "utf8"');
     $this->loaded = true;
     return array_merge($info, ['info' => $info, 'link' => $link]);
   }
@@ -112,14 +116,16 @@ class DatabaseQuerySet extends DatabaseConnection {
 
   private function createQueries(mysqli $link): array {
     $queryFormats = [
-      'verify-admin-account' => 'ss',
-      'verify-user-account' => 'ss',
+      'user-password' => 's',
+      'admin-password' => 's',
       'create-account' => 'sss',
       'user-account-existence' => 's',
       'list-games' => '',
       'list-users' => '',
       'list-genres' => '',
       'add-game' => 'ssss',
+      'user-info' => 's',
+      'update-user-fullname' => 'ss',
     ];
 
     $queries = [];
