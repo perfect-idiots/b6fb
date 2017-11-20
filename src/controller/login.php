@@ -13,7 +13,6 @@ class Login extends RawDataContainer {
     $ckloggedin = $ckprfx . 'logged-in';
     $ckusername = $ckprfx . 'username';
     $ckpassword = $ckprfx . 'password';
-    $query = $dbQuerySet->get($isAdmin ? 'admin-password' : 'user-password');
 
     if ($postData->getDefault('logged-in', 'off') === 'on') {
       $cookie->assign([
@@ -40,6 +39,7 @@ class Login extends RawDataContainer {
       return self::checkLogin([
         'username' => $username,
         'password' => $password,
+        'is-admin' => $isAdmin,
         'db-query-set' => $dbQuerySet,
       ]);
     }
@@ -51,9 +51,11 @@ class Login extends RawDataContainer {
     [
       'username' => $username,
       'password' => $password,
+      'is-admin' => $isAdmin,
       'db-query-set' => $dbQuerySet,
     ] = $param;
 
+    $query = $dbQuerySet->get($isAdmin ? 'admin-password' : 'user-password');
     $dbResult = $query->executeOnce([$username], 1)->fetch();
 
     if (!sizeof($dbResult)) {
