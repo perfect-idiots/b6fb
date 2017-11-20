@@ -111,12 +111,16 @@ nav ul:nth-child(2) li:hover {
   background-color: #ddd;
 }
 
-#dashboard, #user-account, #list-games {
+#dashboard, #user-account, #list-games, #edit-user-page {
   width: 80%;
   display: inline-block;
   margin-left: 180px;
   margin-top: 60px;
   padding: 15px;
+}
+
+#user-account {
+  margin-top: 0px;
 }
 
 .header-subpage {
@@ -189,9 +193,26 @@ table#tb-games {
 
 table, th, td {
   border: 1px solid #ddd;
+  padding: 5px 60px 0px 5px;
 }
 
-th ,td {
+th {
+  text-align: center;
   background-color: #eee;
-  padding: 0px 60px 0px 60px;
+}
+
+#edit-user-page h2 {
+  font-weight: normal;
+}
+
+#edit-user-form {
+  height: 300px;
+  width: 500px;
+  padding: 19px;
+  border: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+}
+
+#form-group, button {
+  display: block;
 }

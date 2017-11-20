@@ -5,6 +5,7 @@ require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/logo.php';
 require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/sidebar-navigator.php';
+require_once __DIR__ . '/hidden-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class AdminUserInterface extends RawDataContainer implements Component {
@@ -131,6 +132,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminUsers($data);
       case 'advanced':
         return new AdminAdvanced($data);
+      case 'edit-user':
+        return new AdminEditUser($data);
       default:
         throw new NotFoundException();
     }
@@ -202,7 +205,7 @@ class AdminGames extends RawDataContainer implements Component {
               HtmlElement::emmetTop('th', ['Tên']),
               HtmlElement::emmetBottom('th', ['Thể loại']),
               HtmlElement::emmetBottom('th', ['Mô tả']),
-              HtmlElement::emmetBottom('th', ['Điều khiển'])
+              HtmlElement::emmetBottom('th', ['Điều khiển']),
             ]),
           ]),
         ]),
@@ -220,6 +223,9 @@ class AdminUsers extends RawDataContainer implements Component {
         return HtmlElement::create('tr', [
           HtmlElement::create('td', $username),
           HtmlElement::create('td', $fullname),
+          HtmlElement::create('td', new AdminUserController(
+            $this->set('username', $username)->getData()
+          )),
         ]);
       },
       $users
@@ -228,22 +234,18 @@ class AdminUsers extends RawDataContainer implements Component {
     return HtmlElement::emmetBottom('#user-account', [
       HtmlElement::emmetTop('#header-user-page.header-subpage', [
         HtmlElement::create('h1', 'Tài khoản User'),
-        HtmlElement::emmetTop('button.btn-add#btn-add-user', [
-          HtmlElement::emmetTop('a', [
-            'href' =>'',
-            'Thêm User',
-          ]),
-        ]),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetTop('table#tb-games', [
-         HtmlElement::emmetBottom('thead>tr.class-tr-games', [
-           HtmlElement::emmetTop('th', ['Tên người dùng']),
-           HtmlElement::emmetTop('th', ['Tên đầy đủ']),
-         ]),
-         HtmlElement::create('tbody', $children),
-       ]),
-     ]),
+          HtmlElement::emmetBottom('thead>tr.class-tr-games', [
+            HtmlElement::emmetTop('th', ['Tên người dùng']),
+            HtmlElement::emmetTop('th', ['Tên đầy đủ']),
+            HtmlElement::emmetBottom('th', ['Điều khiển']),
+          ]),
+          HtmlElement::create('tbody', $children),
+        ]),
+        $userEditDialog,
+      ]),
     ]);
   }
 }
@@ -252,6 +254,72 @@ class AdminAdvanced extends RawDataContainer implements Component {
   public function render(): Component {
     return HtmlElement::emmetBottom('div#dashboard.content',[
       'This is Advanced'
+    ]);
+  }
+}
+
+class AdminUserController extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query')->assign([
+      'page' => 'admin',
+      'username' => $this->get('username'),
+      'previous-page' => 'users',
+    ]);
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetTop('a.edit-user', [
+        'href' => $urlQuery->set('subpage', 'edit-user')->getUrlQuery(),
+        'Sửa',
+      ]),
+      HtmlElement::emmetTop('a.delete-user', [
+        'href' => $urlQuery->set('subpage', 'delete-user')->getUrlQuery(),
+        'Xóa',
+      ]),
+    ]);
+  }
+}
+
+class AdminEditUser extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $username = $urlQuery->get('username');
+    $dbQuerySet = $this->get('db-query-set');
+    [[$fullname]] = $dbQuerySet->get('user-info')->executeOnce([$username], 1)->fetch();
+
+    return HtmlElement::emmetBottom('#edit-user-page', [
+      HtmlElement::emmetTop('.header-subpage', [
+        HtmlElement::create('h2', 'Cập nhật tài khoản'),
+      ]),
+      HtmlElement::emmetTop('.body-subpage', [
+        HtmlElement::emmetBottom('form#edit-user-form', [
+          'method' => 'GET',
+          'action' => '',
+          HtmlElement::emmetTop('#form-group', [
+            HtmlElement::create('label', 'Tên người dùng'),
+            HtmlElement::create('output', [
+              $username,
+            ]),
+          ]),
+          HtmlElement::emmetTop('#form-group', [
+            HtmlElement::create('label', 'Họ và Tên'),
+            HtmlElement::create('input', [
+              'type' => 'text',
+              'name' => 'fullname',
+              'value' => $fullname,
+            ]),
+            HtmlElement::create('button', [
+              'type' => 'submit',
+              'Lưu',
+            ]),
+          ]),
+          HiddenInputSet::instance($urlQuery->assign([
+            'type' => 'action',
+            'action' => 'edit-user',
+            'previous-page' => 'edit-user',
+            'username' => $username,
+          ])->getData()),
+        ]),
+      ]),
     ]);
   }
 }
