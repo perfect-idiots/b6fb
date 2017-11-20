@@ -28,5 +28,9 @@ abstract class LoginDoubleChecker extends RawDataContainer {
   }
 }
 
-class SecurityException extends Exception {}
+class SecurityException extends Exception {
+  static public function permission(): self {
+    return new static('Permission Denied');
+  }
+}
 ?>
