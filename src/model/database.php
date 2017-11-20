@@ -123,6 +123,7 @@ class DatabaseQuerySet extends DatabaseConnection {
       'verify-user-account' => 'ss',
       'create-account' => 'sss',
       'user-account-existence' => 's',
+      'list-games' => '',
     ];
 
     $queries = [];
@@ -175,8 +176,17 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   public function executeOnce(array $param, int $columns = 0): DatabaseQuerySingleResult {
-    $refs = $this->arrOfRefs($param);
     $statement = $this->statement;
+
+    if (!sizeof($param)) {
+        return DatabaseQuerySingleResult::instance([
+        'success' => $statement->execute(),
+        'statement' => $statement,
+        'columns' => $columns,
+      ]);
+    }
+
+    $refs = $this->arrOfRefs($param);
 
     $bindSuccess = call_user_func_array(
       [$statement, 'bind_param'],
