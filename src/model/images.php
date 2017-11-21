@@ -8,7 +8,10 @@ class ImageUrlQuery extends UrlQuery {
   }
 
   protected function defaultFields(): array {
-    return ['type' => 'file'];
+    return [
+      'type' => 'file',
+      'purpose' => 'ui',
+    ];
   }
 }
 
