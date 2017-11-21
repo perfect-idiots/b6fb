@@ -123,6 +123,8 @@ class Login extends RawDataContainer {
       'is-admin' => $isAdmin,
       'username' => $username,
       'password' => $password,
+      'sid' => $sid,
+      'sidhash' => $sidhash,
     ]);
   }
 
