@@ -144,7 +144,10 @@ function sendImage(UrlQuery $urlQuery): string {
   exit;
 }
 
-function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
+function sendAction(DataContainer $param): string {
+  $urlQuery = $param->get('url-query');
+  $dbQuerySet = $param->get('db-query-set');
+  $login = $param->get('login');
   $action = $urlQuery->getDefault('action', '');
   $dbQuerySet = DatabaseQuerySet::instance();
 
@@ -153,7 +156,14 @@ function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
-      $dbQuerySet->get('update-user-profile')->executeOnce([$fullname, $username]);
+      $userProfileUpdater = UserProfileUpdater::instance([
+        'login' => $login,
+        'db-query-set' => $dbQuerySet,
+        'username' => $urlQuery->get('username'),
+      ]);
+      $userProfileUpdater->update([
+        'fullname' => $urlQuery->get('fullname'),
+      ]);
       $urlQuery->without([
         'fullname',
         'previous-page',
