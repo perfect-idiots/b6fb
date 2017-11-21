@@ -120,59 +120,8 @@ function createAdminSubpageList(UrlQuery $urlQuery) {
   return $result;
 }
 
-function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
-  if ($urlQuery->hasKey('theme')) {
-    $cookie->set('theme', $urlQuery->get('theme'))->update();
-    $urlQuery->except('theme')->redirect();
-  }
-
-  $themeColorSet = getThemeColorSet($cookie);
-
-  if ($themeColorSet['invalid']) {
-    $themeColorSet['new-cookie']->update();
-    $urlQuery->except('theme')->redirect();
-  }
-
-  $session = Session::instance();
-  $sizeSet = SizeSet::instance();
-  $imageSet = ImageSet::instance($themeColorSet);
-  $dbQuerySet = DatabaseQuerySet::instance();
-
-  $accountParams = [
-    'session' => $session,
-    'post-data' => $postData,
-    'cookie' => $cookie,
-    'db-query-set' => $dbQuerySet,
-    'url-query' => $urlQuery,
-  ];
-
-  $signup = SignUp::instance($accountParams)->verify();
-  $login = Login::instance($accountParams)->verify();
-  $logout = Logout::instance($accountParams);
-
-  $data = [
-    'title' => 'b6fb',
-    'url-query' => $urlQuery,
-    'post-data' => $postData,
-    'theme-name' => $themeColorSet['name'],
-    'colors' => $themeColorSet['colors'],
-    'images' => $imageSet->getData(),
-    'size-set' => $sizeSet,
-    'sizes' => $sizeSet->getData(),
-    'page' => $urlQuery->getDefault('page', 'index'),
-    'session' => $session,
-    'cookie' => $cookie,
-    'subpages' => createSubpageList($urlQuery, $cookie),
-    'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
-    'admin-subpages' => createAdminSubpageList($urlQuery),
-    'db-query-set' => $dbQuerySet,
-    'game-inserter' => new GameInserter($dbQuerySet),
-    'signup' => $signup,
-    'login' => $login,
-    'logout' => $logout,
-  ];
-
-  return switchPage($data)->render();
+function sendHtml(DataContainer $data): string {
+  return switchPage($data->getData())->render();
 }
 
 function sendImage(UrlQuery $urlQuery): string {
@@ -227,14 +176,65 @@ function main(): string {
     'expiry-extend' => $constants->get('month'),
   ]);
 
+  if ($urlQuery->hasKey('theme')) {
+    $cookie->set('theme', $urlQuery->get('theme'))->update();
+    $urlQuery->except('theme')->redirect();
+  }
+
+  $themeColorSet = getThemeColorSet($cookie);
+
+  if ($themeColorSet['invalid']) {
+    $themeColorSet['new-cookie']->update();
+    $urlQuery->except('theme')->redirect();
+  }
+
+  $session = Session::instance();
+  $sizeSet = SizeSet::instance();
+  $imageSet = ImageSet::instance($themeColorSet);
+  $dbQuerySet = DatabaseQuerySet::instance();
+
+  $accountParams = [
+    'session' => $session,
+    'post-data' => $postData,
+    'cookie' => $cookie,
+    'db-query-set' => $dbQuerySet,
+    'url-query' => $urlQuery,
+  ];
+
+  $signup = SignUp::instance($accountParams)->verify();
+  $login = Login::instance($accountParams)->verify();
+  $logout = Logout::instance($accountParams);
+
+  $param = RawDataContainer::instance([
+    'title' => 'b6fb',
+    'url-query' => $urlQuery,
+    'post-data' => $postData,
+    'theme-name' => $themeColorSet['name'],
+    'colors' => $themeColorSet['colors'],
+    'images' => $imageSet->getData(),
+    'size-set' => $sizeSet,
+    'sizes' => $sizeSet->getData(),
+    'page' => $urlQuery->getDefault('page', 'index'),
+    'session' => $session,
+    'cookie' => $cookie,
+    'subpages' => createSubpageList($urlQuery, $cookie),
+    'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
+    'admin-subpages' => createAdminSubpageList($urlQuery),
+    'db-query-set' => $dbQuerySet,
+    'game-inserter' => new GameInserter($dbQuerySet),
+    'signup' => $signup,
+    'login' => $login,
+    'logout' => $logout,
+  ]);
+
   try {
     switch ($urlQuery->getDefault('type', 'html')) {
       case 'html':
-        return sendHtml($urlQuery, $postData, $cookie);
+        return sendHtml($param);
       case 'image':
         return sendImage($urlQuery);
       case 'action':
-        return sendAction($urlQuery, $cookie);
+        return sendAction($param);
       default:
         throw new NotFoundException();
     }
