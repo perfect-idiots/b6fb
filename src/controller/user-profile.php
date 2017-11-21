@@ -11,19 +11,19 @@ class UserProfileUpdater extends LoginDoubleChecker {
 
   public function checkPermission(): bool {
     $login = $this->get('login');
-    return $login->username() === $this->get('username') || $this->isAdmin();
+    return $login->username() === $this->get('username') || $login->isAdmin();
   }
 
   public function update(array $param): DatabaseQuerySingleResult {
     $this->verify();
     $dbQuerySet = $this->get('db-query-set');
+    $username = $this->get('username');
     $query = $dbQuerySet->get('update-user-profile');
-    $username = $param['username'];
 
     $profile = UserInfo::instance([
       'username' => $username,
       'db-query-set' => $dbQuerySet,
-    ]);
+    ])->fetch();
 
     [
       'fullname' => $fullname,
