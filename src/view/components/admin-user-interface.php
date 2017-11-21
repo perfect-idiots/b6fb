@@ -144,6 +144,7 @@ class AdminMainSection extends RawDataContainer implements Component {
 class AdminDashboard extends RawDataContainer implements Component {
   public function render(): Component {
     $images = $this->get('images');
+    $userCounter = $this->get('user-counter');
 
     return HtmlElement::emmetBottom('#dashboard', [
       HtmlElement::emmetTop('.header-subpage', [
@@ -151,7 +152,7 @@ class AdminDashboard extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', 12),
-        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', 34),
+        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $userCounter->countUsers()),
       ]),
     ]);
   }
