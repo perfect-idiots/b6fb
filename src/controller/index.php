@@ -6,7 +6,7 @@ require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/user-profile.php';
-require_once __DIR__ . '/count-users.php';
+require_once __DIR__ . '/db-row-counter.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -218,7 +218,7 @@ function main(): string {
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
-  $userCounter = UserCounter::instance([
+  $dbRowCounter = DatabaseRowCounter::instance([
     'cookie' => $cookie,
     'session' => $session,
     'db-query-set' => $dbQuerySet,
@@ -245,7 +245,7 @@ function main(): string {
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
-    'user-counter' => $userCounter,
+    'db-row-counter' => $dbRowCounter,
   ]);
 
   try {
