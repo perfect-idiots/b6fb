@@ -42,6 +42,24 @@ class NightModeIcon extends SvgImage {
   }
 }
 
+class DefaultAvatarImage extends SvgImage {
+  protected function name(): string {
+    return 'default-avatar.svg';
+  }
+}
+
+class GamepadImage extends SvgImage {
+  protected function name(): string {
+    return 'gamepad.svg';
+  }
+}
+
+class MultiUsersImage extends SvgImage {
+  protected function name(): string {
+    return 'multi-users.svg';
+  }
+}
+
 class ImageSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $theme = $this->param['name'];
@@ -49,6 +67,9 @@ class ImageSet extends LazyLoadedDataContainer {
     $classes = [
       'SearchIcon',
       'NightModeIcon',
+      'DefaultAvatarImage',
+      'GamepadImage',
+      'MultiUsersImage',
     ];
 
     $result = [];
