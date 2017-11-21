@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/system-requirements.php';
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -50,11 +52,7 @@ function switchPage(array $data): Page {
     case 'sign-up':
       return SignUpPage::instance($data);
     case 'admin':
-      return AdminPage::instance(array_merge($data, [
-        'login' => Login::instance(array_merge($data, [
-          'is-admin' => true,
-        ]))->verify(),
-      ]));
+      return AdminPage::instance($data);
     default:
       throw new NotFoundException();
   }
@@ -118,7 +116,77 @@ function createAdminSubpageList(UrlQuery $urlQuery) {
   return $result;
 }
 
-function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
+function sendHtml(DataContainer $data): string {
+  return switchPage($data->getData())->render();
+}
+
+function sendImage(UrlQuery $urlQuery): string {
+  $requiredkeys = ['name', 'mime'];
+  foreach ($requiredkeys as $key) {
+    if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
+  }
+
+  $name = $urlQuery->get('name');
+  $mime = $urlQuery->get('mime');
+  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
+
+  $filename = __DIR__ . '/../resources/images/' . $name;
+  if (!file_exists($filename)) throw new NotFoundException();
+
+  header('Content-Type: ' . $mime);
+  header('Content-Length: ' . filesize($filename));
+  header('Content-Disposition: inline');
+  readfile($filename);
+  exit;
+}
+
+function sendAction(DataContainer $param): string {
+  $urlQuery = $param->get('url-query');
+  $dbQuerySet = $param->get('db-query-set');
+  $cookie = $param->get('cookie');
+  $session = $param->get('session');
+  $login = $param->get('login');
+  $action = $urlQuery->getDefault('action', '');
+  $dbQuerySet = DatabaseQuerySet::instance();
+
+  switch ($action) {
+    case 'edit-user':
+      $username = $urlQuery->getDefault('username', '');
+      $fullname = $urlQuery->getDefault('fullname', '');
+      if (!$username || !$fullname) return ErrorPage::status(400)->render();
+      $userProfileUpdater = UserProfileUpdater::instance([
+        'cookie' => $cookie,
+        'session' => $session,
+        'login' => $login,
+        'db-query-set' => $dbQuerySet,
+        'username' => $urlQuery->get('username'),
+      ]);
+      $userProfileUpdater->update([
+        'fullname' => $urlQuery->get('fullname'),
+      ]);
+      $urlQuery->without([
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => $urlQuery->get('previous-page'),
+      ])->redirect();
+      break;
+    default:
+      throw new NotFoundException();
+  }
+}
+
+function main(): string {
+  $constants = Constants::instance();
+  $urlQuery = new UrlQuery($_GET);
+  $postData = new HttpData($_POST);
+  $page = $urlQuery->getDefault('page', 'index');
+
+  $cookie = Cookie::instance([
+    'expiry-extend' => $constants->get('month'),
+  ]);
+
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
     $urlQuery->except('theme')->redirect();
@@ -137,6 +205,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
   $dbQuerySet = DatabaseQuerySet::instance();
 
   $accountParams = [
+    'is-admin' => $page === 'admin',
     'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
@@ -148,7 +217,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
-  $data = [
+  $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
@@ -157,7 +226,7 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'images' => $imageSet->getData(),
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
-    'page' => $urlQuery->getDefault('page', 'index'),
+    'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
@@ -168,76 +237,23 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
-  ];
-
-  try {
-    return switchPage($data)->render();
-  } catch (NotFoundException $error) {
-    return ErrorPage::status(404)->render();
-  }
-}
-
-function sendImage(UrlQuery $urlQuery): string {
-  $requiredkeys = ['name', 'mime'];
-  foreach ($requiredkeys as $key) {
-    if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
-  }
-
-  $name = $urlQuery->get('name');
-  $mime = $urlQuery->get('mime');
-  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
-
-  $filename = __DIR__ . '/../resources/images/' . $name;
-  if (!file_exists($filename)) return ErrorPage::status(404)->render();
-
-  header('Content-Type: ' . $mime);
-  header('Content-Length: ' . filesize($filename));
-  header('Content-Disposition: inline');
-  readfile($filename);
-  exit;
-}
-
-function sendAction(UrlQuery $urlQuery, Cookie $cookie): string {
-  $action = $urlQuery->getDefault('action', '');
-  $dbQuerySet = DatabaseQuerySet::instance();
-
-  switch ($action) {
-    case 'edit-user':
-      $username = $urlQuery->getDefault('username', '');
-      $fullname = $urlQuery->getDefault('fullname', '');
-      if (!$username || !$fullname) return ErrorPage::status(400)->render();
-      $dbQuerySet->get('update-user-fullname')->executeOnce([$fullname, $username]);
-      $urlQuery->without([
-        'fullname',
-        'previous-page',
-      ])->assign([
-        'type' => 'html',
-        'subpage' => $urlQuery->get('previous-page'),
-      ])->redirect();
-      break;
-    default:
-      return ErrorPage::status(400)->render();
-  }
-}
-
-function main(): string {
-  $constants = Constants::instance();
-  $urlQuery = new UrlQuery($_GET);
-  $postData = new HttpData($_POST);
-
-  $cookie = Cookie::instance([
-    'expiry-extend' => $constants->get('month'),
   ]);
 
-  switch ($urlQuery->getDefault('type', 'html')) {
-    case 'html':
-      return sendHtml($urlQuery, $postData, $cookie);
-    case 'image':
-      return sendImage($urlQuery);
-    case 'action':
-      return sendAction($urlQuery, $cookie);
-    default:
-      return ErrorPage::status(404)->render();
+  try {
+    switch ($urlQuery->getDefault('type', 'html')) {
+      case 'html':
+        return sendHtml($param);
+      case 'image':
+        return sendImage($urlQuery);
+      case 'action':
+        return sendAction($param);
+      default:
+        throw new NotFoundException();
+    }
+  } catch (NotFoundException $err) {
+    return ErrorPage::status(404)->render();
+  } catch (SecurityException $err) {
+    return ErrorPage::status(401)->render();
   }
 }
 ?>

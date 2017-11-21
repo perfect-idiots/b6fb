@@ -11,3 +11,5 @@ insert into admin_accounts (username, password_hash)
 select username, password_hash
 from user_accounts
 ```
+
+**Result:** You now have an admin account with username/password identical to the user account.
