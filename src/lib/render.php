@@ -95,7 +95,7 @@ class Renderer {
     $result = [];
 
     foreach ($segments as $chunk) {
-      array_push($result, $indent . $chunk);
+      array_push($result, $chunk ? $indent . $chunk : '');
     }
 
     return implode("\n", $result);

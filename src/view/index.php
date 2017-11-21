@@ -5,6 +5,8 @@ require_once __DIR__ . '/../lib/http-status-table.php';
 require_once __DIR__ . '/components/base.php';
 require_once __DIR__ . '/components/app.php';
 require_once __DIR__ . '/components/admin-user-interface.php';
+require_once __DIR__ . '/components/login-user-interface.php';
+require_once __DIR__ . '/components/sign-up-user-interface.php';
 require_once __DIR__ . '/components/meta-element.php';
 require_once __DIR__ . '/components/css-view.php';
 require_once __DIR__ . '/components/script-embed.php';
@@ -23,6 +25,28 @@ abstract class Page extends RawDataContainer {
 class MainPage extends Page {
   protected function component(): Component {
     return new App($this->getData());
+  }
+}
+
+class LoginPage extends Page {
+  protected function component(): Component {
+    return new LoginUserInterface($this->getData());
+  }
+}
+
+class LogoutPage extends Page {
+  protected function component(): Component {
+    $this->get('logout')->act();
+    $prev = $this->getDefault('previous-page', 'index');
+    $next = $this->get('url-query')->set('page', $prev);
+    $next->redirect();
+    return new RedirectPage($next->getUrlQuery());
+  }
+}
+
+class SignUpPage extends Page {
+  protected function component(): Component {
+    return new SignUpUserInterface($this->getData());
   }
 }
 
@@ -46,11 +70,9 @@ class ErrorPage extends Page {
         new CharsetMetaElement('utf-8'),
         new NamedMetaElement('status', $status),
         HtmlElement::create('title', "$status: $message"),
-        CssView::fromFile(__DIR__ . '/../resources/style.css', [
+        CssView::fromFile(__DIR__ . '/../resources/error.css', [
           'text-color' => 'black',
           'background-color' => 'white',
-          'logo-text-color' => 'black',
-          'logo-background-color' => 'white',
           'header-background-color' => 'white',
         ]),
       ]),

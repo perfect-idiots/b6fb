@@ -8,10 +8,7 @@ class Logo extends RawDataContainer implements Component {
     return HtmlElement::create('h1', [
       'id' => 'main-logo',
       'classes' => ['logo'],
-      Anchor::withoutAttributes(
-        $this->get('url-query')->set('page', 'index')->getUrlQuery(),
-        $this->get('title')
-      ),
+      Anchor::withoutAttributes('.', $this->get('title')),
     ]);
   }
 }
