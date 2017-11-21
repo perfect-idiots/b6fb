@@ -80,6 +80,10 @@ class DatabaseConnection extends DatabaseInfo {
       ");
     }
 
+    $link->query('set character_set_results=utf8');
+    mb_language('uni');
+    mb_internal_encoding('UTF-8');
+    $link->query('set names "utf8"');
     $this->loaded = true;
     return array_merge($info, ['info' => $info, 'link' => $link]);
   }
@@ -90,18 +94,50 @@ class DatabaseConnection extends DatabaseInfo {
 }
 
 class DatabaseQuerySet extends DatabaseConnection {
-  private function createQueries(mysqli $link): array {
-    $login = function ($table) {
-      return [
-        'template' => "SELECT count(*) as ok FROM $table WHERE username = ? and password_hash = ?",
-        'format' => 'ss',
-      ];
-    };
+  protected function load(): array {
+    $data = parent::load();
+    $link = $data['link'];
+    $queries = $this->createQueries($link);
 
-    $queries = [
-      'verify-admin-login' => $login('admin_accounts'),
-      'verify-user-login' => $login('user_accounts'),
+    return array_merge($data, $queries, [
+      'source' => $data,
+      'link' => $link,
+      'queries' => $queries,
+    ]);
+  }
+
+  public function queries(): array {
+    return $this->get('queries');
+  }
+
+  public function query(string $name): DatabaseQueryStatement {
+    return $this->queries()[$name];
+  }
+
+  private function createQueries(mysqli $link): array {
+    $queryFormats = [
+      'user-password' => 's',
+      'admin-password' => 's',
+      'create-account' => 'sss',
+      'user-account-existence' => 's',
+      'game-existence' => 's',
+      'list-games' => '',
+      'list-users' => '',
+      'list-genres' => '',
+      'add-game' => 'ssss',
+      'user-info' => 's',
+      'update-user-profile' => 'ss',
+      'count-games' => '',
+      'count-users' => '',
     ];
+
+    $queries = [];
+    foreach ($queryFormats as $name => $format) {
+      $queries[$name] = [
+        'template' => file_get_contents(__DIR__ . "/db-queries/$name.sql"),
+        'format' => $format,
+      ];
+    }
 
     return array_map(
       function ($desc) use($link) {
@@ -125,8 +161,10 @@ class DatabaseQueryStatement extends RawDataContainer {
   }
 
   private function init(): void {
+    $link = $this->get('link');
+    $template = $this->get('template');
     $this->clear();
-    $this->statement = $link->prepare($desc['template']);
+    $this->statement = $link->prepare($template);
   }
 
   private function clear(): void {
@@ -142,30 +180,42 @@ class DatabaseQueryStatement extends RawDataContainer {
     ];
   }
 
-  public function executeOnce(array $param): array {
+  public function executeOnce(array $param, int $columns = 0): DatabaseQuerySingleResult {
     $statement = $this->statement;
+
+    if (!sizeof($param)) {
+        return DatabaseQuerySingleResult::instance([
+        'success' => $statement->execute(),
+        'statement' => $statement,
+        'columns' => $columns,
+      ]);
+    }
+
+    $refs = $this->arrOfRefs($param);
 
     $bindSuccess = call_user_func_array(
       [$statement, 'bind_param'],
-      array_merge([$this->get('format')], $param)
+      array_merge([$this->get('format')], $refs)
     );
 
     if (!$bindSuccess) throw new Exception('Cannot bind param');
 
-    return [
+    return DatabaseQuerySingleResult::instance([
       'success' => $statement->execute(),
       'statement' => $statement,
-    ];
+      'columns' => $columns,
+    ]);
   }
 
   public function executeMultipleTimes(array $param): array {
+    $refs = $this->arrOfRefs($param);
     $statement = $this->statement;
     $success = [];
 
     foreach ($param as $index => $subparam) {
       $bindSuccess = call_user_func_array(
         [$statement, 'bind_param'],
-        array_merge([$this->get('format')], $param)
+        array_merge([$this->get('format')], $refs)
       );
 
       if (!$bindSuccess) throw new Exception("Cannot bind param[$index]");
@@ -176,6 +226,83 @@ class DatabaseQueryStatement extends RawDataContainer {
       'success' => $success,
       'statement' => $statement,
     ];
+  }
+
+  private function arrOfRefs(array &$array): array {
+    $refs = [];
+    foreach ($array as $key => &$value) {
+      $refs[$key] = &$value;
+    }
+    return $refs;
+  }
+}
+
+abstract class DatabaseQueryResult extends RawDataContainer {}
+
+class DatabaseQuerySingleResult extends DatabaseQueryResult {
+  private $result = null;
+
+  static protected function requiredFieldSchema(): array {
+    return [
+      'success' => 'boolean',
+      'statement' => 'mysqli_stmt',
+      'columns' => 'integer',
+    ];
+  }
+
+  public function fetch(): array {
+    if ($this->result) return $this->result;
+    $this->result = $this->fetchMain();
+    return $this->result;
+  }
+
+  public function rows(): int {
+    return sizeof($this->fetch());
+  }
+
+  public function success(): bool {
+    return $this->get('success');
+  }
+
+  public function statement(): mysqli_stmt {
+    return $this->get('statement');
+  }
+
+  public function columns(): int {
+    return $this->get('columns');
+  }
+
+  private function fetchMain(): array {
+    [
+      'success' => $success,
+      'statement' => $statement,
+      'columns' => $columns,
+    ] = $this->getData();
+
+    if (!$success) {
+      throw new Exception('Atempt to fetch result of an unsuccessful execution');
+    }
+
+    $result = []; // array of arrays
+    $buffer = []; // array to be referered to
+    $refs = []; // array of references
+
+    foreach (range(0, $columns - 1) as $index) {
+      $buffer[$index] = null;
+      $refs[$index] = &$buffer[$index];
+    }
+
+    call_user_func_array([$statement, 'bind_result'], $refs);
+
+    while ($statement->fetch()) {
+      $row = [];
+      foreach ($buffer as $key => $value) {
+        $row[$key] = $value;
+      }
+      array_push($result, $row);
+    }
+
+    return $result;
   }
 }
 ?>
