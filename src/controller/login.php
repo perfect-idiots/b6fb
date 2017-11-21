@@ -128,7 +128,7 @@ class Login extends RawDataContainer {
     ];
   }
 
-  static private function getCkPrfx(bool $isAdmin): bool {
+  static private function getCkPrfx(bool $isAdmin): string {
     return $isAdmin ? 'admin-' : '';
   }
 
