@@ -52,11 +52,7 @@ function switchPage(array $data): Page {
     case 'sign-up':
       return SignUpPage::instance($data);
     case 'admin':
-      return AdminPage::instance(array_merge($data, [
-        'login' => Login::instance(array_merge($data, [
-          'is-admin' => true,
-        ]))->verify(),
-      ]));
+      return AdminPage::instance($data);
     default:
       throw new NotFoundException();
   }
@@ -185,6 +181,7 @@ function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
+  $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
     'expiry-extend' => $constants->get('month'),
@@ -208,6 +205,7 @@ function main(): string {
   $dbQuerySet = DatabaseQuerySet::instance();
 
   $accountParams = [
+    'is-admin' => $page === 'admin',
     'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
@@ -228,7 +226,7 @@ function main(): string {
     'images' => $imageSet->getData(),
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
-    'page' => $urlQuery->getDefault('page', 'index'),
+    'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
