@@ -11,6 +11,8 @@ class RedirectPage implements Component {
   }
 
   public function render(): Component {
+    $location = $this->location;
+
     return HtmlElement::create('html', [
       'lang' => 'en',
       HtmlElement::nested(['head', 'title'], 'Redirecting...'),
