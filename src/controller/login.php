@@ -47,6 +47,7 @@ class Login extends RawDataContainer {
       ] = $cookie->getData();
 
       return self::checkLogin([
+        'logged-in' => true,
         'cookie' => $cookie,
         'session' => $session,
         'username' => $username,
@@ -59,7 +60,22 @@ class Login extends RawDataContainer {
     return new LoginInfo(['logged-in' => false]);
   }
 
+  static protected function requiredFieldSchema(): array {
+    return [
+      'cookie' => 'Cookie',
+      'session' => 'Session',
+      'db-query-set' => 'DatabaseQuerySet',
+    ];
+  }
+
   static public function checkLogin(array $param): LoginInfo {
+    if (!$param['logged-in']) {
+      return new LoginInfo([
+        'logged-in' => false,
+        'error-reason' => 'invalid-username',
+      ]);
+    }
+
     [
       'cookie' => $cookie,
       'session' => $session,
@@ -120,7 +136,7 @@ class Login extends RawDataContainer {
     ];
   }
 
-  static private function getCkPrfx(bool $isAdmin): bool {
+  static private function getCkPrfx(bool $isAdmin): string {
     return $isAdmin ? 'admin-' : '';
   }
 
