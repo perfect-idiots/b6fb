@@ -124,17 +124,26 @@ function sendHtml(DataContainer $data): string {
   return switchPage($data->getData())->render();
 }
 
-function getFilePath(UrlQuery $urlQuery): string {
-  $name = $urlQuery->get('name');
-
+function validateFileName(string $name): void {
   if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) {
     ErrorPage::status(403)->render();
     throw new NotFoundException();
   }
+}
+
+function getFilePath(UrlQuery $urlQuery): string {
+  $name = $urlQuery->get('name');
+  validateFileName($name);
 
   switch ($urlQuery->get('purpose')) {
     case 'ui':
       return __DIR__ . '/../resources/images/' . $name;
+    case 'game-img':
+      $index = $urlQuery->get('image-index');
+      validateFileName($index);
+      return __DIR__ . "/../media/images/$name/$index";
+    case 'game-swf':
+      return __DIR__ . "/../media/games/$name";
     default:
       throw new NotFoundException();
   }
