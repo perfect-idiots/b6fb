@@ -4,7 +4,7 @@ require_once __DIR__ . '/url-query.php';
 
 class ImageUrlQuery extends UrlQuery {
   public function __construct(array $data) {
-    parent::__construct(array_merge($data, ['type' => 'image']));
+    parent::__construct(array_merge($data, ['type' => 'file']));
   }
 }
 

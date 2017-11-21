@@ -124,7 +124,7 @@ function sendHtml(DataContainer $data): string {
   return switchPage($data->getData())->render();
 }
 
-function sendImage(UrlQuery $urlQuery): string {
+function sendFile(UrlQuery $urlQuery): string {
   $requiredkeys = ['name', 'mime'];
   foreach ($requiredkeys as $key) {
     if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
@@ -241,8 +241,8 @@ function main(): string {
     switch ($urlQuery->getDefault('type', 'html')) {
       case 'html':
         return sendHtml($param);
-      case 'image':
-        return sendImage($urlQuery);
+      case 'file':
+        return sendFile($urlQuery);
       case 'action':
         return sendAction($param);
       default:
