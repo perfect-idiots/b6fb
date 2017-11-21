@@ -19,12 +19,6 @@ class Session extends LazyLoadedDataContainer {
     }
   }
 
-  private function addSessionValues(array $tobeset): void {
-    foreach ($tobeset as $key => $value) {
-      $_SESSION[$key] = $value;
-    }
-  }
-
   public function destroy(): bool {
     return session_destroy();
   }

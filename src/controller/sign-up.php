@@ -81,10 +81,10 @@ class SignUp extends RawDataContainer {
       'db-query-set' => $dbQuerySet,
     ] = $param;
 
-    $userAccountExistence = $dbQuerySet
+    [[$userAccountExistence]] = $dbQuerySet
       ->get('user-account-existence')
       ->executeOnce([$username], 1)
-      ->rows()
+      ->fetch()
     ;
 
     if (!$fullname) return SignUpInfo::mkerror('fullname', 'empty');

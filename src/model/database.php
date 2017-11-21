@@ -120,12 +120,13 @@ class DatabaseQuerySet extends DatabaseConnection {
       'admin-password' => 's',
       'create-account' => 'sss',
       'user-account-existence' => 's',
+      'game-existence' => 's',
       'list-games' => '',
       'list-users' => '',
       'list-genres' => '',
       'add-game' => 'ssss',
       'user-info' => 's',
-      'update-user-fullname' => 'ss',
+      'update-user-profile' => 'ss',
     ];
 
     $queries = [];
