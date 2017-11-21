@@ -11,7 +11,7 @@ class UserProfileUpdater extends LoginDoubleChecker {
 
   public function checkPermission(): bool {
     $login = $this->get('login');
-    return $login->username() === $this->get('username') || $this->isAdmin();
+    return $login->username() === $this->get('username') || $login->isAdmin();
   }
 
   public function update(array $param): DatabaseQuerySingleResult {
