@@ -59,6 +59,14 @@ class Login extends RawDataContainer {
     return new LoginInfo(['logged-in' => false]);
   }
 
+  static protected function requiredFieldSchema(): array {
+    return [
+      'cookie' => 'Cookie',
+      'session' => 'Session',
+      'db-query-set' => 'DatabaseQuerySet',
+    ];
+  }
+
   static public function checkLogin(array $param): LoginInfo {
     [
       'cookie' => $cookie,
