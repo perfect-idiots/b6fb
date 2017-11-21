@@ -47,6 +47,7 @@ class Login extends RawDataContainer {
       ] = $cookie->getData();
 
       return self::checkLogin([
+        'logged-in' => true,
         'cookie' => $cookie,
         'session' => $session,
         'username' => $username,
@@ -68,6 +69,13 @@ class Login extends RawDataContainer {
   }
 
   static public function checkLogin(array $param): LoginInfo {
+    if (!$param['logged-in']) {
+      return new LoginInfo([
+        'logged-in' => false,
+        'error-reason' => 'invalid-username',
+      ]);
+    }
+
     [
       'cookie' => $cookie,
       'session' => $session,

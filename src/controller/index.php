@@ -147,6 +147,8 @@ function sendImage(UrlQuery $urlQuery): string {
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
   $dbQuerySet = $param->get('db-query-set');
+  $cookie = $param->get('cookie');
+  $session = $param->get('session');
   $login = $param->get('login');
   $action = $urlQuery->getDefault('action', '');
   $dbQuerySet = DatabaseQuerySet::instance();
@@ -157,6 +159,8 @@ function sendAction(DataContainer $param): string {
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
       $userProfileUpdater = UserProfileUpdater::instance([
+        'cookie' => $cookie,
+        'session' => $session,
         'login' => $login,
         'db-query-set' => $dbQuerySet,
         'username' => $urlQuery->get('username'),
