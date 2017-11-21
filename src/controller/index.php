@@ -124,17 +124,30 @@ function sendHtml(DataContainer $data): string {
   return switchPage($data->getData())->render();
 }
 
+function getFilePath(UrlQuery $urlQuery): string {
+  $name = $urlQuery->get('name');
+
+  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) {
+    ErrorPage::status(403)->render();
+    throw new NotFoundException();
+  }
+
+  switch ($urlQuery->get('purpose')) {
+    case 'ui':
+      return __DIR__ . '/../resources/images/' . $name;
+    default:
+      throw new NotFoundException();
+  }
+}
+
 function sendFile(UrlQuery $urlQuery): string {
-  $requiredkeys = ['name', 'mime'];
+  $requiredkeys = ['name', 'mime', 'purpose'];
   foreach ($requiredkeys as $key) {
     if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
   }
 
-  $name = $urlQuery->get('name');
   $mime = $urlQuery->get('mime');
-  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
-
-  $filename = __DIR__ . '/../resources/images/' . $name;
+  $filename = getFilePath($urlQuery);
   if (!file_exists($filename)) throw new NotFoundException();
 
   header('Content-Type: ' . $mime);
