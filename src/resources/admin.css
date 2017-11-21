@@ -115,7 +115,7 @@ nav ul:nth-child(2) li:hover {
   width: 80%;
   display: inline-block;
   margin-left: 180px;
-  margin-top: 60px;
+  margin-top: 50px;
   padding: 15px;
 }
 
@@ -207,12 +207,107 @@ th {
 
 #edit-user-form {
   height: 300px;
-  width: 500px;
+  width: 100%;
   padding: 19px;
   border: 1px solid #e3e3e3;
   background-color: #f5f5f5;
 }
 
-#form-group, button {
+#form-group {
   display: block;
+  margin-bottom: 15px;
+}
+
+#form-group label, #edit-user-form button {
+
+  position: absolute;
+  left: 400px;
+  font-weight: bold;
+}
+
+#form-group input,output {
+  color:#1716DE;
+  font-size:15px;
+  font-weight: bold;
+  padding: 5px;
+  position: relative;
+  margin-left: 300px;
+}
+
+output {
+  padding-left: 0px;
+}
+
+legend {
+  border-bottom: 1px solid #e5e5e5;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+
+
+
+#edit-user-form button:hover {
+  background-color: #1A7F1A;
+}
+a.edit-user, a.delete-user {
+  margin-left: 15px;
+}
+
+.edit a:hover {
+  color: red;
+}
+
+#add-game-form {
+  height: 520px;
+  width: 100%;
+  border: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+}
+
+
+#add-game-form fieldset  {
+  font-size:17px;
+  position: absolute;
+  left: 500px;
+}
+
+#add-game-form fieldset textarea {
+  width: 400px;
+  height: 100px;
+}
+
+#add-game-form fieldset *:not(button) {
+  display: block;
+}
+
+#add-game-form legend {
+  height: 60px;
+  text-align: center;
+}
+
+#add-game-form input,textarea {
+  margin-bottom: 15px;
+}
+
+fieldset {
+  border: 0px;
+}
+
+fieldset button {
+  margin-top:20px;
+  background-color: #5cb85c;
+  border: 0px;
+  padding: 10px 20px;
+  color: white;
+}
+
+
+#add-game-form input,output, textarea {
+  color:#555;
+  padding: 5px;
+}
+
+.header-subpage-game {
+  padding-top: 20px;
 }

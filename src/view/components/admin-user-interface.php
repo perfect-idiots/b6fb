@@ -19,7 +19,6 @@ class AdminUserInterface extends RawDataContainer implements Component {
     $dbQuerySet = $this->get('db-query-set');
     $listGames = $dbQuerySet->get('list-games')->executeOnce([], 4)->fetch();
 
-
     return HtmlElement::create('html', [
       'lang' => 'en',
       'dataset' => [
@@ -134,6 +133,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAdvanced($data);
       case 'edit-user':
         return new AdminEditUser($data);
+      case 'add-game' :
+        return new AdminAddGame($data);
       default:
         throw new NotFoundException();
     }
@@ -188,12 +189,17 @@ class DashboardPanel extends RawDataContainer implements Component {
 
 class AdminGames extends RawDataContainer implements Component {
   public function render(): Component {
+    $urlQuery = $this->get('url-query')->assign([
+      'page' => 'admin',
+      'previous-page' => 'games',
+    ]);
+
     return HtmlElement::emmetBottom('#list-games', [
       HtmlElement::emmetTop('.header-subpage', [
         HtmlElement::create('h1', 'Danh sách Games'),
         HtmlElement::emmetTop('button.btn-add#btn-add-game', [
           HtmlElement::emmetTop('a', [
-            'href' =>'',
+            'href' => $urlQuery->set('subpage', 'add-game')->getUrlQuery(),
             'Thêm Game',
           ]),
         ]),
@@ -209,6 +215,43 @@ class AdminGames extends RawDataContainer implements Component {
             ]),
           ]),
         ]),
+    ]);
+  }
+}
+
+class AdminAddGame extends RawDataContainer implements Component {
+  public function render(): Component {
+    return HtmlElement::emmetBottom('#edit-user-page', [
+      HtmlElement::emmetTop('.header-subpage-game', [
+        HtmlElement::create('h2', ''),
+      ]),
+      HtmlElement::emmetTop('.body-subpage-game', [
+         HtmlElement::emmetBottom('form#add-game-form', [
+         'method' => 'GET',
+         'action' => '',
+         HtmlElement::emmetTop('fieldset',[
+         HtmlElement::emmetBottom('legend>h2', 'Thêm game'),
+           HtmlElement::create('label', 'ID'),
+           HtmlElement::emmetTop('input#id-game',''),
+           HtmlElement::create('label', 'Tên trò chơi'),
+           HtmlElement::emmetTop('input#name-game', ''),
+           HtmlElement::create('label', 'Thể loại'),
+           HtmlElement::emmetTop('input#genre-game', ''),
+           HtmlElement::create('label', 'Mô tả'),
+           HtmlElement::emmetTop('textarea#des-game', ''),
+           HtmlElement::emmetTop('button',[
+             'type' => 'submit',
+             'name' => 'submit',
+             'Lưu'
+           ]),
+           HtmlElement::emmetTop('button', [
+             'type' => 'reset',
+             'name' => 'reset',
+             'Đặt lại',
+            ]),
+          ]),
+        ]),
+      ]),
     ]);
   }
 }
@@ -266,7 +309,7 @@ class AdminUserController extends RawDataContainer implements Component {
       'previous-page' => 'users',
     ]);
 
-    return HtmlElement::create('div', [
+    return HtmlElement::create('div.edit', [
       HtmlElement::emmetTop('a.edit-user', [
         'href' => $urlQuery->set('subpage', 'edit-user')->getUrlQuery(),
         'Sửa',
@@ -288,28 +331,34 @@ class AdminEditUser extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#edit-user-page', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h2', 'Cập nhật tài khoản'),
+        HtmlElement::create('h2', ''),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form#edit-user-form', [
           'method' => 'GET',
           'action' => '',
-          HtmlElement::emmetTop('#form-group', [
-            HtmlElement::create('label', 'Tên người dùng'),
+          HtmlElement::emmetTop('fieldset',[
+            HtmlElement::emmetBottom('legend>h2',['Cập nhật người dùng']),
+            HtmlElement::emmetTop('#form-group', [
+            HtmlElement::emmetBottom('label', 'Tên người dùng'),
             HtmlElement::create('output', [
               $username,
             ]),
-          ]),
-          HtmlElement::emmetTop('#form-group', [
-            HtmlElement::create('label', 'Họ và Tên'),
-            HtmlElement::create('input', [
-              'type' => 'text',
-              'name' => 'fullname',
-              'value' => $fullname,
             ]),
-            HtmlElement::create('button', [
-              'type' => 'submit',
-              'Lưu',
+            HtmlElement::emmetTop('#form-group', [
+              HtmlElement::emmetBottom('label', 'Họ và Tên'),
+              HtmlElement::create('input', [
+                'type' => 'text',
+                'name' => 'fullname',
+                'value' => $fullname,
+              ]),
+            ]),
+            HtmlElement::emmetTop('#form-group', [
+              HtmlElement::create('label',['']),
+              HtmlElement::create('button', [
+                'type' => 'submit',
+                'Lưu',
+              ]),
             ]),
           ]),
           HiddenInputSet::instance($urlQuery->assign([
