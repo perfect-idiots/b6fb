@@ -127,6 +127,8 @@ class DatabaseQuerySet extends DatabaseConnection {
       'add-game' => 'ssss',
       'user-info' => 's',
       'update-user-profile' => 'ss',
+      'count-games' => '',
+      'count-users' => '',
     ];
 
     $queries = [];
