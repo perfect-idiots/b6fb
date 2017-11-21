@@ -85,14 +85,14 @@ class Login extends RawDataContainer {
       'db-query-set' => $dbQuerySet,
     ] = $param;
 
-    if (self::checkSessionAuth($cookie, $session, $isAdmin)) {
-      return new LoginInfo([
-        'logged-in' => true,
-        'is-admin' => $isAdmin,
-        'username' => $username,
-        'password' => $password,
-      ]);
-    }
+    // if (self::checkSessionAuth($cookie, $session, $isAdmin)) {
+    //   return new LoginInfo([
+    //     'logged-in' => true,
+    //     'is-admin' => $isAdmin,
+    //     'username' => $username,
+    //     'password' => $password,
+    //   ]);
+    // }
 
     [
       'sid' => $sid,
