@@ -16,6 +16,9 @@ return [
   'navigation-background-color' => '#303030',
   'navigation-activated-background-color' => '#df2222',
   'navigation-hover-background-color' => '#1a1a1a',
+  'profile-setting-background-color' => '#303030',
+  'profile-setting-avatar-background-color' => '#444',
+  'profile-setting-hover-background-color' => '#343434',
   'shadow-color' => 'rgba(127, 128, 129, 0.5)',
 ];
 ?>

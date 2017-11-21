@@ -3,7 +3,7 @@ require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/logo.php';
 require_once __DIR__ . '/search-box.php';
 require_once __DIR__ . '/theme-switcher.php';
-require_once __DIR__ . '/text-button.php';
+require_once __DIR__ . '/user-profile-view.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class HeaderSection extends RawDataContainer implements Component {
@@ -19,7 +19,7 @@ class HeaderSection extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetBottom('.right-corner.segment', [
         new ThemeSwitcher($this->getData()),
-        new PrimaryButton('Login'),
+        new UserProfileView($this->getData()),
       ]),
     ]);
   }
