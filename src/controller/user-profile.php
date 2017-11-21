@@ -17,8 +17,8 @@ class UserProfileUpdater extends LoginDoubleChecker {
   public function update(array $param): DatabaseQuerySingleResult {
     $this->verify();
     $dbQuerySet = $this->get('db-query-set');
+    $username = $this->get('username');
     $query = $dbQuerySet->get('update-user-profile');
-    $username = $param['username'];
 
     $profile = UserInfo::instance([
       'username' => $username,
