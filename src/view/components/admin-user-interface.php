@@ -19,7 +19,6 @@ class AdminUserInterface extends RawDataContainer implements Component {
     $dbQuerySet = $this->get('db-query-set');
     $listGames = $dbQuerySet->get('list-games')->executeOnce([], 4)->fetch();
 
-
     return HtmlElement::create('html', [
       'lang' => 'en',
       'dataset' => [

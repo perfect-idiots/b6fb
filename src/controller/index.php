@@ -52,11 +52,7 @@ function switchPage(array $data): Page {
     case 'sign-up':
       return SignUpPage::instance($data);
     case 'admin':
-      return AdminPage::instance(array_merge($data, [
-        'login' => Login::instance(array_merge($data, [
-          'is-admin' => true,
-        ]))->verify(),
-      ]));
+      return AdminPage::instance($data);
     default:
       throw new NotFoundException();
   }
@@ -147,6 +143,8 @@ function sendImage(UrlQuery $urlQuery): string {
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
   $dbQuerySet = $param->get('db-query-set');
+  $cookie = $param->get('cookie');
+  $session = $param->get('session');
   $login = $param->get('login');
   $action = $urlQuery->getDefault('action', '');
   $dbQuerySet = DatabaseQuerySet::instance();
@@ -157,6 +155,8 @@ function sendAction(DataContainer $param): string {
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
       $userProfileUpdater = UserProfileUpdater::instance([
+        'cookie' => $cookie,
+        'session' => $session,
         'login' => $login,
         'db-query-set' => $dbQuerySet,
         'username' => $urlQuery->get('username'),
@@ -181,6 +181,7 @@ function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
+  $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
     'expiry-extend' => $constants->get('month'),
@@ -204,6 +205,7 @@ function main(): string {
   $dbQuerySet = DatabaseQuerySet::instance();
 
   $accountParams = [
+    'is-admin' => $page === 'admin',
     'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
@@ -224,7 +226,7 @@ function main(): string {
     'images' => $imageSet->getData(),
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
-    'page' => $urlQuery->getDefault('page', 'index'),
+    'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
