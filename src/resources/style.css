@@ -307,7 +307,6 @@ button:hover {
 }
 
 .x-component--game-item {
-  float: left;
   display: inline-block;
   [[game-item-size-block]]
 }
