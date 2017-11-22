@@ -9,7 +9,9 @@ class NavigatorSection extends RawDataContainer implements Component {
     $subpagetmpls = $this->get('subpages');
 
     return new SidebarNavigator(
-      $subpagetmpls,
+      [
+        ['', $subpagetmpls],
+      ],
       function ($tmpl) {
         return [
           'href' => $tmpl['href'],
