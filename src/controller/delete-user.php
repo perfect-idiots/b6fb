@@ -13,13 +13,13 @@ class DeleteUser extends LoginDoubleChecker {
     return $login->username() === $this->get('username') || $login->isAdmin();
   }
 
-  public function delete(string $query): void {
+  public function delete(string $username): void {
     $this->verify();
 
     $this
       ->get('db-query-set')
       ->get('delete-users')
-      ->executeOnce()
+      ->executeOnce([$username])
     ;
   }
 }
