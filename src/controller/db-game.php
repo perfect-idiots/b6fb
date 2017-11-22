@@ -73,6 +73,11 @@ class GameManager extends LoginDoubleChecker {
     ];
   }
 
+  public function exists(string $id): bool {
+    [[$existence]] = $this->checkingQuery->executeOnce([$id], 1);
+    return $existence > 0;
+  }
+
   static private function swfPath(string $name): string {
     return __DIR__ . '/../storage/game-swfs/' . $name;
   }
@@ -87,11 +92,6 @@ class GameManager extends LoginDoubleChecker {
 
   static private function unserializeGenres(string $genres): array {
     return explode(static::GENRE_SEPARATOR, $genres);
-  }
-
-  public function exists(string $id): bool {
-    [[$existence]] = $this->checkingQuery->executeOnce([$id], 1);
-    return $existence > 0;
   }
 }
 
