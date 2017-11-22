@@ -3,7 +3,7 @@ require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
 require_once __DIR__ . '/security.php';
 
-class GameInserter extends LoginDoubleChecker {
+class GameManager extends LoginDoubleChecker {
   const GENRE_SEPARATOR = ',';
 
   public function add(array $param): array {
