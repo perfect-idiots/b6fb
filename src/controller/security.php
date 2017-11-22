@@ -19,11 +19,19 @@ abstract class LoginDoubleChecker extends RawDataContainer {
   }
 
   public function checkLogin(): bool {
+    [
+      'cookie' => $cookie,
+      'session' => $session,
+      'login' => $login,
+      'db-query-set' => $dbQuerySet,
+    ] = $this->getData();
+
     return Login::checkLogin(
-      $this
-        ->get('login')
-        ->merge($this)
-        ->getData()
+      $login->assign([
+        'cookie' => $cookie,
+        'session' => $session,
+        'db-query-set' => $dbQuerySet,
+      ])->getData()
     )->isLoggedIn();
   }
 
