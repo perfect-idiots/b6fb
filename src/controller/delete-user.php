@@ -1,13 +1,7 @@
-<?php>
+<?php
 require_once __DIR__ . '/security.php';
 
 class DeleteUser extends LoginDoubleChecker {
-  static protected function requiredFieldSchema(): array {
-    return array_merge(parent::requiredFieldSchema(), [
-      'username' => 'string',
-    ]);
-  }
-
   public function checkPermission(): bool {
     $login = $this->get('login');
     return $login->username() === $this->get('username') || $login->isAdmin();
@@ -18,7 +12,7 @@ class DeleteUser extends LoginDoubleChecker {
 
     $this
       ->get('db-query-set')
-      ->get('delete-users')
+      ->get('delete-user')
       ->executeOnce([$username])
     ;
   }

@@ -7,6 +7,7 @@ require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/db-row-counter.php';
+require_once __DIR__ . '/delete-user.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -186,6 +187,7 @@ function sendAction(DataContainer $param): string {
         'fullname' => $urlQuery->get('fullname'),
       ]);
       $urlQuery->without([
+        'action',
         'fullname',
         'previous-page',
       ])->assign([
@@ -193,10 +195,23 @@ function sendAction(DataContainer $param): string {
         'subpage' => $urlQuery->get('previous-page'),
       ])->redirect();
       break;
+    case 'delete-user':
+      $username = $urlQuery->getDefault('username', '');
+      $dbDeleteUser = $param->get('delete-user')->delete($username);
+      $urlQuery->without([
+        'action',
+        'username',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'users',
+      ])->redirect();
+      break;
     default:
       throw new NotFoundException();
   }
 }
+
 
 function main(): string {
   $constants = Constants::instance();
@@ -247,6 +262,7 @@ function main(): string {
   ]);
 
   $dbRowCounter = new DatabaseRowCounter($securityCommonParam);
+  $deleteUser = new DeleteUser($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
@@ -266,6 +282,7 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'delete-user' => $deleteUser,
     'game-manager' => $gameManager,
     'signup' => $signup,
     'login' => $login,

@@ -133,6 +133,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAdvanced($data);
       case 'edit-user':
         return new AdminEditUser($data);
+      case 'delete-user':
+        return new AdminDeleteUser($data);
       case 'add-game' :
         return new AdminAddGame($data);
       default:
@@ -253,12 +255,16 @@ class AdminGameController extends RawDataContainer implements Component {
 
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
-    return HtmlElement::emmetTop('#edit-user-page', [
+    $uploadedFile = $this->get('files')->getFile('input-name');
+    $gameInserter = $this->get('game-inserter');
+    $gameManager->add($uploadedFile);
 
+    return HtmlElement::emmetTop('#edit-user-page', [
       HtmlElement::emmetTop('.body-subpage-game', [
          HtmlElement::emmetTop('form#add-game-form', [
          'method' => 'GET',
          'action' => '',
+         HtmlElement::create('h2','Thêm game'),
          HtmlElement::emmetTop('fieldset',[
            HtmlElement::create('label', 'ID'),
            HtmlElement::emmetTop('input#id-game',''),
@@ -353,7 +359,7 @@ class AdminUserController extends RawDataContainer implements Component {
         'Sửa',
       ]),
       HtmlElement::emmetTop('a.delete-user', [
-        'href' => '',
+        'href' => $urlQuery->set('subpage', 'delete-user')->getUrlQuery(),
         'Xóa',
       ]),
     ]);
@@ -405,6 +411,45 @@ class AdminEditUser extends RawDataContainer implements Component {
             'previous-page' => 'users',
             'username' => $username,
           ])->getData()),
+        ]),
+      ]),
+    ]);
+  }
+}
+
+class AdminDeleteUser extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $username = $urlQuery->get('username');
+
+    return HtmlElement::emmetTop('#delete-user-page', [
+      HtmlElement::emmetTop('.header-subpage', [
+        HtmlElement::create('h2', ''),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage>#delete-user-page', [
+        HtmlElement::emmetTop('.question', [
+          'Bạn có thực muốn xóa người dùng',
+          HtmlElement::emmetTop('span.username', $username),
+          '?',
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::emmetTop('a#delete', [
+            'href' => $urlQuery->assign([
+              'type' => 'action',
+              'action' => 'delete-user',
+              'previous-page' => 'users',
+              'username' => $username,
+            ])->getUrlQuery(),
+            'Xóa'
+          ]),
+          HtmlElement::emmetTop('a#cancel', [
+            'href' => $urlQuery->assign([
+              'type' => 'html',
+              'page' => 'admin',
+              'subpage' => 'users',
+            ])->getUrlQuery(),
+            'Quay lại'
+          ]),
         ]),
       ]),
     ]);
