@@ -136,11 +136,9 @@ function getFilePath(UrlQuery $urlQuery): string {
     case 'ui':
       return __DIR__ . '/../resources/images/' . $name;
     case 'game-img':
-      $index = $urlQuery->get('image-index');
-      validateFileName($index);
-      return __DIR__ . "/../media/images/$name/$index";
+      return __DIR__ . "/../storage/game-imgs/$name";
     case 'game-swf':
-      return __DIR__ . "/../media/games/$name";
+      return __DIR__ . "/../storage/game-swfs/$name";
     default:
       throw new NotFoundException();
   }
