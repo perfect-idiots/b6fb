@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
+require_once __DIR__ . '/../model/predefined.php';
 require_once __DIR__ . '/security.php';
 
 class GameManager extends LoginDoubleChecker {
@@ -60,7 +61,7 @@ class GameManager extends LoginDoubleChecker {
     $dbResult = $this
       ->get('db-query-set')
       ->get('delete-game')
-      ->executeOnce()
+      ->executeOnce([])
     ;
 
     $swfResult = unlink(self::swfPath($id));
@@ -72,17 +73,47 @@ class GameManager extends LoginDoubleChecker {
       'img' => $imgResult,
     ];
   }
-  public function clear(): array {
+
+  public function reset(): void {
     $this->verify();
-    $self = $this;
+    $this->clear();
 
-    return array_map(
-      function ($row) use($self) {
-        return $self->delete($row[0]);
-      },
+    $addingGameQuery = $dbQuerySet->get('add-game');
+    $games = PredefinedGames::create()->getData();
 
-      $this->list()
-    );
+    foreach ($games as $id => $info) {
+      $addingGameQuery->executeOnce([
+        $id,
+        $info['name'],
+        self::serializeGenres($info['genre']),
+        $info['description'],
+      ]);
+
+      copy(
+        __DIR__ . "/../media/games/$id",
+        self::swfPath($id)
+      );
+
+      copy(
+        __DIR__ . "/../media/images/$id/0",
+        self::imgPath($id)
+      );
+    }
+  }
+
+  public function clear(): void {
+    $this->verify();
+
+    foreach ($this->list() as $name) {
+      unlink(self::swfPath($name));
+      unlink(self::imgPath($name));
+    }
+
+    $this
+      ->get('db-query-set')
+      ->get('clear-games')
+      ->executeOnce([])
+    ;
   }
 
   public function exists(string $id): bool {
@@ -95,6 +126,8 @@ class GameManager extends LoginDoubleChecker {
       ->get('db-query-set')
       ->get('list-games')
       ->executeOnce([], 4)
+      ->fetch()
+    ;
   }
 
   static private function swfPath(string $name): string {

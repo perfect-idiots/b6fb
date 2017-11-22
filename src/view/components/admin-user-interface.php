@@ -6,6 +6,7 @@ require_once __DIR__ . '/logo.php';
 require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/sidebar-navigator.php';
 require_once __DIR__ . '/hidden-input.php';
+require_once __DIR__ . '/labeled-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class AdminUserInterface extends RawDataContainer implements Component {
@@ -133,6 +134,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAdvanced($data);
       case 'edit-user':
         return new AdminEditUser($data);
+      case 'delete-user':
+        return new AdminDeleteUser($data);
       case 'add-game' :
         return new AdminAddGame($data);
       default:
@@ -254,37 +257,27 @@ class AdminGameController extends RawDataContainer implements Component {
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
     return HtmlElement::emmetTop('#edit-user-page', [
-
       HtmlElement::emmetTop('.body-subpage-game', [
-         HtmlElement::emmetTop('form#add-game-form', [
-         'method' => 'GET',
-         'action' => '',
-         HtmlElement::emmetTop('fieldset',[
-           HtmlElement::create('label', 'ID'),
-           HtmlElement::emmetTop('input#id-game',''),
-           HtmlElement::create('label', 'Tên trò chơi'),
-           HtmlElement::emmetTop('input#name-game', ''),
-           HtmlElement::create('label', 'Thể loại'),
-           HtmlElement::emmetTop('input#genre-game', ''),
-           HtmlElement::create('label', 'Mô tả'),
-           HtmlElement::emmetTop('textarea#des-game', ''),
-           HtmlElement::create('label', 'Chọn game'),
-           HtmlElement::emmetTop('input#swf-game', [
-             'type' => 'file',
-           ]),
-           HtmlElement::create('label', 'Chọn ảnh'),
-           HtmlElement::emmetTop('input#img-game', [
-             'type' => 'file',
-           ]),
-           HtmlElement::create('button',[
-             'type' => 'submit',
-             'name' => 'submit',
-             'Lưu'
-           ]),
-           HtmlElement::create('button', [
-             'type' => 'reset',
-             'name' => 'reset',
-             'Đặt lại',
+        HtmlElement::emmetTop('form#add-game-form', [
+          'method' => 'GET',
+          'action' => '',
+          HtmlElement::create('h2','Thêm game'),
+          HtmlElement::emmetTop('fieldset#input-container', [
+            PlainLabeledInput::text('game-id', 'ID'),
+            PlainLabeledInput::text('game-name', 'Tên trò chơi'),
+            PlainLabeledInput::text('game-genre', 'Thể loại'),
+            LabeledTextArea::text('game-description', 'Mô tả'),
+            LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
+            LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
+            HtmlElement::create('button',[
+              'type' => 'submit',
+              'name' => 'submit',
+              'Lưu'
+            ]),
+            HtmlElement::create('button', [
+              'type' => 'reset',
+              'name' => 'reset',
+              'Đặt lại',
             ]),
           ]),
         ]),
@@ -353,7 +346,7 @@ class AdminUserController extends RawDataContainer implements Component {
         'Sửa',
       ]),
       HtmlElement::emmetTop('a.delete-user', [
-        'href' => '',
+        'href' => $urlQuery->set('subpage', 'delete-user')->getUrlQuery(),
         'Xóa',
       ]),
     ]);
@@ -405,6 +398,45 @@ class AdminEditUser extends RawDataContainer implements Component {
             'previous-page' => 'users',
             'username' => $username,
           ])->getData()),
+        ]),
+      ]),
+    ]);
+  }
+}
+
+class AdminDeleteUser extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $username = $urlQuery->get('username');
+
+    return HtmlElement::emmetTop('#delete-user-page', [
+      HtmlElement::emmetTop('.header-subpage', [
+        HtmlElement::create('h2', ''),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage>#delete-user-page', [
+        HtmlElement::emmetTop('.question', [
+          'Bạn có thực muốn xóa người dùng',
+          HtmlElement::emmetTop('span.username', $username),
+          '?',
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::emmetTop('a#delete', [
+            'href' => $urlQuery->assign([
+              'type' => 'action',
+              'action' => 'delete-user',
+              'previous-page' => 'users',
+              'username' => $username,
+            ])->getUrlQuery(),
+            'Xóa'
+          ]),
+          HtmlElement::emmetTop('a#cancel', [
+            'href' => $urlQuery->assign([
+              'type' => 'html',
+              'page' => 'admin',
+              'subpage' => 'users',
+            ])->getUrlQuery(),
+            'Quay lại'
+          ]),
         ]),
       ]),
     ]);

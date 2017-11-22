@@ -1,0 +1,27 @@
+<?php
+require_once __DIR__ . '/security.php';
+require_once __DIR__ . '/../model/predefined.php';
+
+class GenreManager extends LoginDoubleChecker {
+  public function clear(): void {
+    $this->verify();
+    $this
+      ->get('db-query-set')
+      ->get('clear-genres')
+      ->executeOnce([])
+    ;
+  }
+
+  public function reset(): void {
+    $this->verify();
+    $this->clear();
+
+    $addingGenreQuery = $this->get('url-query')->get('add-genre');
+    $genres = PredefinedGenres::create()->getData();
+
+    foreach ($genres as $id => $name) {
+      $addingGenreQuery->executeOnce([$id, $name]);
+    }
+  }
+}
+?>

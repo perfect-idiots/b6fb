@@ -132,6 +132,7 @@ class DatabaseQuerySet extends DatabaseConnection {
       'clear-games' => '',
       'clear-genres' => '',
       'clear-users' => '',
+      'delete-user' => 's',
     ];
 
     $queries = [];
