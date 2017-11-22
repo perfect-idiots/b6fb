@@ -99,7 +99,7 @@ class AdminNavigatorSection extends RawDataContainer implements Component {
     $subpagetmpls = $this->get('admin-subpages');
 
     return new SidebarNavigator(
-      $subpagetmpls,
+      [[[], $subpagetmpls]],
       function ($tmpl) {
         return [
           'href' => $tmpl['href'],
