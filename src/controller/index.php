@@ -5,8 +5,10 @@ require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/user-profile.php';
-require_once __DIR__ . '/count-users.php';
+require_once __DIR__ . '/db-row-counter.php';
+require_once __DIR__ . '/delete-user.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -186,6 +188,7 @@ function sendAction(DataContainer $param): string {
         'fullname' => $urlQuery->get('fullname'),
       ]);
       $urlQuery->without([
+        'action',
         'fullname',
         'previous-page',
       ])->assign([
@@ -193,10 +196,32 @@ function sendAction(DataContainer $param): string {
         'subpage' => $urlQuery->get('previous-page'),
       ])->redirect();
       break;
+    case 'delete-user':
+      $username = $urlQuery->getDefault('username', '');
+      $dbDeleteUser = $param->get('delete-user')->delete($username);
+      $urlQuery->without([
+        'action',
+        'username',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'users',
+      ])->redirect();
+      break;
+    case 'reset-database':
+      $param->get('game-manager')->reset();
+      $param->get('genre-manager')->reset();
+      $urlQuery->except('action')->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
     default:
       throw new NotFoundException();
   }
 }
+
 
 function main(): string {
   $constants = Constants::instance();
@@ -246,8 +271,10 @@ function main(): string {
     'login' => $login,
   ]);
 
-  $userCounter = new UserCounter($securityCommonParam);
-  $gameInserter = new GameInserter($securityCommonParam);
+  $dbRowCounter = new DatabaseRowCounter($securityCommonParam);
+  $deleteUser = new DeleteUser($securityCommonParam);
+  $gameManager = new GameManager($securityCommonParam);
+  $genreManager = new GenreManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
@@ -266,11 +293,13 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'game-inserter' => $gameInserter,
+    'delete-user' => $deleteUser,
+    'game-manager' => $gameManager,
+    'genre-manager' => $genreManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
-    'user-counter' => $userCounter,
+    'db-row-counter' => $dbRowCounter,
   ]);
 
   try {
