@@ -121,17 +121,39 @@ function sendHtml(DataContainer $data): string {
   return switchPage($data->getData())->render();
 }
 
-function sendImage(UrlQuery $urlQuery): string {
-  $requiredkeys = ['name', 'mime'];
+function validateFileName(string $name): void {
+  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) {
+    ErrorPage::status(403)->render();
+    throw new NotFoundException();
+  }
+}
+
+function getFilePath(UrlQuery $urlQuery): string {
+  $name = $urlQuery->get('name');
+  validateFileName($name);
+
+  switch ($urlQuery->get('purpose')) {
+    case 'ui':
+      return __DIR__ . '/../resources/images/' . $name;
+    case 'game-img':
+      $index = $urlQuery->get('image-index');
+      validateFileName($index);
+      return __DIR__ . "/../media/images/$name/$index";
+    case 'game-swf':
+      return __DIR__ . "/../media/games/$name";
+    default:
+      throw new NotFoundException();
+  }
+}
+
+function sendFile(UrlQuery $urlQuery): string {
+  $requiredkeys = ['name', 'mime', 'purpose'];
   foreach ($requiredkeys as $key) {
     if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
   }
 
-  $name = $urlQuery->get('name');
   $mime = $urlQuery->get('mime');
-  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
-
-  $filename = __DIR__ . '/../resources/images/' . $name;
+  $filename = getFilePath($urlQuery);
   if (!file_exists($filename)) throw new NotFoundException();
 
   header('Content-Type: ' . $mime);
@@ -252,8 +274,8 @@ function main(): string {
     switch ($urlQuery->getDefault('type', 'html')) {
       case 'html':
         return sendHtml($param);
-      case 'image':
-        return sendImage($urlQuery);
+      case 'file':
+        return sendFile($urlQuery);
       case 'action':
         return sendAction($param);
       default:
