@@ -26,6 +26,14 @@ class GameManager extends LoginDoubleChecker {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
+    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
+      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
+    }
+
+    if ($img->mimetype() !== 'image/jpeg') {
+      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg");
+    }
+
     $args = [
       $id,
       $name,
@@ -35,17 +43,42 @@ class GameManager extends LoginDoubleChecker {
 
     $addingQuery = $this->get('db-query-set')->get('adding-query');
     $dbResult = $addingQuery->executeOnce($args);
-    $storage = __DIR__ . '/../storage';
-    $swfDir = "$storage/game-swfs";
-    $imgDir = "$storage/game-imgs";
-    $swfResult = $swf->move("$swfDir/$id");
-    $imgResult = $img->move("$imgDir/$id");
+    $swfResult = $swf->move(self::swfPath($id));
+    $imgResult = $img->move(self::imgPath($id));
 
     return [
       'db' => $dbResult,
       'swf' => $swfResult,
       'img' => $imgResult,
     ];
+  }
+
+  public function delete(string $id): ?array {
+    $this->verify();
+    if (!$this->exists($id)) return null;
+
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('delete-game')
+      ->executeOnce()
+    ;
+
+    $swfResult = unlink(self::swfPath($id));
+    $imgResult = unlink(self::imgPath($id));
+
+    return [
+      'db' => $dbResult,
+      'swf' => $swfResult,
+      'img' => $imgResult,
+    ];
+  }
+
+  static private function swfPath(string $name): string {
+    return __DIR__ . '/../storage/game-swfs/' . $name;
+  }
+
+  static private function imgPath(string $name): string {
+    return __DIR__ . '/../storage/game-imgs/' . $name;
   }
 
   static private function serializeGenres(array $genres): string {
@@ -65,4 +98,5 @@ class GameManager extends LoginDoubleChecker {
 class GameInsertingException extends Exception {}
 class GameInvalidIdException extends GameInsertingException {}
 class GameDuplicatedException extends GameInsertingException {}
+class GameInvalidMimeException extends GameInsertingException {}
 ?>
