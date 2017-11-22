@@ -247,7 +247,7 @@ function main(): string {
   ]);
 
   $userCounter = new UserCounter($securityCommonParam);
-  $gameInserter = new GameInserter($securityCommonParam);
+  $gameManager = new GameManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
@@ -266,7 +266,7 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'game-inserter' => $gameInserter,
+    'game-manager' => $gameManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
