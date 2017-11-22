@@ -216,6 +216,7 @@ function sendAction(DataContainer $param): string {
         'page' => 'admin',
         'subpage' => 'advanced',
       ])->redirect();
+      break;
     default:
       throw new NotFoundException();
   }
