@@ -335,3 +335,9 @@ button:hover {
   display: inline-block;
   text-align: center;
 }
+
+#game-menu {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
