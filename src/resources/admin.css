@@ -189,11 +189,12 @@ button.btn-add:hover {
 table#tb-games {
   position: absolute;
   border-collapse: collapse;
+  margin-left: 100px;
 }
 
 table, th, td {
   border: 1px solid #ddd;
-  padding: 5px 60px 0px 5px;
+  padding: 5px 100px 0px 10px;
 }
 
 th {
@@ -244,12 +245,10 @@ legend {
   margin-bottom: 20px;
 }
 
-
-
-
 #edit-user-form button:hover {
   background-color: #1A7F1A;
 }
+
 a.edit-user, a.delete-user {
   margin-left: 15px;
 }
@@ -265,8 +264,7 @@ a.edit-user, a.delete-user {
   background-color: #f5f5f5;
 }
 
-
-#add-game-form fieldset  {
+#add-game-form fieldset {
   font-size:17px;
   position: absolute;
   left: 500px;
@@ -301,7 +299,6 @@ fieldset button {
   padding: 10px 20px;
   color: white;
 }
-
 
 #add-game-form input,output, textarea {
   color:#555;

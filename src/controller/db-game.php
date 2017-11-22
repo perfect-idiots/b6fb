@@ -1,22 +1,30 @@
 <?php
 require_once __DIR__ . '/../model/database.php';
+require_once __DIR__ . '/../model/uploaded-files.php';
+require_once __DIR__ . '/security.php';
 
-class GameInserter {
-  private $addingQuery, $checkingQuery;
+class GameManager extends LoginDoubleChecker {
   const GENRE_SEPARATOR = ',';
 
-  public function __construct(DatabaseQuerySet $dbQuerySet) {
-    $this->addingQuery = $dbQuerySet->get('add-game');
-    $this->checkingQuery = $dbQuerySet->get('game-existence');
-  }
+  public function add(array $param): array {
+    $this->verify();
 
-  public function add(array $param): DatabaseQuerySingleResult {
     [
       'id' => $id,
       'name' => $name,
       'genre' => $genre,
       'description' => $description,
+      'swf' => $swf,
+      'img' => $img,
     ] = $param;
+
+    if (!preg_match('/^[a-z]+(([a-z]+-)*[a-z]+)?$/i', $id)) {
+      throw new GameInvalidIdException("Game id '$id' is invalid");
+    }
+
+    if ($this->exists($id)) {
+      throw new GameDuplicatedException("Game '$id' already exist");
+    }
 
     $args = [
       $id,
@@ -25,7 +33,19 @@ class GameInserter {
       $description,
     ];
 
-    return $this->addingQuery->executeOnce($args);
+    $addingQuery = $this->get('db-query-set')->get('adding-query');
+    $dbResult = $addingQuery->executeOnce($args);
+    $storage = __DIR__ . '/../storage';
+    $swfDir = "$storage/game-swfs";
+    $imgDir = "$storage/game-imgs";
+    $swfResult = $swf->move("$swfDir/$id");
+    $imgResult = $img->move("$imgDir/$id");
+
+    return [
+      'db' => $dbResult,
+      'swf' => $swfResult,
+      'img' => $imgResult,
+    ];
   }
 
   static private function serializeGenres(array $genres): string {
@@ -41,4 +61,8 @@ class GameInserter {
     return $existence > 0;
   }
 }
+
+class GameInsertingException extends Exception {}
+class GameInvalidIdException extends GameInsertingException {}
+class GameDuplicatedException extends GameInsertingException {}
 ?>

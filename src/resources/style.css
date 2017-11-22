@@ -305,3 +305,34 @@ button:hover {
 [hidden], [hidden] *, input[type='hidden'], button[type='hidden'] {
   display: none;
 }
+
+.x-component--game-item {
+  float: left;
+  display: inline-block;
+  [[game-item-size-block]]
+}
+
+.x-component--game-item img {
+  [[game-item-image-size-block]]
+  margin: [[game-item-image-margin]];
+}
+
+.x-component--game-item figure {
+  margin-left: [[game-item-figure-margin]];
+  margin-right: [[game-item-figure-margin]];
+}
+
+.x-component--game-item figcaption {
+  text-align: center ;
+  text-transform: uppercase;
+  height: [[game-item-figcaptionheight]];
+}
+
+.x-component--game-item:hover {
+  background: [[game-item-hover-background]];
+}
+
+.x-component--game-item * {
+  display: inline-block;
+  text-align: center;
+}
