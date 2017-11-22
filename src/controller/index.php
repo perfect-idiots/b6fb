@@ -202,6 +202,7 @@ function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
+  $files = UploadedFileSet::instance();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -238,17 +239,21 @@ function main(): string {
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
-  $userCounter = UserCounter::instance([
+  $securityCommonParam = ([
     'cookie' => $cookie,
     'session' => $session,
     'db-query-set' => $dbQuerySet,
     'login' => $login,
   ]);
 
+  $userCounter = new UserCounter($securityCommonParam);
+  $gameInserter = new GameInserter($securityCommonParam);
+
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
+    'files' => $files,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -261,7 +266,7 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'game-inserter' => new GameInserter($dbQuerySet),
+    'game-inserter' => $gameInserter,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
