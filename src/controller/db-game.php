@@ -72,13 +72,17 @@ class GameManager extends LoginDoubleChecker {
       'img' => $imgResult,
     ];
   }
-
   public function clear(): array {
     $this->verify();
+    $self = $this;
 
-    foreach ($this->list() as [$id]) {
-      $this->delete($id);
-    }
+    return array_map(
+      function ($row) use($self) {
+        return $self->delete($row[0]);
+      },
+
+      $this->list()
+    );
   }
 
   public function exists(string $id): bool {
