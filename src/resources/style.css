@@ -307,7 +307,6 @@ button:hover {
 }
 
 .x-component--game-item {
-  float: left;
   display: inline-block;
   [[game-item-size-block]]
 }
@@ -335,4 +334,10 @@ button:hover {
 .x-component--game-item * {
   display: inline-block;
   text-align: center;
+}
+
+#game-menu {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }

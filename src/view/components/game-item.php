@@ -7,7 +7,7 @@ class GameItem extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query')->assign([
       'type' => 'file',
       'mime' => 'image/jpeg',
-      'name' => $this->get('game-name'),
+      'name' => $this->get('game-id'),
       'purpose' => 'game-img',
     ]);
 
