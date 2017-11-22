@@ -1,2 +1,3 @@
 .vscode
 src/model/database/*
+src/storage
