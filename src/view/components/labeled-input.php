@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../lib/utils.php';
 
 class LabeledInput extends RawDataContainer implements Component {
   public function render(): Component {
-    $tagName = $this->getDefault('tag', 'input');
+    $tagName = $this->getDefault('tag', $this->defaultTagName());
     $id = $this->getDefault('id', null);
     $type = $this->getDefault('type', null);
     $label = $this->getDefault('label', '');
@@ -31,6 +31,10 @@ class LabeledInput extends RawDataContainer implements Component {
         $type ? ['type' => $type] : []
       ))),
     ]);
+  }
+
+  protected function defaultTagName(): string {
+    return 'input';
   }
 
   static protected function defaultLabelAttr(): array {
@@ -74,6 +78,18 @@ class PlainLabeledInput extends RequiredLabeledInput {
 class SecretLabeledInput extends RequiredLabeledInput {
   static protected function defaultInputAttr(): array {
     return array_merge(parent::defaultInputAttr(), ['type' => 'password']);
+  }
+}
+
+class LabeledTextArea extends RequiredLabeledInput {
+  protected function defaultTagName(): string {
+    return 'textarea';
+  }
+}
+
+class LabeledFileInput extends RequiredLabeledInput {
+  static protected function defaultInputAttr(): array {
+    return array_merge(parent::defaultInputAttr(), ['type' => 'file']);
   }
 }
 ?>

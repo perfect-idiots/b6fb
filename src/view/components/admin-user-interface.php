@@ -6,6 +6,7 @@ require_once __DIR__ . '/logo.php';
 require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/sidebar-navigator.php';
 require_once __DIR__ . '/hidden-input.php';
+require_once __DIR__ . '/labeled-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class AdminUserInterface extends RawDataContainer implements Component {
@@ -255,42 +256,28 @@ class AdminGameController extends RawDataContainer implements Component {
 
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
-    $uploadedFile = $this->get('files')->getFile('input-name');
-    $gameInserter = $this->get('game-inserter');
-    $gameManager->add($uploadedFile);
-
     return HtmlElement::emmetTop('#edit-user-page', [
       HtmlElement::emmetTop('.body-subpage-game', [
-         HtmlElement::emmetTop('form#add-game-form', [
-         'method' => 'GET',
-         'action' => '',
-         HtmlElement::create('h2','Thêm game'),
-         HtmlElement::emmetTop('fieldset',[
-           HtmlElement::create('label', 'ID'),
-           HtmlElement::emmetTop('input#id-game',''),
-           HtmlElement::create('label', 'Tên trò chơi'),
-           HtmlElement::emmetTop('input#name-game', ''),
-           HtmlElement::create('label', 'Thể loại'),
-           HtmlElement::emmetTop('input#genre-game', ''),
-           HtmlElement::create('label', 'Mô tả'),
-           HtmlElement::emmetTop('textarea#des-game', ''),
-           HtmlElement::create('label', 'Chọn game'),
-           HtmlElement::emmetTop('input#swf-game', [
-             'type' => 'file',
-           ]),
-           HtmlElement::create('label', 'Chọn ảnh'),
-           HtmlElement::emmetTop('input#img-game', [
-             'type' => 'file',
-           ]),
-           HtmlElement::create('button',[
-             'type' => 'submit',
-             'name' => 'submit',
-             'Lưu'
-           ]),
-           HtmlElement::create('button', [
-             'type' => 'reset',
-             'name' => 'reset',
-             'Đặt lại',
+        HtmlElement::emmetTop('form#add-game-form', [
+          'method' => 'GET',
+          'action' => '',
+          HtmlElement::create('h2','Thêm game'),
+          HtmlElement::emmetTop('fieldset#input-container', [
+            PlainLabeledInput::text('game-id', 'ID'),
+            PlainLabeledInput::text('game-name', 'Tên trò chơi'),
+            PlainLabeledInput::text('game-genre', 'Thể loại'),
+            LabeledTextArea::text('game-description', 'Mô tả'),
+            LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
+            LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
+            HtmlElement::create('button',[
+              'type' => 'submit',
+              'name' => 'submit',
+              'Lưu'
+            ]),
+            HtmlElement::create('button', [
+              'type' => 'reset',
+              'name' => 'reset',
+              'Đặt lại',
             ]),
           ]),
         ]),
