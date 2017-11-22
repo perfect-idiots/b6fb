@@ -78,7 +78,7 @@ class GameManager extends LoginDoubleChecker {
     $this->verify();
     $this->clear();
 
-    $addingGameQuery = $dbQuerySet->get('add-game');
+    $addingGameQuery = $this->get('db-query-set')->get('add-game');
     $games = PredefinedGames::create()->getData();
 
     foreach ($games as $id => $info) {
@@ -104,7 +104,7 @@ class GameManager extends LoginDoubleChecker {
   public function clear(): void {
     $this->verify();
 
-    foreach ($this->list() as $name) {
+    foreach ($this->list() as [$name]) {
       unlink(self::swfPath($name));
       unlink(self::imgPath($name));
     }

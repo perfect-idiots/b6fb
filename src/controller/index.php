@@ -5,6 +5,7 @@ require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/db-row-counter.php';
 require_once __DIR__ . '/delete-user.php';
@@ -218,6 +219,15 @@ function sendAction(DataContainer $param): string {
         'page' => 'admin',
         'subpage' => 'games',
       ])->redirect();
+    case 'reset-database':
+      $param->get('game-manager')->reset();
+      $param->get('genre-manager')->reset();
+      $urlQuery->except('action')->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
     default:
       throw new NotFoundException();
   }
@@ -275,6 +285,7 @@ function main(): string {
   $dbRowCounter = new DatabaseRowCounter($securityCommonParam);
   $deleteUser = new DeleteUser($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
+  $genreManager = new GenreManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
@@ -295,6 +306,7 @@ function main(): string {
     'db-query-set' => $dbQuerySet,
     'delete-user' => $deleteUser,
     'game-manager' => $gameManager,
+    'genre-manager' => $genreManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
