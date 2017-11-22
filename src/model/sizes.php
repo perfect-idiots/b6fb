@@ -51,6 +51,13 @@ class SizeSet extends LazyLoadedDataContainer {
     $textButtonWidth = 2 * $unitSize;
     $textButtonHeight = $headerSquareButtonSize;
     $textButton = BlockSize::xy($textButtonWidth, $textButtonHeight);
+    $gameItemWidth = 5 * $unitSize;
+    $gameItemHeight = 4 * $unitSize;
+    $gameItemImageWidth = 4 * $unitSize;
+    $gameItemImageHeight = 3 * $unitSize;
+    $gameItemImageMargin = 0;
+    $gameItemFigureMargin =($gameItemWidth - $gameItemImageWidth) / 2;
+    $gameItemFigcaptionHeight = $unitSize / 2;
 
     $begin = Tree::instance([
       'unit' => [
@@ -95,6 +102,17 @@ class SizeSet extends LazyLoadedDataContainer {
       ],
       'text-button' => [
         '' => $textButton,
+      ],
+      'game-item' => [
+        '' => BlockSize::xy($gameItemWidth, $gameItemHeight),
+        'image' => [
+          '' => BlockSize::xy($gameItemImageWidth, $gameItemImageHeight),
+          'margin' => $gameItemImageMargin,
+        ],
+        'figure' => [
+          'margin' => $gameItemFigureMargin,
+        ],
+        'figcaptionheight' => $gameItemFigcaptionHeight,
       ],
     ])->flat('-', '');
 
