@@ -20,6 +20,10 @@ class UploadedFile extends RawDataContainer {
     return basename($this->clientPath());
   }
 
+  public function clientMimeType(): string {
+    return $this->getDefault('type', '');
+  }
+
   public function move(string $destination): bool {
     return move_uploaded_file($this->clientPath(), $destination);
   }
