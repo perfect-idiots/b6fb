@@ -12,15 +12,15 @@ class UploadedFileSet extends LazyLoadedDataContainer {
 }
 
 class UploadedFile extends RawDataContainer {
-  public function clientPath(): string {
+  public function name(): string {
     return $this->get('name');
   }
 
-  public function clientBaseName(): string {
-    return basename($this->clientPath());
+  public function basename(): string {
+    return basename($this->name());
   }
 
-  public function clientMimeType(): string {
+  public function mimetype(): string {
     return $this->getDefault('type', '');
   }
 
