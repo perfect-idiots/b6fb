@@ -8,7 +8,6 @@ class GameItem extends RawDataContainer implements Component {
       'type' => 'file',
       'mime' => 'image/jpeg',
       'name' => $this->get('game-name'),
-      'image-index' => $this->getDefault('image-index', '0'),
       'purpose' => 'game-img',
     ]);
 
