@@ -254,15 +254,12 @@ class AdminGameController extends RawDataContainer implements Component {
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
     return HtmlElement::emmetTop('#edit-user-page', [
-      HtmlElement::emmetTop('.header-subpage-game', [
-        HtmlElement::create('h2', ''),
-      ]),
+
       HtmlElement::emmetTop('.body-subpage-game', [
          HtmlElement::emmetTop('form#add-game-form', [
          'method' => 'GET',
          'action' => '',
          HtmlElement::emmetTop('fieldset',[
-         HtmlElement::emmetBottom('legend>h2', 'Thêm game'),
            HtmlElement::create('label', 'ID'),
            HtmlElement::emmetTop('input#id-game',''),
            HtmlElement::create('label', 'Tên trò chơi'),
@@ -271,6 +268,14 @@ class AdminAddGame extends RawDataContainer implements Component {
            HtmlElement::emmetTop('input#genre-game', ''),
            HtmlElement::create('label', 'Mô tả'),
            HtmlElement::emmetTop('textarea#des-game', ''),
+           HtmlElement::create('label', 'Chọn game'),
+           HtmlElement::emmetTop('input#swf-game', [
+             'type' => 'file',
+           ]),
+           HtmlElement::create('label', 'Chọn ảnh'),
+           HtmlElement::emmetTop('input#img-game', [
+             'type' => 'file',
+           ]),
            HtmlElement::create('button',[
              'type' => 'submit',
              'name' => 'submit',

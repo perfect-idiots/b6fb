@@ -1,17 +1,14 @@
 <?php
 require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
+require_once __DIR__ . '/security.php';
 
-class GameInserter {
-  private $addingQuery, $checkingQuery;
+class GameInserter extends LoginDoubleChecker {
   const GENRE_SEPARATOR = ',';
 
-  public function __construct(DatabaseQuerySet $dbQuerySet) {
-    $this->addingQuery = $dbQuerySet->get('add-game');
-    $this->checkingQuery = $dbQuerySet->get('game-existence');
-  }
-
   public function add(array $param): array {
+    $this->verify();
+
     [
       'id' => $id,
       'name' => $name,
@@ -36,7 +33,8 @@ class GameInserter {
       $description,
     ];
 
-    $dbResult = $this->addingQuery->executeOnce($args);
+    $addingQuery = $this->get('db-query-set')->get('adding-query');
+    $dbResult = $addingQuery->executeOnce($args);
     $storage = __DIR__ . '/../storage';
     $swfDir = "$storage/game-swfs";
     $imgDir = "$storage/game-imgs";
