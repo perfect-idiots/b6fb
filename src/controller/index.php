@@ -246,7 +246,7 @@ function main(): string {
     'login' => $login,
   ]);
 
-  $userCounter = new UserCounter($securityCommonParam);
+  $dbRowCounter = new DatabaseRowCounter($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
