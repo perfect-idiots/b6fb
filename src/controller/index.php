@@ -207,6 +207,17 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'users',
       ])->redirect();
       break;
+    case 'add-game':
+      $uploadedFile = $this->get('files')->getFile('input-name');
+      $gameInserter = $this->get('game-inserter');
+      $gameManager->add($uploadedFile);
+      $urlQuery->without([
+        'action',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'games',
+      ])->redirect();
     default:
       throw new NotFoundException();
   }
