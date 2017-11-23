@@ -127,6 +127,7 @@ class DatabaseQuerySet extends DatabaseConnection {
       'add-game' => 'ssss',
       'add-genre' => 'ss',
       'user-info' => 's',
+      'game-info' => 's',
       'update-user-profile' => 'ss',
       'count-games' => '',
       'count-users' => '',

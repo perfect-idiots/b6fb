@@ -130,6 +130,15 @@ class GameManager extends LoginDoubleChecker {
     ;
   }
 
+  public function getItemInfo(string $id): array {
+    return $this
+      ->get('db-query-set')
+      ->get('game-info')
+      ->executeOnce([$id], 4)
+      ->fetch()
+    ;
+  }
+
   static private function swfPath(string $name): string {
     return __DIR__ . '/../storage/game-swfs/' . $name;
   }
