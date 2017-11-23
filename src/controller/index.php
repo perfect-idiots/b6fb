@@ -45,6 +45,8 @@ function switchPage(array $data): Page {
     case 'explore':
     case 'favourite':
     case 'history':
+    case 'genre':
+    case 'play':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
@@ -221,7 +223,6 @@ function sendAction(DataContainer $param): string {
       throw new NotFoundException();
   }
 }
-
 
 function main(): string {
   $constants = Constants::instance();
