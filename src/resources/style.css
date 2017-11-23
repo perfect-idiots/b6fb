@@ -196,7 +196,6 @@ nav {
   text-transform: uppercase;
   position: absolute;
   width: [[logo-width]];
-  height: 100%;
   top: 0px;
   z-index: 500;
   background-color: [[navigation-background-color]];
@@ -249,6 +248,14 @@ nav a[href]:hover {
 
 nav > ul > ul > li a[href]:hover {
   filter: brightness(1.8);
+}
+
+nav ul ul:last-child > li {
+  height: 30px;
+  background-image: transparent;
+  text-decoration: underline;
+  text-transform: none;
+  color: [[text-color]];
 }
 
 main {
