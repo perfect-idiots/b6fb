@@ -25,6 +25,10 @@ class MainContent extends RawDataContainer implements Component {
     switch ($page) {
       case 'index':
         return new GameMenu($this->getData());
+      case 'play':
+        return new TextNode('play');
+      default:
+        return new TextNode('');
     }
   }
 }
