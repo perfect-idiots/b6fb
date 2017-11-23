@@ -1,8 +1,8 @@
 select
-  `id`,
   `name`,
   `genre`,
-  `description`
+  `description`,
+  `id`
 from
   `games`
 where
