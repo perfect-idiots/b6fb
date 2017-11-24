@@ -53,6 +53,11 @@ body {
   display: inline-block;
 }
 
+.x-component--header-section .segment.left-corner,
+.x-component--header-section .segment.right-corner {
+  [[corner-segment-size-block]]
+}
+
 .x-component--header-section .segment.right-corner {
   position: fixed;
   right: 0px;
