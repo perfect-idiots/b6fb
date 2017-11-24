@@ -292,6 +292,7 @@ nav ul ul:last-child > li {
 
 main {
   display: inline-block;
+  width: 100%;
   margin-left: [[logo-width]];
   margin-top: [[unit-size]];
   padding: 15px;
