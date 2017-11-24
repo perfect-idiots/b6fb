@@ -381,9 +381,16 @@ button:hover {
   flex-wrap: wrap;
 }
 
-.x-component--swf-embed {
+.embed-container {
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
+}
+
+.embed-container .embed {
+  display: block;
+  height: 500px;
+  width: 100%;
+  object-fit: contain;
 }
 
 .main-footer {
