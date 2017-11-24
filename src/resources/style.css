@@ -16,7 +16,7 @@ body {
 }
 
 .x-component--header-section {
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   z-index: 1000;
@@ -34,13 +34,13 @@ body {
 }
 
 .x-component--header-section .segment.right-corner {
-  position: absolute;
+  position: fixed;
   right: 0px;
   top: [[header-vertical-padding]];
 }
 
 .x-component--header-section .segment.middle-segment {
-  position: absolute;
+  position: fixed;
   left: [[middle-segment-padding]];
   right: [[middle-segment-padding]];
 }
@@ -194,10 +194,13 @@ body {
 
 nav {
   text-transform: uppercase;
-  position: absolute;
+  position: fixed;
   width: [[logo-width]];
+  height: 100%;
   top: 0px;
   z-index: 500;
+  overflow-x: hidden;
+  overflow-y: scrollbar;
   background-color: [[navigation-background-color]];
   box-shadow: 0px 0px 1px black;
 }
