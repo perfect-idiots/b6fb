@@ -362,8 +362,8 @@ button:hover {
 
 .x-component--game-item figcaption {
   text-align: center ;
-  text-transform: uppercase;
   height: [[game-item-figcaptionheight]];
+  color: [[text-color]];
 }
 
 .x-component--game-item:hover {
