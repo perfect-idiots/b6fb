@@ -5,8 +5,10 @@ require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/user-profile.php';
-require_once __DIR__ . '/count-users.php';
+require_once __DIR__ . '/db-row-counter.php';
+require_once __DIR__ . '/delete-user.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -43,6 +45,8 @@ function switchPage(array $data): Page {
     case 'explore':
     case 'favourite':
     case 'history':
+    case 'genre':
+    case 'play':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
@@ -186,11 +190,33 @@ function sendAction(DataContainer $param): string {
         'fullname' => $urlQuery->get('fullname'),
       ]);
       $urlQuery->without([
+        'action',
         'fullname',
         'previous-page',
       ])->assign([
         'type' => 'html',
         'subpage' => $urlQuery->get('previous-page'),
+      ])->redirect();
+      break;
+    case 'delete-user':
+      $username = $urlQuery->getDefault('username', '');
+      $dbDeleteUser = $param->get('delete-user')->delete($username);
+      $urlQuery->without([
+        'action',
+        'username',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'users',
+      ])->redirect();
+      break;
+    case 'reset-database':
+      $param->get('game-manager')->reset();
+      $param->get('genre-manager')->reset();
+      $urlQuery->except('action')->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
       ])->redirect();
       break;
     default:
@@ -202,6 +228,7 @@ function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
+  $files = UploadedFileSet::instance();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -238,17 +265,23 @@ function main(): string {
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
-  $userCounter = UserCounter::instance([
+  $securityCommonParam = ([
     'cookie' => $cookie,
     'session' => $session,
     'db-query-set' => $dbQuerySet,
     'login' => $login,
   ]);
 
+  $dbRowCounter = new DatabaseRowCounter($securityCommonParam);
+  $deleteUser = new DeleteUser($securityCommonParam);
+  $gameManager = new GameManager($securityCommonParam);
+  $genreManager = new GenreManager($securityCommonParam);
+
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
+    'files' => $files,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -261,11 +294,13 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'game-inserter' => new GameInserter($dbQuerySet),
+    'delete-user' => $deleteUser,
+    'game-manager' => $gameManager,
+    'genre-manager' => $genreManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
-    'user-counter' => $userCounter,
+    'db-row-counter' => $dbRowCounter,
   ]);
 
   try {
