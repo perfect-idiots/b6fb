@@ -230,6 +230,10 @@ nav {
   box-shadow: 0px 0px 1px black;
 }
 
+nav::-webkit-scrollbar {
+  width: 0.75em;
+}
+
 nav > :first-child {
   margin-top: [[unit-size]];
 }
