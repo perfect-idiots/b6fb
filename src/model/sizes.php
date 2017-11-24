@@ -44,6 +44,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $headerSquareButtonSize = $unitSize / 2;
     $headerSquareButton = BlockSize::sqr($headerSquareButtonSize);
     $headerVerticalPadding = ($unitSize - $headerSquareButtonSize) / 2;
+    $cornerSegmentSize = $unitSquare->times(3, 1);
     $navigationEntryHeight = 2 * $unitSize / 3;
     $profileSettingWidth = 4 * $unitSize;
     $profileSettingAvatarSize = $profileSettingWidth / 4;
@@ -68,6 +69,9 @@ class SizeSet extends LazyLoadedDataContainer {
         'vertical-padding' => $headerVerticalPadding,
         'child-height' => $headerSquareButtonSize,
         'square-button' => $headerSquareButton,
+      ],
+      'corner-segment' => [
+        '' => $cornerSegmentSize,
       ],
       'middle-segment' => [
         'padding' => $unitSize * 4,

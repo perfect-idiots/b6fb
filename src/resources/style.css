@@ -10,6 +10,26 @@ body {
   font-family: 'Arial', 'Helvatica', sans-serif;
 }
 
+*::-webkit-scrollbar {
+  width: 1em;
+}
+
+*::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*:hover::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb:hover {
+  background-color: [[scrollbar-hover-color]];
+}
+
+*:hover::-webkit-scrollbar-thumb:active, *::-webkit-scrollbar-thumb:active {
+  background-color: [[scrollbar-active-color]];
+}
+
 .x-component--header-section {
   background: [[header-background-color]];
   box-shadow: 0px 1px 2px black;
@@ -31,6 +51,11 @@ body {
 
 .x-component--header-section .segment {
   display: inline-block;
+}
+
+.x-component--header-section .segment.left-corner,
+.x-component--header-section .segment.right-corner {
+  [[corner-segment-size-block]]
 }
 
 .x-component--header-section .segment.right-corner {
@@ -203,6 +228,10 @@ nav {
   overflow-y: scrollbar;
   background-color: [[navigation-background-color]];
   box-shadow: 0px 0px 1px black;
+}
+
+nav::-webkit-scrollbar {
+  width: 0.75em;
 }
 
 nav > :first-child {

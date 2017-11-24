@@ -10,7 +10,7 @@ class SwfEmbed implements Component {
   }
 
   public function render(): Component {
-    return HtmlElement::create('embed', [
+    return HtmlElement::emmetBottom('.embed-container>embed.embed', [
       'src' => $this->src,
       'type' => static::MIME,
     ]);
