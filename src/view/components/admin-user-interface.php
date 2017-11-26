@@ -37,6 +37,9 @@ class AdminUserInterface extends RawDataContainer implements Component {
         ? HtmlElement::create('body', [
           HtmlElement::emmetBottom('header#main-header', [
             HtmlElement::emmetTop('a#title-header', [
+              'style' => [
+                'padding-left' => '10px',
+              ],
               'href' => $urlQuery->set('page', 'admin')->getUrlQuery(),
               'Administrator',
             ]),
