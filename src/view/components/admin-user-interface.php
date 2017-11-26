@@ -318,8 +318,32 @@ class AdminUsers extends RawDataContainer implements Component {
 
 class AdminAdvanced extends RawDataContainer implements Component {
   public function render(): Component {
-    return HtmlElement::emmetBottom('div#dashboard.content',[
-      'This is Advanced'
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::emmetBottom('div#dashboard.content', [
+      HtmlElement::create('h1', 'Nâng cao'),
+      HtmlElement::emmetTop('#reset-db', [
+        HtmlElement::create('h2', 'Reset và Khởi tạo'),
+        HtmlElement::create('form', [
+          'method' => 'GET',
+          HtmlElement::emmetTop('.input-container', [
+            LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
+            LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
+            LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+          ]),
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('button', [
+              'type' => 'confirm',
+              'Xóa và Đặt lại CSDL',
+            ]),
+          ]),
+          new HiddenInputSet(
+            $urlQuery
+              ->set('subpage', 'reset-database')
+              ->getData()
+          ),
+        ]),
+      ]),
     ]);
   }
 }
