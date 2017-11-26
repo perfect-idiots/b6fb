@@ -16,12 +16,21 @@ class GenreManager extends LoginDoubleChecker {
     $this->verify();
     $this->clear();
 
-    $addingGenreQuery = $this->get('url-query')->get('add-genre');
+    $addingGenreQuery = $this->get('db-query-set')->get('add-genre');
     $genres = PredefinedGenres::create()->getData();
 
     foreach ($genres as $id => $name) {
       $addingGenreQuery->executeOnce([$id, $name]);
     }
+  }
+
+  public function list(): array {
+    return $this
+      ->get('db-query-set')
+      ->get('list-genres')
+      ->executeOnce([], 2)
+      ->fetch()
+    ;
   }
 }
 ?>

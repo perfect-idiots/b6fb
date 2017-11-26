@@ -136,7 +136,7 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminEditUser($data);
       case 'delete-user':
         return new AdminDeleteUser($data);
-      case 'add-game' :
+      case 'add-game':
         return new AdminAddGame($data);
       default:
         throw new NotFoundException();

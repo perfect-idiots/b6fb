@@ -44,6 +44,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $headerSquareButtonSize = $unitSize / 2;
     $headerSquareButton = BlockSize::sqr($headerSquareButtonSize);
     $headerVerticalPadding = ($unitSize - $headerSquareButtonSize) / 2;
+    $cornerSegmentSize = $unitSquare->times(3, 1);
     $navigationEntryHeight = 2 * $unitSize / 3;
     $profileSettingWidth = 4 * $unitSize;
     $profileSettingAvatarSize = $profileSettingWidth / 4;
@@ -51,12 +52,12 @@ class SizeSet extends LazyLoadedDataContainer {
     $textButtonWidth = 2 * $unitSize;
     $textButtonHeight = $headerSquareButtonSize;
     $textButton = BlockSize::xy($textButtonWidth, $textButtonHeight);
-    $gameItemWidth = 5 * $unitSize;
-    $gameItemHeight = 4 * $unitSize;
-    $gameItemImageWidth = 4 * $unitSize;
-    $gameItemImageHeight = 3 * $unitSize;
+    $gameItemWidth = 4 * $unitSize;
+    $gameItemHeight = 3 * $unitSize;
+    $gameItemImageWidth = 3 * $unitSize;
+    $gameItemImageHeight = 2 * $unitSize;
     $gameItemImageMargin = 0;
-    $gameItemFigureMargin =($gameItemWidth - $gameItemImageWidth) / 2;
+    $gameItemFigureMargin = ($gameItemWidth - $gameItemImageWidth) / 2;
     $gameItemFigcaptionHeight = $unitSize / 2;
 
     $begin = Tree::instance([
@@ -68,6 +69,9 @@ class SizeSet extends LazyLoadedDataContainer {
         'vertical-padding' => $headerVerticalPadding,
         'child-height' => $headerSquareButtonSize,
         'square-button' => $headerSquareButton,
+      ],
+      'corner-segment' => [
+        '' => $cornerSegmentSize,
       ],
       'middle-segment' => [
         'padding' => $unitSize * 4,
