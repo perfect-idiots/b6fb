@@ -17,8 +17,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
     $isLoggedIn = $login->isLoggedIn();
     $cssFileName = $isLoggedIn ? 'admin' : 'login';
     $images = $this->get('images');
-    $dbQuerySet = $this->get('db-query-set');
-    $listGames = $dbQuerySet->get('list-games')->executeOnce([], 4)->fetch();
+    $listGames = $this->get('game-manager')->list();
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -147,15 +146,16 @@ class AdminMainSection extends RawDataContainer implements Component {
 class AdminDashboard extends RawDataContainer implements Component {
   public function render(): Component {
     $images = $this->get('images');
-    $dbRowCounter = $this->get('db-row-counter');
+    $gameManager = $this->get('game-manager');
+    $userManager = $this->get('user-manager');
 
     return HtmlElement::emmetBottom('#dashboard', [
       HtmlElement::emmetTop('.header-subpage', [
         HtmlElement::create('h1', 'Dashboard'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
-        DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', $dbRowCounter->countGames()),
-        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $dbRowCounter->countUsers()),
+        DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', $gameManager->count()),
+        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $userManager->count()),
       ]),
     ]);
   }
@@ -190,7 +190,6 @@ class DashboardPanel extends RawDataContainer implements Component {
   }
 }
 
-
 class AdminGames extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query')->assign([
@@ -198,20 +197,19 @@ class AdminGames extends RawDataContainer implements Component {
       'previous-page' => 'games',
     ]);
 
-    $games = $this->get('db-query-set')->get('list-games')->executeOnce([], 4)->fetch();
-        $listgame = array_map(
-          function (array $userinfo) {
-            [$id, $name, $genre, $description] = $userinfo;
-            return HtmlElement::create('tr', [
-              HtmlElement::create('td', $id),
-              HtmlElement::create('td', $name),
-              HtmlElement::create('td', $genre),
-              HtmlElement::create('td', $description),
-              HtmlElement::create('td', new AdminGameController()),
-            ]);
-          },
-          $games
-        );
+    $games = $this->get('game-manager')->list();
+    $listgame = array_map(
+      function (array $userinfo) {
+        [$id, $name, $genre] = $userinfo;
+        return HtmlElement::create('tr', [
+          HtmlElement::create('td', $id),
+          HtmlElement::create('td', $name),
+          HtmlElement::create('td', $genre),
+          HtmlElement::create('td', new AdminGameController()),
+        ]);
+      },
+      $games
+    );
 
     return HtmlElement::emmetBottom('#list-games', [
       HtmlElement::emmetTop('.header-subpage', [
@@ -229,7 +227,6 @@ class AdminGames extends RawDataContainer implements Component {
            HtmlElement::create('th', ['ID']),
            HtmlElement::create('th', ['Tên']),
            HtmlElement::create('th', ['Thể loại']),
-           HtmlElement::create('th', ['Mô tả']),
            HtmlElement::create('th', ['Điều khiển']),
          ]),
           HtmlElement::create('tbody', $listgame),
@@ -256,30 +253,26 @@ class AdminGameController extends RawDataContainer implements Component {
 
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
-    return HtmlElement::emmetTop('#edit-user-page', [
-      HtmlElement::emmetTop('.body-subpage-game', [
-        HtmlElement::emmetTop('form#add-game-form', [
-          'method' => 'GET',
-          'action' => '',
-          HtmlElement::create('h2','Thêm game'),
-          HtmlElement::emmetTop('fieldset#input-container', [
-            PlainLabeledInput::text('game-id', 'ID'),
-            PlainLabeledInput::text('game-name', 'Tên trò chơi'),
-            PlainLabeledInput::text('game-genre', 'Thể loại'),
-            LabeledTextArea::text('game-description', 'Mô tả'),
-            LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
-            LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
-            HtmlElement::create('button',[
-              'type' => 'submit',
-              'name' => 'submit',
-              'Lưu'
-            ]),
-            HtmlElement::create('button', [
-              'type' => 'reset',
-              'name' => 'reset',
-              'Đặt lại',
-            ]),
-          ]),
+    return HtmlElement::emmetBottom('#edit-user-page>.body-subpage-game>form#add-game-form', [
+      'method' => 'GET',
+      'action' => '',
+      HtmlElement::create('h2','Thêm game'),
+      HtmlElement::emmetTop('fieldset#input-container', [
+        PlainLabeledInput::text('game-id', 'ID'),
+        PlainLabeledInput::text('game-name', 'Tên trò chơi'),
+        PlainLabeledInput::text('game-genre', 'Thể loại'),
+        LabeledTextArea::text('game-description', 'Mô tả'),
+        LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
+        LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
+        HtmlElement::create('button',[
+          'type' => 'submit',
+          'name' => 'submit',
+          'Lưu'
+        ]),
+        HtmlElement::create('button', [
+          'type' => 'reset',
+          'name' => 'reset',
+          'Đặt lại',
         ]),
       ]),
     ]);
@@ -288,7 +281,7 @@ class AdminAddGame extends RawDataContainer implements Component {
 
 class AdminUsers extends RawDataContainer implements Component {
   public function render(): Component {
-    $users = $this->get('db-query-set')->get('list-users')->executeOnce([], 2)->fetch();
+    $users = $this->get('user-manager')->list();
 
     $children = array_map(
       function (array $userinfo) {
@@ -357,8 +350,7 @@ class AdminEditUser extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
     $username = $urlQuery->get('username');
-    $dbQuerySet = $this->get('db-query-set');
-    [[$fullname]] = $dbQuerySet->get('user-info')->executeOnce([$username], 1)->fetch();
+    $fullname = $this->get('user-manager')->getUserFullname($username);
 
     return HtmlElement::emmetBottom('#edit-user-page', [
       HtmlElement::emmetTop('.header-subpage', [
