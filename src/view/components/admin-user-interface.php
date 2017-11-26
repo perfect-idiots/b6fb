@@ -200,12 +200,11 @@ class AdminGames extends RawDataContainer implements Component {
     $games = $this->get('game-manager')->list();
     $listgame = array_map(
       function (array $userinfo) {
-        [$id, $name, $genre, $description] = $userinfo;
+        [$id, $name, $genre] = $userinfo;
         return HtmlElement::create('tr', [
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
           HtmlElement::create('td', $genre),
-          HtmlElement::create('td', $description),
           HtmlElement::create('td', new AdminGameController()),
         ]);
       },
@@ -228,7 +227,6 @@ class AdminGames extends RawDataContainer implements Component {
            HtmlElement::create('th', ['ID']),
            HtmlElement::create('th', ['Tên']),
            HtmlElement::create('th', ['Thể loại']),
-           HtmlElement::create('th', ['Mô tả']),
            HtmlElement::create('th', ['Điều khiển']),
          ]),
           HtmlElement::create('tbody', $listgame),
