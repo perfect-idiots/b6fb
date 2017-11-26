@@ -1,10 +1,10 @@
 # b6fb
 
-## Create first admin account
+## Tạo tài khoản admin đầu tiên
 
-**Step 1:** Create first user account
+**Bước 1:** Tạo tài khoản (đăng ký) người dùng thông thường đầu tiên trên giao diện web
 
-**Step 2:** Run the following query in your database
+**Bước 2:** Chạy lệnh sau trên CSDL
 
 ```sql
 insert into admin_accounts (username, password_hash)
@@ -12,4 +12,4 @@ select username, password_hash
 from user_accounts
 ```
 
-**Result:** You now have an admin account with username/password identical to the user account.
+**Kết quả:** Bây giờ bạn đã có một tài khoản admin với tên đăng nhập và mật khẩu tương tự tại khoản người dùng đầu tiên.
