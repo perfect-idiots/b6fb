@@ -19,18 +19,27 @@ class LabeledInput extends RawDataContainer implements Component {
       $this->getDefault('input-attr', [])
     );
 
+    $labelElement = HtmlElement::create('label', array_merge(
+      [$label],
+      $labelAttr,
+      $id ? ['for' => $id] : []
+    ));
 
-    return HtmlElement::create('div', [
-      HtmlElement::create('label', array_merge(
-        [$label],
-        $labelAttr,
-        $id ? ['for' => $id] : []
-      )),
-      HtmlElement::create($tagName, array_merge($inputAttr, array_merge(
-        $id ? ['id' => $id, 'name' => $id] : [],
-        $type ? ['type' => $type] : []
-      ))),
-    ]);
+    $inputElement = HtmlElement::create($tagName, array_merge($inputAttr, array_merge(
+      $id ? ['id' => $id, 'name' => $id] : [],
+      $type ? ['type' => $type] : []
+    )));
+
+    return HtmlElement::create(
+      'div',
+      static::reversedOrder()
+        ? [$inputElement, $labelElement]
+        : [$labelElement, $inputElement]
+    );
+  }
+
+  protected function reversedOrder(): bool {
+    return false;
   }
 
   protected function defaultTagName(): string {
@@ -63,15 +72,27 @@ class LabeledInput extends RawDataContainer implements Component {
   }
 }
 
-class LabeledCheckbox extends LabeledInput {
+class ReversedLabeledInput extends LabeledInput {
+  protected function reversedOrder(): bool {
+    return true;
+  }
+}
+
+class LabeledCheckbox extends ReversedLabeledInput {
   static protected function defaultInputAttr(): array {
-    return ['type' => 'checkbox'];
+    return array_merge(parent::defaultInputAttr(), ['type' => 'checkbox']);
+  }
+}
+
+class LabeledRadio extends ReversedLabeledInput {
+  static protected function defaultInputAttr(): array {
+    return array_merge(parent::defaultInputAttr(), ['type' => 'radio']);
   }
 }
 
 class RequiredLabeledInput extends LabeledInput {
   static protected function defaultInputAttr(): array {
-    return ['required' => true];
+    return array_merge(parent::defaultInputAttr(), ['required' => true]);
   }
 }
 
