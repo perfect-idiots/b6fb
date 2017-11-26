@@ -2,7 +2,7 @@
 require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/../lib/utils.php';
 
-class UserProfileUpdater extends LoginDoubleChecker {
+class UserProfile extends LoginDoubleChecker {
   static protected function requiredFieldSchema(): array {
     return array_merge(parent::requiredFieldSchema(), [
       'username' => 'string',

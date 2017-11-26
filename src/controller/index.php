@@ -6,9 +6,8 @@ require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/db-genre.php';
+require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/user-profile.php';
-require_once __DIR__ . '/db-row-counter.php';
-require_once __DIR__ . '/delete-user.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -179,16 +178,7 @@ function sendAction(DataContainer $param): string {
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
-      $userProfileUpdater = UserProfileUpdater::instance([
-        'cookie' => $cookie,
-        'session' => $session,
-        'login' => $login,
-        'db-query-set' => $dbQuerySet,
-        'username' => $urlQuery->get('username'),
-      ]);
-      $userProfileUpdater->update([
-        'fullname' => $urlQuery->get('fullname'),
-      ]);
+      $param->get('user-manager')->update($username, $fullname);
       $urlQuery->without([
         'action',
         'fullname',
@@ -200,7 +190,7 @@ function sendAction(DataContainer $param): string {
       break;
     case 'delete-user':
       $username = $urlQuery->getDefault('username', '');
-      $dbDeleteUser = $param->get('delete-user')->delete($username);
+      $param->get('user-manager')->delete($username);
       $urlQuery->without([
         'action',
         'username',
@@ -272,10 +262,9 @@ function main(): string {
     'login' => $login,
   ]);
 
-  $dbRowCounter = new DatabaseRowCounter($securityCommonParam);
-  $deleteUser = new DeleteUser($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
   $genreManager = new GenreManager($securityCommonParam);
+  $userManager = new UserManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
@@ -294,13 +283,12 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'delete-user' => $deleteUser,
     'game-manager' => $gameManager,
     'genre-manager' => $genreManager,
+    'user-manager' => $userManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
-    'db-row-counter' => $dbRowCounter,
   ]);
 
   try {

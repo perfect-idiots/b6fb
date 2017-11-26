@@ -17,8 +17,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
     $isLoggedIn = $login->isLoggedIn();
     $cssFileName = $isLoggedIn ? 'admin' : 'login';
     $images = $this->get('images');
-    $dbQuerySet = $this->get('db-query-set');
-    $listGames = $dbQuerySet->get('list-games')->executeOnce([], 4)->fetch();
+    $listGames = $this->get('game-manager')->list();
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -147,15 +146,16 @@ class AdminMainSection extends RawDataContainer implements Component {
 class AdminDashboard extends RawDataContainer implements Component {
   public function render(): Component {
     $images = $this->get('images');
-    $dbRowCounter = $this->get('db-row-counter');
+    $gameManager = $this->get('game-manager');
+    $userManager = $this->get('user-manager');
 
     return HtmlElement::emmetBottom('#dashboard', [
       HtmlElement::emmetTop('.header-subpage', [
         HtmlElement::create('h1', 'Dashboard'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
-        DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', $dbRowCounter->countGames()),
-        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $dbRowCounter->countUsers()),
+        DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', $gameManager->count()),
+        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $userManager->count()),
       ]),
     ]);
   }
@@ -198,7 +198,7 @@ class AdminGames extends RawDataContainer implements Component {
       'previous-page' => 'games',
     ]);
 
-    $games = $this->get('db-query-set')->get('list-games')->executeOnce([], 4)->fetch();
+    $games = $this->get('game-manager')->list();
         $listgame = array_map(
           function (array $userinfo) {
             [$id, $name, $genre, $description] = $userinfo;
@@ -288,7 +288,7 @@ class AdminAddGame extends RawDataContainer implements Component {
 
 class AdminUsers extends RawDataContainer implements Component {
   public function render(): Component {
-    $users = $this->get('db-query-set')->get('list-users')->executeOnce([], 2)->fetch();
+    $users = $this->get('user-manager')->list();
 
     $children = array_map(
       function (array $userinfo) {
@@ -357,8 +357,7 @@ class AdminEditUser extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
     $username = $urlQuery->get('username');
-    $dbQuerySet = $this->get('db-query-set');
-    [[$fullname]] = $dbQuerySet->get('user-info')->executeOnce([$username], 1)->fetch();
+    $fullname = $this->get('user-manager')->getUserFullname($username);
 
     return HtmlElement::emmetBottom('#edit-user-page', [
       HtmlElement::emmetTop('.header-subpage', [
