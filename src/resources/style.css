@@ -252,6 +252,10 @@ nav li {
   margin: 5px;
 }
 
+nav > ul > ul > li {
+  padding-left: 10px;
+}
+
 nav > ul > ul > li:hover {
   background-color: [[navigation-hover-background-color]];
 }
@@ -287,7 +291,12 @@ nav ul ul:last-child > li {
   background-image: transparent;
   text-decoration: underline;
   text-transform: none;
+  font-size: 0.85em;
   color: [[text-color]];
+}
+
+nav ul ul:last-child > li > a {
+  line-height: [[header-square-button-height]];
 }
 
 .main.outer {
