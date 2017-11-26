@@ -1,5 +1,5 @@
 select
-  id,
-  name
+  `id`,
+  `name`
 from
   genres

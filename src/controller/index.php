@@ -5,6 +5,8 @@ require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/db-genre.php';
+require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
@@ -42,6 +44,8 @@ function switchPage(array $data): Page {
     case 'explore':
     case 'favourite':
     case 'history':
+    case 'genre':
+    case 'play':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
@@ -135,11 +139,9 @@ function getFilePath(UrlQuery $urlQuery): string {
     case 'ui':
       return __DIR__ . '/../resources/images/' . $name;
     case 'game-img':
-      $index = $urlQuery->get('image-index');
-      validateFileName($index);
-      return __DIR__ . "/../media/images/$name/$index";
+      return __DIR__ . "/../storage/game-imgs/$name";
     case 'game-swf':
-      return __DIR__ . "/../media/games/$name";
+      return __DIR__ . "/../storage/game-swfs/$name";
     default:
       throw new NotFoundException();
   }
@@ -172,26 +174,44 @@ function sendAction(DataContainer $param): string {
   $dbQuerySet = DatabaseQuerySet::instance();
 
   switch ($action) {
+    case 'check-admin-auth':
+      $param->get('login-double-checker')->verify();
+      return '
+        <strong>Authenticated</strong>
+      ';
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
-      $userProfileUpdater = UserProfileUpdater::instance([
-        'cookie' => $cookie,
-        'session' => $session,
-        'login' => $login,
-        'db-query-set' => $dbQuerySet,
-        'username' => $urlQuery->get('username'),
-      ]);
-      $userProfileUpdater->update([
-        'fullname' => $urlQuery->get('fullname'),
-      ]);
+      $param->get('user-manager')->update($username, $fullname);
       $urlQuery->without([
+        'action',
         'fullname',
         'previous-page',
       ])->assign([
         'type' => 'html',
         'subpage' => $urlQuery->get('previous-page'),
+      ])->redirect();
+      break;
+    case 'delete-user':
+      $username = $urlQuery->getDefault('username', '');
+      $param->get('user-manager')->delete($username);
+      $urlQuery->without([
+        'action',
+        'username',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'users',
+      ])->redirect();
+      break;
+    case 'reset-database':
+      $param->get('game-manager')->reset();
+      $param->get('genre-manager')->reset();
+      $urlQuery->except('action')->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
       ])->redirect();
       break;
     default:
@@ -203,6 +223,7 @@ function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
+  $files = UploadedFileSet::instance();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -239,10 +260,23 @@ function main(): string {
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
+  $securityCommonParam = ([
+    'cookie' => $cookie,
+    'session' => $session,
+    'db-query-set' => $dbQuerySet,
+    'login' => $login,
+  ]);
+
+  $loginDoubleChecker = new LoginDoubleChecker($securityCommonParam);
+  $gameManager = new GameManager($securityCommonParam);
+  $genreManager = new GenreManager($securityCommonParam);
+  $userManager = new UserManager($securityCommonParam);
+
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
+    'files' => $files,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -255,7 +289,10 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'game-inserter' => new GameInserter($dbQuerySet),
+    'login-double-checker' => $loginDoubleChecker,
+    'game-manager' => $gameManager,
+    'genre-manager' => $genreManager,
+    'user-manager' => $userManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,

@@ -17,7 +17,11 @@ class HeaderSection extends RawDataContainer implements Component {
       HtmlElement::emmetBottom('.middle-segment.segment', [
         new SearchBox($this->getData()),
       ]),
-      HtmlElement::emmetBottom('.right-corner.segment', [
+      HtmlElement::emmetBottom('.right-corner.segment>.flex-box', [
+        'style' => [
+          'display' => 'flex',
+          'justify-content' => 'space-around',
+        ],
         new ThemeSwitcher($this->getData()),
         new UserProfileView($this->getData()),
       ]),
