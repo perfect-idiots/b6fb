@@ -65,13 +65,13 @@ class LabeledInput extends RawDataContainer implements Component {
 
 class LabeledCheckbox extends LabeledInput {
   static protected function defaultInputAttr(): array {
-    return ['type' => 'checkbox'];
+    return array_merge(parent::defaultInputAttr(), ['type' => 'checkbox']);
   }
 }
 
 class RequiredLabeledInput extends LabeledInput {
   static protected function defaultInputAttr(): array {
-    return ['required' => true];
+    return array_merge(parent::defaultInputAttr(), ['required' => true]);
   }
 }
 
