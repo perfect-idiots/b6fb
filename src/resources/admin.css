@@ -189,7 +189,6 @@ button.btn-add:hover {
 table#tb-games {
   position: absolute;
   border-collapse: collapse;
-  margin-left: 100px;
 }
 
 table, th, td {
