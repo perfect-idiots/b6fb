@@ -255,30 +255,26 @@ class AdminGameController extends RawDataContainer implements Component {
 
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
-    return HtmlElement::emmetTop('#edit-user-page', [
-      HtmlElement::emmetTop('.body-subpage-game', [
-        HtmlElement::emmetTop('form#add-game-form', [
-          'method' => 'GET',
-          'action' => '',
-          HtmlElement::create('h2','Thêm game'),
-          HtmlElement::emmetTop('fieldset#input-container', [
-            PlainLabeledInput::text('game-id', 'ID'),
-            PlainLabeledInput::text('game-name', 'Tên trò chơi'),
-            PlainLabeledInput::text('game-genre', 'Thể loại'),
-            LabeledTextArea::text('game-description', 'Mô tả'),
-            LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
-            LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
-            HtmlElement::create('button',[
-              'type' => 'submit',
-              'name' => 'submit',
-              'Lưu'
-            ]),
-            HtmlElement::create('button', [
-              'type' => 'reset',
-              'name' => 'reset',
-              'Đặt lại',
-            ]),
-          ]),
+    return HtmlElement::emmetBottom('#edit-user-page>.body-subpage-game>form#add-game-form', [
+      'method' => 'GET',
+      'action' => '',
+      HtmlElement::create('h2','Thêm game'),
+      HtmlElement::emmetTop('fieldset#input-container', [
+        PlainLabeledInput::text('game-id', 'ID'),
+        PlainLabeledInput::text('game-name', 'Tên trò chơi'),
+        PlainLabeledInput::text('game-genre', 'Thể loại'),
+        LabeledTextArea::text('game-description', 'Mô tả'),
+        LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
+        LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
+        HtmlElement::create('button',[
+          'type' => 'submit',
+          'name' => 'submit',
+          'Lưu'
+        ]),
+        HtmlElement::create('button', [
+          'type' => 'reset',
+          'name' => 'reset',
+          'Đặt lại',
         ]),
       ]),
     ]);
