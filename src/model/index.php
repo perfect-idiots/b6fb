@@ -8,4 +8,5 @@ require_once __DIR__ . '/images.php';
 require_once __DIR__ . '/cookie.php';
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/uploaded-files.php';
 ?>

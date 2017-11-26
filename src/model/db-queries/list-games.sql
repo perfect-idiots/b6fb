@@ -1,7 +1,7 @@
 select
-  id,
-  name,
-  genre,
-  description
+  `id`,
+  `name`,
+  `genre`,
+  `description`
 from
   games
