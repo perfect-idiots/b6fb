@@ -419,17 +419,20 @@ button:hover {
 #main-footer{
   display: block;
   text-align: center;
+  height: [[footer-height]];
 }
 
 .copyright {
   display: inline-block;
   padding-right: 5px;
+  margin-top: [[footer-margin]];;
 }
 
 .about {
   display: inline-block;
   border-left: 2px solid [[text-color]];
   padding: 0 10px 0 10px;
+  margin-top: [[footer-margin]];
 }
 
 .about a {
