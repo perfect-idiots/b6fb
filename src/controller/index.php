@@ -174,6 +174,11 @@ function sendAction(DataContainer $param): string {
   $dbQuerySet = DatabaseQuerySet::instance();
 
   switch ($action) {
+    case 'check-admin-auth':
+      $param->get('login-double-checker')->verify();
+      return '
+        <strong>Authenticated</strong>
+      ';
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
@@ -262,6 +267,7 @@ function main(): string {
     'login' => $login,
   ]);
 
+  $loginDoubleChecker = new LoginDoubleChecker($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
@@ -283,6 +289,7 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'login-double-checker' => $loginDoubleChecker,
     'game-manager' => $gameManager,
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,

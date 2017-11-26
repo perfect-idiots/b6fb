@@ -252,6 +252,10 @@ nav li {
   margin: 5px;
 }
 
+nav > ul > ul > li {
+  padding-left: 10px;
+}
+
 nav > ul > ul > li:hover {
   background-color: [[navigation-hover-background-color]];
 }
@@ -287,7 +291,12 @@ nav ul ul:last-child > li {
   background-image: transparent;
   text-decoration: underline;
   text-transform: none;
+  font-size: 0.85em;
   color: [[text-color]];
+}
+
+nav ul ul:last-child > li > a {
+  line-height: [[header-square-button-height]];
 }
 
 .main.outer {
@@ -405,4 +414,24 @@ button:hover {
 
 .main-footer {
   text-align: center;
+}
+
+#main-footer{
+  display: block;
+  text-align: center;
+}
+
+.copyright {
+  display: inline-block;
+  padding-right: 5px;
+}
+
+.about {
+  display: inline-block;
+  border-left: 2px solid [[text-color]];
+  padding: 0 10px 0 10px;
+}
+
+.about a {
+  color: [[text-color]];
 }
