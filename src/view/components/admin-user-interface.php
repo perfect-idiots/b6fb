@@ -190,7 +190,6 @@ class DashboardPanel extends RawDataContainer implements Component {
   }
 }
 
-
 class AdminGames extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query')->assign([
@@ -199,19 +198,19 @@ class AdminGames extends RawDataContainer implements Component {
     ]);
 
     $games = $this->get('game-manager')->list();
-        $listgame = array_map(
-          function (array $userinfo) {
-            [$id, $name, $genre, $description] = $userinfo;
-            return HtmlElement::create('tr', [
-              HtmlElement::create('td', $id),
-              HtmlElement::create('td', $name),
-              HtmlElement::create('td', $genre),
-              HtmlElement::create('td', $description),
-              HtmlElement::create('td', new AdminGameController()),
-            ]);
-          },
-          $games
-        );
+    $listgame = array_map(
+      function (array $userinfo) {
+        [$id, $name, $genre, $description] = $userinfo;
+        return HtmlElement::create('tr', [
+          HtmlElement::create('td', $id),
+          HtmlElement::create('td', $name),
+          HtmlElement::create('td', $genre),
+          HtmlElement::create('td', $description),
+          HtmlElement::create('td', new AdminGameController()),
+        ]);
+      },
+      $games
+    );
 
     return HtmlElement::emmetBottom('#list-games', [
       HtmlElement::emmetTop('.header-subpage', [
