@@ -225,7 +225,7 @@ th {
   font-weight: bold;
 }
 
-#form-group input,output {
+#form-group input, output {
   color: #1716de;
   font-size: 15px;
   font-weight: bold;
@@ -288,7 +288,7 @@ a.edit-user, a.delete-user {
   text-align: center;
 }
 
-#add-game-form input,textarea {
+#add-game-form input, textarea {
   margin-bottom: 15px;
 }
 
@@ -304,7 +304,7 @@ fieldset button {
   color: white;
 }
 
-#add-game-form input,output, textarea {
+#add-game-form input, output, textarea {
   color: #555;
   padding: 5px;
 }
