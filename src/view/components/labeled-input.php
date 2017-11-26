@@ -69,6 +69,12 @@ class LabeledCheckbox extends LabeledInput {
   }
 }
 
+class LabeledRadio extends LabeledInput {
+  static protected function defaultInputAttr(): array {
+    return array_merge(parent::defaultInputAttr(), ['type' => 'radio']);
+  }
+}
+
 class RequiredLabeledInput extends LabeledInput {
   static protected function defaultInputAttr(): array {
     return array_merge(parent::defaultInputAttr(), ['required' => true]);
