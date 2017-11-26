@@ -4,7 +4,14 @@ require_once __DIR__ . '/url-query.php';
 
 class ImageUrlQuery extends UrlQuery {
   public function __construct(array $data) {
-    parent::__construct(array_merge($data, ['type' => 'image']));
+    parent::__construct(array_merge($data, static::defaultFields()));
+  }
+
+  protected function defaultFields(): array {
+    return [
+      'type' => 'file',
+      'purpose' => 'ui',
+    ];
   }
 }
 
@@ -48,6 +55,18 @@ class DefaultAvatarImage extends SvgImage {
   }
 }
 
+class GamepadImage extends SvgImage {
+  protected function name(): string {
+    return 'gamepad.svg';
+  }
+}
+
+class MultiUsersImage extends SvgImage {
+  protected function name(): string {
+    return 'multi-users.svg';
+  }
+}
+
 class ImageSet extends LazyLoadedDataContainer {
   protected function load(): array {
     $theme = $this->param['name'];
@@ -56,6 +75,8 @@ class ImageSet extends LazyLoadedDataContainer {
       'SearchIcon',
       'NightModeIcon',
       'DefaultAvatarImage',
+      'GamepadImage',
+      'MultiUsersImage',
     ];
 
     $result = [];

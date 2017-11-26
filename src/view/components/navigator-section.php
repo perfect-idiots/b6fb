@@ -1,38 +1,53 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/sidebar-navigator.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class NavigatorSection extends RawDataContainer implements Component {
   public function render(): Component {
+    $self = $this;
     $currentpage = $this->get('page');
+    $currentgenre = $this->get('url-query')->getDefault('genre', '');
     $subpagetmpls = $this->get('subpages');
 
-    $subpageitems = array_map(
-      function ($tmpl) use($currentpage) {
-        $page = $tmpl['page'];
+    $genretmpls = array_map(
+      function (array $info) use($self) {
+        [$id, $name] = $info;
 
-        return HtmlElement::emmetDepth(
-          "li#to-$page>a",
-          [
-            [
-              'dataset' => $tmpl,
-              'classes' => $currentpage === $page ? ['current-page'] : [],
-            ],
-            [
-              'href' => $tmpl['href'],
-              $tmpl['title'],
-            ],
-          ]
-        );
+        return [
+          'href' => $self
+            ->get('url-query')
+            ->assign(['page' => 'genre', 'genre' => $id])
+            ->getUrlQuery(),
+
+          'page' => 'genre',
+          'genre' => $id,
+          'title' => $name,
+        ];
       },
 
-      $subpagetmpls
+      $this->get('genre-manager')->list()
     );
 
-    return HtmlElement::emmetBottom('nav>ul', [
-      HtmlElement::emmetTop('li#subpage-navigator-title.subpage.title', []),
-      HtmlElement::emmetTop('ul#subpage-navigator.subpage', $subpageitems),
-    ]);
+    return new SidebarNavigator(
+      [
+        ['', $subpagetmpls],
+        ['Thể loại', $genretmpls],
+      ],
+      function ($tmpl) {
+        return [
+          'href' => $tmpl['href'],
+          $tmpl['title']
+        ];
+      },
+      $currentpage === 'genre'
+        ? function ($tmpl) use($currentgenre) {
+          return array_key_exists('genre', $tmpl) && $tmpl['genre'] === $currentgenre;
+        }
+        : function ($tmpl) use($currentpage) {
+          return $tmpl['page'] === $currentpage;
+        }
+    );
   }
 }
 ?>

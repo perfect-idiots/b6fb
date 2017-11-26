@@ -1,7 +1,13 @@
 <?php
 require_once __DIR__ . '/system-requirements.php';
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
+require_once __DIR__ . '/sign-up.php';
+require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/db-genre.php';
+require_once __DIR__ . '/db-user.php';
+require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -38,6 +44,8 @@ function switchPage(array $data): Page {
     case 'explore':
     case 'favourite':
     case 'history':
+    case 'genre':
+    case 'play':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
@@ -45,6 +53,8 @@ function switchPage(array $data): Page {
       return LogoutPage::instance(array_merge($data, [
         'logout' => Logout::instance($data),
       ]));
+    case 'sign-up':
+      return SignUpPage::instance($data);
     case 'admin':
       return AdminPage::instance($data);
     default:
@@ -84,7 +94,137 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   return $result;
 }
 
-function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): string {
+function createAdminSubpageList(UrlQuery $urlQuery) {
+  $namemap = [
+    'games' => 'Trò chơi',
+    'users' => 'Người dùng',
+    'advanced' => 'Nâng cao',
+  ];
+
+  $result = [[
+    'subpage' => 'dashboard',
+    'title' => 'Bảng điều khiển',
+    'href' => UrlQuery::instance(['page' => 'admin'])->getUrlQuery(),
+  ]];
+
+  foreach ($namemap as $page => $title) {
+    $href = $urlQuery->set('subpage', $page)->getUrlQuery();
+
+    array_push($result, [
+      'subpage' => $page,
+      'title' => $title,
+      'href' => $href,
+    ]);
+  }
+
+  return $result;
+}
+
+function sendHtml(DataContainer $data): string {
+  return switchPage($data->getData())->render();
+}
+
+function validateFileName(string $name): void {
+  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) {
+    ErrorPage::status(403)->render();
+    throw new NotFoundException();
+  }
+}
+
+function getFilePath(UrlQuery $urlQuery): string {
+  $name = $urlQuery->get('name');
+  validateFileName($name);
+
+  switch ($urlQuery->get('purpose')) {
+    case 'ui':
+      return __DIR__ . '/../resources/images/' . $name;
+    case 'game-img':
+      return __DIR__ . "/../storage/game-imgs/$name";
+    case 'game-swf':
+      return __DIR__ . "/../storage/game-swfs/$name";
+    default:
+      throw new NotFoundException();
+  }
+}
+
+function sendFile(UrlQuery $urlQuery): string {
+  $requiredkeys = ['name', 'mime', 'purpose'];
+  foreach ($requiredkeys as $key) {
+    if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
+  }
+
+  $mime = $urlQuery->get('mime');
+  $filename = getFilePath($urlQuery);
+  if (!file_exists($filename)) throw new NotFoundException();
+
+  header('Content-Type: ' . $mime);
+  header('Content-Length: ' . filesize($filename));
+  header('Content-Disposition: inline');
+  readfile($filename);
+  exit;
+}
+
+function sendAction(DataContainer $param): string {
+  $urlQuery = $param->get('url-query');
+  $dbQuerySet = $param->get('db-query-set');
+  $cookie = $param->get('cookie');
+  $session = $param->get('session');
+  $login = $param->get('login');
+  $action = $urlQuery->getDefault('action', '');
+  $dbQuerySet = DatabaseQuerySet::instance();
+
+  switch ($action) {
+    case 'edit-user':
+      $username = $urlQuery->getDefault('username', '');
+      $fullname = $urlQuery->getDefault('fullname', '');
+      if (!$username || !$fullname) return ErrorPage::status(400)->render();
+      $param->get('user-manager')->update($username, $fullname);
+      $urlQuery->without([
+        'action',
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => $urlQuery->get('previous-page'),
+      ])->redirect();
+      break;
+    case 'delete-user':
+      $username = $urlQuery->getDefault('username', '');
+      $param->get('user-manager')->delete($username);
+      $urlQuery->without([
+        'action',
+        'username',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'users',
+      ])->redirect();
+      break;
+    case 'reset-database':
+      $param->get('game-manager')->reset();
+      $param->get('genre-manager')->reset();
+      $urlQuery->except('action')->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
+    default:
+      throw new NotFoundException();
+  }
+}
+
+function main(): string {
+  $constants = Constants::instance();
+  $urlQuery = new UrlQuery($_GET);
+  $postData = new HttpData($_POST);
+  $files = UploadedFileSet::instance();
+  $page = $urlQuery->getDefault('page', 'index');
+
+  $cookie = Cookie::instance([
+    'expiry-extend' => $constants->get('month'),
+  ]);
+
   if ($urlQuery->hasKey('theme')) {
     $cookie->set('theme', $urlQuery->get('theme'))->update();
     $urlQuery->except('theme')->redirect();
@@ -97,76 +237,75 @@ function sendHtml(UrlQuery $urlQuery, HttpData $postData, Cookie $cookie): strin
     $urlQuery->except('theme')->redirect();
   }
 
+  $session = Session::instance();
   $sizeSet = SizeSet::instance();
   $imageSet = ImageSet::instance($themeColorSet);
   $dbQuerySet = DatabaseQuerySet::instance();
 
-  $login = Login::instance([
+  $accountParams = [
+    'is-admin' => $page === 'admin',
+    'session' => $session,
     'post-data' => $postData,
     'cookie' => $cookie,
     'db-query-set' => $dbQuerySet,
     'url-query' => $urlQuery,
-  ])->verify();
+  ];
 
-  $data = [
+  $signup = SignUp::instance($accountParams)->verify();
+  $login = Login::instance($accountParams)->verify();
+  $logout = Logout::instance($accountParams);
+
+  $securityCommonParam = ([
+    'cookie' => $cookie,
+    'session' => $session,
+    'db-query-set' => $dbQuerySet,
+    'login' => $login,
+  ]);
+
+  $gameManager = new GameManager($securityCommonParam);
+  $genreManager = new GenreManager($securityCommonParam);
+  $userManager = new UserManager($securityCommonParam);
+
+  $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
+    'files' => $files,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
     'size-set' => $sizeSet,
     'sizes' => $sizeSet->getData(),
-    'page' => $urlQuery->getDefault('page', 'index'),
+    'page' => $page,
+    'session' => $session,
     'cookie' => $cookie,
     'subpages' => createSubpageList($urlQuery, $cookie),
+    'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
+    'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'game-manager' => $gameManager,
+    'genre-manager' => $genreManager,
+    'user-manager' => $userManager,
+    'signup' => $signup,
     'login' => $login,
-  ];
-
-  try {
-    return switchPage($data)->render();
-  } catch (NotFoundException $error) {
-    return ErrorPage::status(404)->render();
-  }
-}
-
-function sendImage(UrlQuery $urlQuery): string {
-  $requiredkeys = ['name', 'mime'];
-  foreach ($requiredkeys as $key) {
-    if (!$urlQuery->hasKey($key)) return ErrorPage::status(400)->render();
-  }
-
-  $name = $urlQuery->get('name');
-  $mime = $urlQuery->get('mime');
-  if (preg_match('/^\/|(^|\/)\.\.($|\/)/', $name)) return ErrorPage::status(403)->render();
-
-  $filename = __DIR__ . '/../resources/images/' . $name;
-  if (!file_exists($filename)) return ErrorPage::status(404)->render();
-
-  header('Content-Type: ' . $mime);
-  header('Content-Length: ' . filesize($filename));
-  header('Content-Disposition: inline');
-  readfile($filename);
-  exit;
-}
-
-function main(): string {
-  $constants = Constants::instance();
-  $urlQuery = new UrlQuery($_GET);
-  $postData = new HttpData($_POST);
-
-  $cookie = Cookie::instance([
-    'expiry-extend' => $constants->get('month'),
+    'logout' => $logout,
   ]);
 
-  switch ($urlQuery->getDefault('type', 'html')) {
-    case 'html':
-      return sendHtml($urlQuery, $postData, $cookie);
-    case 'image':
-      return sendImage($urlQuery);
-    default:
-      return ErrorPage::status(404)->render();
+  try {
+    switch ($urlQuery->getDefault('type', 'html')) {
+      case 'html':
+        return sendHtml($param);
+      case 'file':
+        return sendFile($urlQuery);
+      case 'action':
+        return sendAction($param);
+      default:
+        throw new NotFoundException();
+    }
+  } catch (NotFoundException $err) {
+    return ErrorPage::status(404)->render();
+  } catch (SecurityException $err) {
+    return ErrorPage::status(401)->render();
   }
 }
 ?>

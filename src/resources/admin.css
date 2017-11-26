@@ -1,0 +1,315 @@
+body , h1 {
+  margin: 0px;
+  font-family: 'Roboto', 'Cantarell', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+}
+
+a {
+  text-decoration:none;
+}
+
+header {
+  height: 50px;
+  background-color: blue;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100%;
+  height: 60px;
+  display: inline-block;
+}
+
+#title-header {
+  color: white;
+  font-size: 1.75em;
+  display: inline-block;
+  line-height: 50px;
+}
+
+#username-admin {
+  position: absolute;
+  right: 50px;
+  top:13px;
+  font-size: 20px;
+  color: white;
+}
+
+#popup-profile-image {
+  width: 30px;
+  height: 30px;
+}
+
+#profile-button {
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+}
+
+#profile-setting {
+  background-color: #f2f2f2;
+  position: absolute;
+  right: 30px;
+  top:60px;
+  border: 1px solid #9B9B9B;
+
+}
+#profile-setting a {
+  color:black;
+
+}
+
+#profile-setting div {
+  padding: 8px 15px 8px 8px;
+}
+#profile-setting div:hover {
+    background-color: #C8C8C8;
+}
+
+#profile-setting div:last-child {
+  border-top: 1px solid #9B9B9B;
+}
+
+nav {
+  font-size: 1.1em;
+  position: absolute;
+  width: 180px;
+  height: 100%;
+  top: 0px;
+  z-index: 500;
+  background-color: #f2f2f2;
+  box-shadow: 0px 0px 1px black;
+}
+
+nav > :first-child {
+  margin-top: 60px;
+}
+
+ul {
+  list-style-type: none;
+  background: #f8f8f8;
+  padding: 0px;
+}
+
+ul li {
+  border-bottom: 1px solid #e7e7e7;
+  padding: 10px;
+}
+
+nav>ul>li{
+  padding: 0px;
+}
+
+ul li a {
+  padding: 10px 15px;
+}
+
+nav ul:nth-child(2) li:hover {
+  background-color: #ddd;
+}
+
+#dashboard, #user-account, #list-games, #edit-user-page,#delete-user-page {
+  width: 80%;
+  display: inline-block;
+  margin-left: 180px;
+  margin-top: 50px;
+  padding: 15px;
+}
+
+#user-account {
+  margin-top: 0px;
+}
+
+.header-subpage {
+  padding-bottom: 9px;
+  border-bottom: 1px solid #eee;
+  padding-top: 20px;
+
+}
+
+button.btn-add {
+  position: absolute;
+  right: 150px;
+  top:100px;
+  background-color: #5cb85c;
+  border: 0px;
+  padding: 10px;
+}
+
+button.btn-add:hover {
+  background-color: #1A7F1A;
+}
+
+.btn-add a {
+  color:white;
+}
+
+.body-subpage {
+  margin-top: 30px;
+  margin-left: 20px;
+}
+
+.x-component--dashboard-panel {
+  display: inline-block;
+  border-radius: 3px;
+  color: white;
+  background-color: #337ab7;
+  border:none;
+  width: 200px;
+  padding: 10px 15px;
+  height: 100px;
+}
+
+.x-component--dashboard-panel#dashboard-user {
+  background-color: #FD2F2F;
+  border:none;
+}
+
+.x-component--dashboard-panel .image-container {
+  padding-top: 30px;
+  float: left;
+}
+
+.x-component--dashboard-panel .image-container img {
+  width:50px;
+  height: 50px;
+}
+.x-component--dashboard-panel .list {
+  padding-top: 15px;
+  float: right;
+}
+
+.x-component--dashboard-panel .list .count {
+  font-size: 40px;
+}
+
+table#tb-games {
+  position: absolute;
+  border-collapse: collapse;
+  margin-left: 100px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+  padding: 5px 100px 0px 10px;
+}
+
+th {
+  text-align: center;
+  background-color: #eee;
+}
+
+#edit-user-page h2 {
+  font-weight: normal;
+}
+
+#edit-user-form {
+  height: 300px;
+  width: 100%;
+  padding: 19px;
+  border: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+}
+
+#form-group {
+  display: block;
+  margin-bottom: 15px;
+}
+
+#form-group label, #edit-user-form button {
+
+  position: absolute;
+  left: 400px;
+  font-weight: bold;
+}
+
+#form-group input,output {
+  color:#1716DE;
+  font-size:15px;
+  font-weight: bold;
+  padding: 5px;
+  position: relative;
+  margin-left: 300px;
+}
+
+output {
+  padding-left: 0px;
+}
+
+legend {
+  border-bottom: 1px solid #e5e5e5;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#edit-user-form button:hover {
+  background-color: #1A7F1A;
+}
+
+a.edit-user, a.delete-user {
+  margin-left: 15px;
+}
+
+.edit a:hover {
+  color: red;
+}
+
+#add-game-form {
+  height: 570px;
+  width: 100%;
+  border: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+}
+
+#add-game-form h2 {
+  display: inline-block;
+}
+
+#add-game-form fieldset {
+  top:80px;
+  font-size:17px;
+  position: absolute;
+  left: 500px;
+}
+
+#add-game-form fieldset textarea {
+  width: 400px;
+  height: 100px;
+}
+
+#add-game-form fieldset *:not(button) {
+  display: block;
+}
+
+#add-game-form legend {
+  height: 60px;
+  text-align: center;
+}
+
+#add-game-form input,textarea {
+  margin-bottom: 15px;
+}
+
+fieldset {
+  border: 0px;
+}
+
+fieldset button {
+  margin-top:20px;
+  background-color: #5cb85c;
+  border: 0px;
+  padding: 10px 20px;
+  color: white;
+}
+
+#add-game-form input,output, textarea {
+  color:#555;
+  padding: 5px;
+}
+
+.header-subpage-game {
+  padding-top: 20px;
+}
