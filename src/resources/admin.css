@@ -4,7 +4,7 @@ body , h1 {
 }
 
 a {
-  text-decoration:none;
+  text-decoration: none;
 }
 
 header {
@@ -29,7 +29,7 @@ header {
 #username-admin {
   position: absolute;
   right: 50px;
-  top:13px;
+  top: 13px;
   font-size: 20px;
   color: white;
 }
@@ -53,12 +53,12 @@ header {
   background-color: #f2f2f2;
   position: absolute;
   right: 30px;
-  top:60px;
+  top: 60px;
   border: 1px solid #9B9B9B;
 
 }
 #profile-setting a {
-  color:black;
+  color: black;
 
 }
 
@@ -111,7 +111,7 @@ nav ul:nth-child(2) li:hover {
   background-color: #ddd;
 }
 
-#dashboard, #user-account, #list-games, #edit-user-page,#delete-user-page {
+.x-component--admin-main-section {
   width: 80%;
   display: inline-block;
   margin-left: 180px;
@@ -133,7 +133,7 @@ nav ul:nth-child(2) li:hover {
 button.btn-add {
   position: absolute;
   right: 150px;
-  top:100px;
+  top: 100px;
   background-color: #5cb85c;
   border: 0px;
   padding: 10px;
@@ -144,7 +144,7 @@ button.btn-add:hover {
 }
 
 .btn-add a {
-  color:white;
+  color: white;
 }
 
 .body-subpage {
@@ -157,7 +157,7 @@ button.btn-add:hover {
   border-radius: 3px;
   color: white;
   background-color: #337ab7;
-  border:none;
+  border: none;
   width: 200px;
   padding: 10px 15px;
   height: 100px;
@@ -165,7 +165,7 @@ button.btn-add:hover {
 
 .x-component--dashboard-panel#dashboard-user {
   background-color: #FD2F2F;
-  border:none;
+  border: none;
 }
 
 .x-component--dashboard-panel .image-container {
@@ -174,7 +174,7 @@ button.btn-add:hover {
 }
 
 .x-component--dashboard-panel .image-container img {
-  width:50px;
+  width: 50px;
   height: 50px;
 }
 .x-component--dashboard-panel .list {
@@ -220,15 +220,14 @@ th {
 }
 
 #form-group label, #edit-user-form button {
-
   position: absolute;
   left: 400px;
   font-weight: bold;
 }
 
 #form-group input,output {
-  color:#1716DE;
-  font-size:15px;
+  color: #1716de;
+  font-size: 15px;
   font-weight: bold;
   padding: 5px;
   position: relative;
@@ -269,8 +268,8 @@ a.edit-user, a.delete-user {
 }
 
 #add-game-form fieldset {
-  top:80px;
-  font-size:17px;
+  top: 80px;
+  font-size: 17px;
   position: absolute;
   left: 500px;
 }
@@ -298,7 +297,7 @@ fieldset {
 }
 
 fieldset button {
-  margin-top:20px;
+  margin-top: 20px;
   background-color: #5cb85c;
   border: 0px;
   padding: 10px 20px;
@@ -306,7 +305,7 @@ fieldset button {
 }
 
 #add-game-form input,output, textarea {
-  color:#555;
+  color: #555;
   padding: 5px;
 }
 
