@@ -6,6 +6,7 @@ require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/navigator-section.php';
 require_once __DIR__ . '/main-section.php';
 require_once __DIR__ . '/script-embed.php';
+require_once __DIR__ . '/footer-section.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class App extends RawDataContainer implements Component {
@@ -38,7 +39,6 @@ class App extends RawDataContainer implements Component {
         new HeaderSection($data),
         new NavigatorSection($data),
         new MainSection($data),
-        HtmlElement::create('footer'),
       ]),
       JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
     ]);

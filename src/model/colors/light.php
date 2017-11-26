@@ -4,6 +4,8 @@ return [
   'background-color' => 'white',
   'clickable-text-color' => '#111',
   'hover-clickable-text-color' => 'black',
+  'scrollbar-hover-color' => '#e0e0e0',
+  'scrollbar-active-color' => '#cccccc',
   'primary-button-text-color' => 'white',
   'primary-button-background-color' => '#3d3dee',
   'primary-button-hover-background-color' => '#55f',
@@ -20,5 +22,6 @@ return [
   'profile-setting-avatar-background-color' => '#e0e0e0',
   'profile-setting-hover-background-color' => '#d7d7d7',
   'shadow-color' => 'rgba(100, 100, 100, 0.5)',
+  'game-item-hover-background' => '#A9A9F5',
 ];
 ?>
