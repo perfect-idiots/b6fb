@@ -174,6 +174,11 @@ function sendAction(DataContainer $param): string {
   $dbQuerySet = DatabaseQuerySet::instance();
 
   switch ($action) {
+    case 'check-admin-auth':
+      $param->get('login-double-checker')->verify();
+      return '
+        <strong>Authenticated</strong>
+      ';
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
@@ -219,6 +224,8 @@ function main(): string {
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
   $files = UploadedFileSet::instance();
+  $predefinedGames = PredefinedGames::create();
+  $predefinedGenres = PredefinedGenres::create();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -262,6 +269,7 @@ function main(): string {
     'login' => $login,
   ]);
 
+  $loginDoubleChecker = new LoginDoubleChecker($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
@@ -271,6 +279,8 @@ function main(): string {
     'url-query' => $urlQuery,
     'post-data' => $postData,
     'files' => $files,
+    'predefined-games' => $predefinedGames,
+    'predefined-genres' => $predefinedGenres,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -283,6 +293,7 @@ function main(): string {
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
+    'login-double-checker' => $loginDoubleChecker,
     'game-manager' => $gameManager,
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
