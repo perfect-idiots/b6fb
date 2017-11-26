@@ -30,7 +30,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
       ],
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
-        HtmlElement::create('title', 'Administration'),
+        HtmlElement::create('title', 'Quản trị'),
         CssView::fromFile(__DIR__ . "/../../resources/$cssFileName.css"),
       ]),
       $isLoggedIn
@@ -38,7 +38,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
           HtmlElement::emmetBottom('header#main-header', [
             HtmlElement::emmetTop('a#title-header', [
               'href' => $urlQuery->set('page', 'admin')->getUrlQuery(),
-              'Administrator',
+              'Quản trị',
             ]),
             HtmlElement::emmetBottom('#username-admin', [
               $login->username(),
