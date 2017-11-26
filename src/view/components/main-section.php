@@ -12,9 +12,11 @@ class MainSection extends RawDataContainer implements Component {
     $data = $this->getData();
     $page = $data['page'];
 
-    return HtmlElement::create('main', [
+    return HtmlElement::emmetBottom('.main.outer>.main.inner', [
       'id' => 'main-section',
-      new MainContent($this->getData()),
+      HtmlElement::create('main', [
+        new MainContent($this->getData()),
+      ]),
       new FooterSection(),
     ]);
   }
