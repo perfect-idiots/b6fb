@@ -224,6 +224,8 @@ function main(): string {
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
   $files = UploadedFileSet::instance();
+  $predefinedGames = PredefinedGames::create();
+  $predefinedGenres = PredefinedGenres::create();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -277,6 +279,8 @@ function main(): string {
     'url-query' => $urlQuery,
     'post-data' => $postData,
     'files' => $files,
+    'predefined-games' => $predefinedGames,
+    'predefined-genres' => $predefinedGenres,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
