@@ -19,7 +19,7 @@ class MarkdownView implements Component {
 
   public static function indented(string $markdown, string $separator = "\n"): self {
     $leastIndent = INF;
-    $lines = explode($markdown, $separator);
+    $lines = explode($separator, $markdown);
 
     foreach ($lines as $line) {
       if (!$line) continue;
