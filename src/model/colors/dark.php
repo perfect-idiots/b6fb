@@ -4,6 +4,8 @@ return [
   'background-color' => '#222',
   'clickable-text-color' => '#ddd',
   'hover-clickable-text-color' => 'white',
+  'scrollbar-hover-color' => '#333',
+  'scrollbar-active-color' => '#444',
   'primary-button-text-color' => 'white',
   'primary-button-background-color' => '#404040',
   'primary-button-hover-background-color' => '#444',
@@ -20,5 +22,6 @@ return [
   'profile-setting-avatar-background-color' => '#444',
   'profile-setting-hover-background-color' => '#343434',
   'shadow-color' => 'rgba(127, 128, 129, 0.5)',
+  'game-item-hover-background' => '#070719',
 ];
 ?>
