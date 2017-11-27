@@ -10,7 +10,7 @@ a {
 header {
   height: 50px;
   background-color: blue;
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   z-index: 1000;
@@ -75,7 +75,7 @@ header {
 
 nav {
   font-size: 1.1em;
-  position: absolute;
+  position: fixed;
   width: 180px;
   height: 100%;
   top: 0px;
