@@ -137,7 +137,7 @@ function getFilePath(UrlQuery $urlQuery): string {
 
   switch ($urlQuery->get('purpose')) {
     case 'ui':
-      return __DIR__ . '/../resources/images/' . $name;
+      return __DIR__ . "/../resources/images/$name";
     case 'game-img':
       return __DIR__ . "/../storage/game-imgs/$name";
     case 'game-swf':
