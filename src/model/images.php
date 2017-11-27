@@ -49,6 +49,12 @@ class NightModeIcon extends SvgImage {
   }
 }
 
+class MenuIcon extends SvgImage {
+  protected function name(): string {
+    return 'menu.svg';
+  }
+}
+
 class DefaultAvatarImage extends SvgImage {
   protected function name(): string {
     return 'default-avatar.svg';
@@ -74,6 +80,7 @@ class ImageSet extends LazyLoadedDataContainer {
     $classes = [
       'SearchIcon',
       'NightModeIcon',
+      'MenuIcon',
       'DefaultAvatarImage',
       'GamepadImage',
       'MultiUsersImage',
