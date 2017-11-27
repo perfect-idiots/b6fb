@@ -180,11 +180,13 @@ function sendAction(DataContainer $param): string {
       return '
         <strong>Authenticated</strong>
       ';
+
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
       $param->get('user-manager')->update($username, $fullname);
+
       $urlQuery->without([
         'action',
         'fullname',
@@ -194,9 +196,11 @@ function sendAction(DataContainer $param): string {
         'subpage' => $urlQuery->get('previous-page'),
       ])->redirect();
       break;
+
     case 'delete-user':
       $username = $urlQuery->getDefault('username', '');
       $param->get('user-manager')->delete($username);
+
       $urlQuery->without([
         'action',
         'username',
@@ -206,6 +210,7 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'users',
       ])->redirect();
       break;
+
     case 'reset-database':
       $postData = $param->get('post-data');
       $urlQuery = $param->get('url-query');
@@ -237,12 +242,14 @@ function sendAction(DataContainer $param): string {
           $param->get('admin-manager')->reset();
         }
       }
+
       $urlQuery->except('action')->assign([
         'type' => 'html',
         'page' => 'admin',
         'subpage' => 'advanced',
       ])->redirect();
       break;
+
     default:
       throw new NotFoundException();
   }
