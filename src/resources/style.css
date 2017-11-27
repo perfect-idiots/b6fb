@@ -91,6 +91,7 @@ body {
 }
 
 #nav-hiding-button {
+  zoom: 0.7;
   border: none;
   background-color: transparent;
   background-size: contain;
