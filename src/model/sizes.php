@@ -59,6 +59,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $gameItemImageMargin = 0;
     $gameItemFigureMargin = ($gameItemWidth - $gameItemImageWidth) / 2;
     $gameItemFigcaptionHeight = $unitSize / 2;
+    $footerHeight = 2 * $unitSize;
 
     $begin = Tree::instance([
       'unit' => [
@@ -117,6 +118,10 @@ class SizeSet extends LazyLoadedDataContainer {
           'margin' => $gameItemFigureMargin,
         ],
         'figcaptionheight' => $gameItemFigcaptionHeight,
+      ],
+      'footer' => [
+        'height' => $footerHeight,
+        'margin' => $unitSize,
       ],
     ])->flat('-', '');
 

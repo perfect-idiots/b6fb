@@ -134,6 +134,7 @@ class DatabaseQuerySet extends DatabaseConnection {
       'clear-games' => '',
       'clear-genres' => '',
       'clear-users' => '',
+      'clear-admins' => '',
       'delete-user' => 's',
     ];
 
