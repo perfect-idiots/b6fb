@@ -230,8 +230,8 @@ function sendAction(DataContainer $param): string {
         };
 
         if ($check('game')) {
-          $param->get('game-manager')->reset();
           $param->get('genre-manager')->reset();
+          $param->get('game-manager')->reset();
         }
 
         if ($check('user')) {
