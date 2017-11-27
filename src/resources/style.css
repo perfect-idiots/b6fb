@@ -90,6 +90,24 @@ body {
   color: [[header-text-color]];
 }
 
+#nav-hiding-button {
+  border: none;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url([[menu-icon]]);
+  [[header-square-button-size-block]]
+}
+
+.nav-hidden nav {
+  right: 101%;
+}
+
+.nav-hidden .main.outer {
+  left: 0px;
+}
+
 .x-component--logo a {
   text-decoration: none;
 }
