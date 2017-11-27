@@ -4,13 +4,13 @@ body , h1 {
 }
 
 a {
-  text-decoration:none;
+  text-decoration: none;
 }
 
 header {
   height: 50px;
   background-color: blue;
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   z-index: 1000;
@@ -29,7 +29,7 @@ header {
 #username-admin {
   position: absolute;
   right: 50px;
-  top:13px;
+  top: 13px;
   font-size: 20px;
   color: white;
 }
@@ -53,18 +53,18 @@ header {
   background-color: #f2f2f2;
   position: absolute;
   right: 30px;
-  top:60px;
+  top: 60px;
   border: 1px solid #9B9B9B;
 
 }
 #profile-setting a {
-  color:black;
-
+  color: black;
 }
 
 #profile-setting div {
   padding: 8px 15px 8px 8px;
 }
+
 #profile-setting div:hover {
     background-color: #C8C8C8;
 }
@@ -75,7 +75,7 @@ header {
 
 nav {
   font-size: 1.1em;
-  position: absolute;
+  position: fixed;
   width: 180px;
   height: 100%;
   top: 0px;
@@ -86,6 +86,10 @@ nav {
 
 nav > :first-child {
   margin-top: 60px;
+}
+
+nav > ul > ul > li.current-page a[href] {
+  color: black;
 }
 
 ul {
@@ -111,7 +115,7 @@ nav ul:nth-child(2) li:hover {
   background-color: #ddd;
 }
 
-#dashboard, #user-account, #list-games, #edit-user-page,#delete-user-page {
+.x-component--admin-main-section {
   width: 80%;
   display: inline-block;
   margin-left: 180px;
@@ -133,7 +137,7 @@ nav ul:nth-child(2) li:hover {
 button.btn-add {
   position: absolute;
   right: 150px;
-  top:100px;
+  top: 100px;
   background-color: #5cb85c;
   border: 0px;
   padding: 10px;
@@ -144,7 +148,7 @@ button.btn-add:hover {
 }
 
 .btn-add a {
-  color:white;
+  color: white;
 }
 
 .body-subpage {
@@ -157,7 +161,7 @@ button.btn-add:hover {
   border-radius: 3px;
   color: white;
   background-color: #337ab7;
-  border:none;
+  border: none;
   width: 200px;
   padding: 10px 15px;
   height: 100px;
@@ -165,7 +169,7 @@ button.btn-add:hover {
 
 .x-component--dashboard-panel#dashboard-user {
   background-color: #FD2F2F;
-  border:none;
+  border: none;
 }
 
 .x-component--dashboard-panel .image-container {
@@ -174,7 +178,7 @@ button.btn-add:hover {
 }
 
 .x-component--dashboard-panel .image-container img {
-  width:50px;
+  width: 50px;
   height: 50px;
 }
 .x-component--dashboard-panel .list {
@@ -189,7 +193,6 @@ button.btn-add:hover {
 table#tb-games {
   position: absolute;
   border-collapse: collapse;
-  margin-left: 100px;
 }
 
 table, th, td {
@@ -220,15 +223,14 @@ th {
 }
 
 #form-group label, #edit-user-form button {
-
   position: absolute;
   left: 400px;
   font-weight: bold;
 }
 
-#form-group input,output {
-  color:#1716DE;
-  font-size:15px;
+#form-group input, output {
+  color: #1716de;
+  font-size: 15px;
   font-weight: bold;
   padding: 5px;
   position: relative;
@@ -269,8 +271,8 @@ a.edit-user, a.delete-user {
 }
 
 #add-game-form fieldset {
-  top:80px;
-  font-size:17px;
+  top: 80px;
+  font-size: 17px;
   position: absolute;
   left: 500px;
 }
@@ -289,7 +291,7 @@ a.edit-user, a.delete-user {
   text-align: center;
 }
 
-#add-game-form input,textarea {
+#add-game-form input, textarea {
   margin-bottom: 15px;
 }
 
@@ -298,15 +300,15 @@ fieldset {
 }
 
 fieldset button {
-  margin-top:20px;
+  margin-top: 20px;
   background-color: #5cb85c;
   border: 0px;
   padding: 10px 20px;
   color: white;
 }
 
-#add-game-form input,output, textarea {
-  color:#555;
+#add-game-form input, output, textarea {
+  color: #555;
   padding: 5px;
 }
 

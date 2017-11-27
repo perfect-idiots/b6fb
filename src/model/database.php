@@ -115,27 +115,7 @@ class DatabaseQuerySet extends DatabaseConnection {
   }
 
   private function createQueries(mysqli $link): array {
-    $queryFormats = [
-      'user-password' => 's',
-      'admin-password' => 's',
-      'create-account' => 'sss',
-      'user-account-existence' => 's',
-      'game-existence' => 's',
-      'list-games' => '',
-      'list-users' => '',
-      'list-genres' => '',
-      'add-game' => 'ssss',
-      'add-genre' => 'ss',
-      'user-info' => 's',
-      'game-info' => 's',
-      'update-user-profile' => 'ss',
-      'count-games' => '',
-      'count-users' => '',
-      'clear-games' => '',
-      'clear-genres' => '',
-      'clear-users' => '',
-      'delete-user' => 's',
-    ];
+    $queryFormats = require __DIR__ . '/db-queries/index.php';
 
     $queries = [];
     foreach ($queryFormats as $name => $format) {

@@ -7,6 +7,7 @@ require_once __DIR__ . '/sign-up.php';
 require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
+require_once __DIR__ . '/db-admin.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
@@ -137,7 +138,7 @@ function getFilePath(UrlQuery $urlQuery): string {
 
   switch ($urlQuery->get('purpose')) {
     case 'ui':
-      return __DIR__ . '/../resources/images/' . $name;
+      return __DIR__ . "/../resources/images/$name";
     case 'game-img':
       return __DIR__ . "/../storage/game-imgs/$name";
     case 'game-swf':
@@ -179,11 +180,13 @@ function sendAction(DataContainer $param): string {
       return '
         <strong>Authenticated</strong>
       ';
+
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
       $param->get('user-manager')->update($username, $fullname);
+
       $urlQuery->without([
         'action',
         'fullname',
@@ -193,9 +196,11 @@ function sendAction(DataContainer $param): string {
         'subpage' => $urlQuery->get('previous-page'),
       ])->redirect();
       break;
+
     case 'delete-user':
       $username = $urlQuery->getDefault('username', '');
       $param->get('user-manager')->delete($username);
+
       $urlQuery->without([
         'action',
         'username',
@@ -205,15 +210,46 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'users',
       ])->redirect();
       break;
+
     case 'reset-database':
-      $param->get('game-manager')->reset();
-      $param->get('genre-manager')->reset();
+      $postData = $param->get('post-data');
+      $urlQuery = $param->get('url-query');
+      $password = $postData->getDefault('password', '');
+
+      if ($postData->getDefault('confirmed', 'off') === 'on') {
+        $loginDoubleChecker = $param->get('login-double-checker');
+        $loginDoubleChecker->set(
+          'login',
+          $loginDoubleChecker
+            ->get('login')
+            ->set('password', $password)
+        )->verify();
+
+        $check = function (string $key) use($urlQuery) {
+          return $urlQuery->getDefault($key, 'off') === 'on';
+        };
+
+        if ($check('game')) {
+          $param->get('genre-manager')->reset();
+          $param->get('game-manager')->reset();
+        }
+
+        if ($check('user')) {
+          $param->get('user-manager')->reset();
+        }
+
+        if ($check('admin')) {
+          $param->get('admin-manager')->reset();
+        }
+      }
+
       $urlQuery->except('action')->assign([
         'type' => 'html',
         'page' => 'admin',
         'subpage' => 'advanced',
       ])->redirect();
       break;
+
     default:
       throw new NotFoundException();
   }
@@ -224,6 +260,8 @@ function main(): string {
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
   $files = UploadedFileSet::instance();
+  $predefinedGames = PredefinedGames::create();
+  $predefinedGenres = PredefinedGenres::create();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -271,12 +309,15 @@ function main(): string {
   $gameManager = new GameManager($securityCommonParam);
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
+  $adminManager = new AdminManager($securityCommonParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
     'files' => $files,
+    'predefined-games' => $predefinedGames,
+    'predefined-genres' => $predefinedGenres,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -293,6 +334,7 @@ function main(): string {
     'game-manager' => $gameManager,
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
+    'admin-manager' => $adminManager,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,

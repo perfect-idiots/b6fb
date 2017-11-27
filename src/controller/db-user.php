@@ -14,6 +14,21 @@ class UserManager extends LoginDoubleChecker {
     ;
   }
 
+  public function clear(): void {
+    $this->verify();
+
+    $this
+      ->get('db-query-set')
+      ->get('clear-users')
+      ->executeOnce([])
+    ;
+  }
+
+  public function reset(): void {
+    $this->verify();
+    $this->clear();
+  }
+
   public function update(string $username, string $fullname): void {
     $this->verify();
 
