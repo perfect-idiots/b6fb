@@ -203,7 +203,7 @@ table#tb-games {
 
 table, th, td {
   border: 1px solid #ddd;
-  padding: 5px 100px 0px 10px;
+  padding: 3px 15px 3px 15px;
 }
 
 th {
@@ -255,14 +255,6 @@ legend {
 
 #edit-user-form button:hover {
   background-color: #1A7F1A;
-}
-
-a.edit-user, a.delete-user {
-  margin-left: 15px;
-}
-
-.edit a:hover {
-  color: red;
 }
 
 #add-game-form {
