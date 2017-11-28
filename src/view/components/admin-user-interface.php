@@ -328,7 +328,7 @@ class AdminAdvanced extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetBottom('div#dashboard.content', [
-      HtmlElement::create('h1', 'Nâng cao'),
+      HtmlElement::emmetBottom('.header-subpage>h1', 'Nâng cao'),
       HtmlElement::emmetTop('#reset-db', [
         HtmlElement::create('h2', 'Reset và Khởi tạo'),
         HtmlElement::create('form', [
@@ -471,7 +471,7 @@ class AdminResetDatabase extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('#reset-database', [
-      HtmlElement::emmetTop('h1', 'Xóa và Đặt lại Cơ sở dữ liệu'),
+      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt lại Cơ sở dữ liệu'),
       HtmlElement::emmetTop('.warning', MarkdownView::indented('
         ## Cảnh báo
 
