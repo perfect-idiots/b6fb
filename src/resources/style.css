@@ -1,3 +1,9 @@
+* {
+  transition-timing-function: ease;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
 html, body {
   margin: 0;
   border: 0;
@@ -250,7 +256,7 @@ nav {
 }
 
 nav::-webkit-scrollbar {
-  width: 0.75em;
+  width: 0.4em;
 }
 
 nav .subpage.title {
