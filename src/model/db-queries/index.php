@@ -20,5 +20,6 @@ return [
   'clear-users' => '',
   'clear-admins' => '',
   'delete-user' => 's',
+  'search-games' => 's',
 ];
 ?>
