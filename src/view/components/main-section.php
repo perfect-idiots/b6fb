@@ -36,6 +36,8 @@ class MainContent extends RawDataContainer implements Component {
             ->set('game-id', $urlQuery->getDefault('game-id', ''))
             ->getData()
         );
+      case 'search':
+        return new SearchResult($this->getData());
       default:
         return new TextNode('');
     }
@@ -86,6 +88,62 @@ class PlayerUserInterface extends RawDataContainer implements Component {
     return array_merge(parent::requiredFieldSchema(), [
       'game-id' => 'string',
     ]);
+  }
+}
+
+class SearchResult extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $search = $urlQuery->getDefault('search', '');
+    $engine = $this->get('search-engine');
+
+    if (!$search) {
+      return HtmlElement::emmetTop('.error.message', 'Vui lòng nhập nội dung tìm kiếm');
+    }
+
+    $result = $engine->searchGames($search);
+    $count = sizeof($result);
+
+    if (!$result) {
+      return HtmlElement::emmetTop('.error.message', [
+        'Không tìm thấy trò chơi nào chứa từ khóa ',
+        HtmlElement::emmetBottom('strong.search-word', $search),
+      ]);
+    }
+
+    $children = array_map(
+      function (array $element) {
+        [
+          $id,
+          $name,
+          $genre,
+          $description,
+        ] = $element;
+
+        return new SearchResultItem($this->assign([
+          'game-id' => $id,
+          'game-name' => $name,
+          'game-genre' => $genre,
+          'game-description' => $description,
+        ])->getData());
+      },
+      $result
+    );
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetTop('.result-count', [
+        'Tìm thấy ',
+        HtmlElement::emmetBottom('span.count.number.quantity', $count),
+        ' trò chơi',
+      ]),
+      HtmlElement::emmetTop('.result-list', $children),
+    ]);
+  }
+}
+
+class SearchResultItem extends RawDataContainer implements Component {
+  public function render(): Component {
+    return new GameItem($this->getData());
   }
 }
 ?>

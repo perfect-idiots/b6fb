@@ -12,7 +12,7 @@ class GameItem extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
     $id = $this->get('game-id');
-    $description = $this->getDefault('description', '');
+    $description = $this->getDefault('game-description', '');
 
     return HtmlElement::create('a', [
       'href' => $urlQuery->assign([
@@ -33,7 +33,10 @@ class GameItem extends RawDataContainer implements Component {
           $this->get('game-name'),
         ]),
         $description
-          ? HtmlElement::emmetTop('.description', $description)
+          ? HtmlElement::emmetTop(
+            '.description',
+            MarkdownView::instance($description)
+          )
           : ''
       ]),
     ]);
