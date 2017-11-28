@@ -47,6 +47,7 @@ function switchPage(array $data): Page {
     case 'history':
     case 'genre':
     case 'play':
+    case 'search':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
