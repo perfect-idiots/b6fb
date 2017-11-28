@@ -157,8 +157,8 @@ class AdminDashboard extends RawDataContainer implements Component {
         HtmlElement::create('h1', 'Dashboard'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
-        DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', $gameManager->count()),
-        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $userManager->count()),
+        DashboardPanel::create($this, 'games', 'gamepad-image', 'Trò chơi', $gameManager->count()),
+        DashboardPanel::create($this, 'users', 'multi-users-image', 'Người dùng', $userManager->count()),
       ]),
     ]);
   }
@@ -170,9 +170,11 @@ class DashboardPanel extends RawDataContainer implements Component {
     $img = $this->get('images')[$this->getDefault('img', '')];
     $subtitle = $this->get('subtitle');
     $count = $this->getDefault('count', 0);
+    $urlQuery = $this->get('url-query');
 
-    return HtmlElement::create('div', [
+    return HtmlElement::create('a', [
       'id' => "dashboard-$id",
+      'href' => $urlQuery->set('subpage', $id)->getUrlQuery(),
       HtmlElement::emmetBottom('.image-container>img', [
         'src' => $img,
       ]),

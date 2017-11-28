@@ -160,16 +160,22 @@ button.btn-add:hover {
   display: inline-block;
   border-radius: 3px;
   color: white;
-  background-color: #337ab7;
-  border: none;
   width: 200px;
   padding: 10px 15px;
   height: 100px;
+  border: none;
 }
 
-.x-component--dashboard-panel#dashboard-user {
+#dashboard-games {
+  background-color: #337ab7;
+}
+
+#dashboard-users {
   background-color: #FD2F2F;
-  border: none;
+}
+
+.x-component--dashboard-panel:hover {
+  box-shadow: 0px 0px 7px -1px black;
 }
 
 .x-component--dashboard-panel .image-container {
