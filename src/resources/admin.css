@@ -111,6 +111,7 @@ nav ul li a {
   padding: 10px 15px;
   display: inline-block;
   width: 100%;
+  height: 100%;
 }
 
 nav ul:nth-child(2) li:hover {
@@ -125,15 +126,10 @@ nav ul:nth-child(2) li:hover {
   padding: 15px;
 }
 
-#user-account {
-  margin-top: 0px;
-}
-
 .header-subpage {
   padding-bottom: 9px;
   border-bottom: 1px solid #eee;
   padding-top: 20px;
-
 }
 
 button.btn-add {
@@ -310,8 +306,4 @@ fieldset button {
 #add-game-form input, output, textarea {
   color: #555;
   padding: 5px;
-}
-
-.header-subpage-game {
-  padding-top: 20px;
 }

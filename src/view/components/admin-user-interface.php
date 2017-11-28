@@ -318,7 +318,6 @@ class AdminUsers extends RawDataContainer implements Component {
           ]),
           HtmlElement::create('tbody', $children),
         ]),
-        $userEditDialog,
       ]),
     ]);
   }
