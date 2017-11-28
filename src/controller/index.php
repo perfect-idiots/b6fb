@@ -67,12 +67,11 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
   $username = $cookie->getDefault('username', null);
 
   $customized = $username
-    ? ['profile' => 'Tài khoản']
-    : ['explore' => 'Khám phá']
+    ? ['profile' => 'Tài khoản', 'favourite' => 'Yêu thích']
+    : ['explore' => 'Khám phá', 'sign-up' => 'Tham gia']
   ;
 
   $namemap = array_merge($customized, [
-    'favourite' => 'Yêu thích',
     'history' => 'Lịch sử',
   ]);
 
