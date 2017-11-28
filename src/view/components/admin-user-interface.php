@@ -157,11 +157,11 @@ class AdminDashboard extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#dashboard', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h1', 'Dashboard'),
+        HtmlElement::create('h1', 'Bảng điều khiển'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
-        DashboardPanel::create($this, 'game', 'gamepad-image', 'Trò chơi', $gameManager->count()),
-        DashboardPanel::create($this, 'user', 'multi-users-image', 'Người dùng', $userManager->count()),
+        DashboardPanel::create($this, 'games', 'gamepad-image', 'Trò chơi', $gameManager->count()),
+        DashboardPanel::create($this, 'users', 'multi-users-image', 'Người dùng', $userManager->count()),
       ]),
     ]);
   }
@@ -173,9 +173,11 @@ class DashboardPanel extends RawDataContainer implements Component {
     $img = $this->get('images')[$this->getDefault('img', '')];
     $subtitle = $this->get('subtitle');
     $count = $this->getDefault('count', 0);
+    $urlQuery = $this->get('url-query');
 
-    return HtmlElement::create('div', [
+    return HtmlElement::create('a', [
       'id' => "dashboard-$id",
+      'href' => $urlQuery->set('subpage', $id)->getUrlQuery(),
       HtmlElement::emmetBottom('.image-container>img', [
         'src' => $img,
       ]),
@@ -219,11 +221,11 @@ class AdminGames extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#list-games', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h1', 'Danh sách Games'),
+        HtmlElement::create('h1', 'Danh sách trò chơi'),
         HtmlElement::emmetTop('button.btn-add#btn-add-game', [
           HtmlElement::emmetTop('a', [
             'href' => $urlQuery->set('subpage', 'add-game')->getUrlQuery(),
-            'Thêm Game',
+            'Thêm trò chơi',
           ]),
         ]),
       ]),
@@ -305,7 +307,7 @@ class AdminUsers extends RawDataContainer implements Component {
 
     return HtmlElement::emmetTop('#user-account', [
       HtmlElement::emmetTop('#header-user-page.header-subpage', [
-        HtmlElement::create('h1', 'Tài khoản User'),
+        HtmlElement::create('h1', 'Tài khoản người dùng'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetTop('table#tb-games', [
