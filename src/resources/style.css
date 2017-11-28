@@ -250,7 +250,7 @@ nav {
 }
 
 nav::-webkit-scrollbar {
-  width: 0.75em;
+  width: 0.4em;
 }
 
 nav .subpage.title {
