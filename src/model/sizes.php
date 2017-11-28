@@ -119,6 +119,11 @@ class SizeSet extends LazyLoadedDataContainer {
         ],
         'figcaptionheight' => $gameItemFigcaptionHeight,
       ],
+      'search-result' => [
+        'item' => [
+          'height' => 3 * $unitSize,
+        ],
+      ],
       'footer' => [
         'height' => $footerHeight,
         'margin' => $unitSize,
