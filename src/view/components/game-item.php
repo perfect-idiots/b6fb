@@ -38,7 +38,7 @@ class GameItem extends RawDataContainer implements Component {
           ,
         ]),
         $description
-          ? HtmlElement::emmetTop('.text', [
+          ? HtmlElement::emmetBottom('.text-container>.text', [
             HtmlElement::emmetTop('.subtitle.game-name', $this->get('game-name')),
             HtmlElement::emmetTop('.description', MarkdownView::indented($description)),
           ])
