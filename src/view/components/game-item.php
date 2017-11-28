@@ -33,7 +33,10 @@ class GameItem extends RawDataContainer implements Component {
           $this->get('game-name'),
         ]),
         $description
-          ? HtmlElement::emmetTop('.description', $description)
+          ? HtmlElement::emmetTop(
+            '.description',
+            MarkdownView::instance($description)
+          )
           : ''
       ]),
     ]);
