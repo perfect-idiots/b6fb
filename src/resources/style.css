@@ -240,8 +240,8 @@ nav {
   text-transform: uppercase;
   position: fixed;
   width: [[logo-width]];
-  height: 100%;
-  top: 0px;
+  top: [[unit-size]];
+  bottom: 0px;
   z-index: 500;
   overflow-x: hidden;
   overflow-y: scrollbar;
@@ -253,10 +253,6 @@ nav::-webkit-scrollbar {
   width: 0.75em;
 }
 
-nav > :first-child {
-  margin-top: [[unit-size]];
-}
-
 nav .subpage.title {
   font-size: 0.7em;
   display: inline-block;
@@ -265,6 +261,7 @@ nav .subpage.title {
 nav ul, nav li {
   list-style: none;
   padding: 0px;
+  margin: 0px;
 }
 
 nav li {
