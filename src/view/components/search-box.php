@@ -13,6 +13,7 @@ class SearchBox extends RawDataContainer implements Component {
         'name' => 'search',
         'type' => 'text',
         'placeholder' => 'Tìm kiếm',
+        'required' => true,
       ]),
       HtmlElement::emmet('button#search-box-button'),
       new HiddenInputSet(
