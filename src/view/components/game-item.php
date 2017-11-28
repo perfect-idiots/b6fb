@@ -20,24 +20,30 @@ class GameItem extends RawDataContainer implements Component {
         'page' => 'play',
         'game-id' => $id,
       ])->getUrlQuery(),
-      HtmlElement::emmetBottom('article>figure', [
-        HtmlElement::create('img', [
-          'src' => $urlQuery->assign([
-            'type' => 'file',
-            'mime' => 'image/jpeg',
-            'name' => $this->get('game-id'),
-            'purpose' => 'game-img',
-          ])->getUrlQuery(),
-        ]),
-        HtmlElement::create('figcaption', [
-          $this->get('game-name'),
+      HtmlElement::create('article', [
+        HtmlElement::create('figure', [
+          HtmlElement::create('img', [
+            'src' => $urlQuery->assign([
+              'type' => 'file',
+              'mime' => 'image/jpeg',
+              'name' => $this->get('game-id'),
+              'purpose' => 'game-img',
+            ])->getUrlQuery(),
+          ]),
+          $description
+            ? ''
+            : HtmlElement::create('figcaption', [
+              $this->get('game-name'),
+            ])
+          ,
         ]),
         $description
-          ? HtmlElement::emmetTop(
-            '.description',
-            MarkdownView::instance($description)
-          )
+          ? HtmlElement::emmetTop('.text', [
+            HtmlElement::emmetTop('.subtitle.game-name', $this->get('game-name')),
+            HtmlElement::emmetTop('.description', MarkdownView::indented($description)),
+          ])
           : ''
+        ,
       ]),
     ]);
   }
