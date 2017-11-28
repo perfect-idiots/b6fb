@@ -103,12 +103,14 @@ ul li {
   padding: 10px;
 }
 
-nav > ul > li {
+nav ul li {
   padding: 0px;
 }
 
-ul li a {
+nav ul li a {
   padding: 10px 15px;
+  display: inline-block;
+  width: 100%;
 }
 
 nav ul:nth-child(2) li:hover {
