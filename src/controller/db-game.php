@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
+require_once __DIR__ . '/../model/predefined.php';
 require_once __DIR__ . '/security.php';
 
 class GameManager extends LoginDoubleChecker {
@@ -26,6 +27,14 @@ class GameManager extends LoginDoubleChecker {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
+    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
+      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
+    }
+
+    if ($img->mimetype() !== 'image/jpeg') {
+      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg");
+    }
+
     $args = [
       $id,
       $name,
@@ -35,17 +44,118 @@ class GameManager extends LoginDoubleChecker {
 
     $addingQuery = $this->get('db-query-set')->get('adding-query');
     $dbResult = $addingQuery->executeOnce($args);
-    $storage = __DIR__ . '/../storage';
-    $swfDir = "$storage/game-swfs";
-    $imgDir = "$storage/game-imgs";
-    $swfResult = $swf->move("$swfDir/$id");
-    $imgResult = $img->move("$imgDir/$id");
+    $swfResult = $swf->move(self::swfPath($id));
+    $imgResult = $img->move(self::imgPath($id));
 
     return [
       'db' => $dbResult,
       'swf' => $swfResult,
       'img' => $imgResult,
     ];
+  }
+
+  public function delete(string $id): ?array {
+    $this->verify();
+    if (!$this->exists($id)) return null;
+
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('delete-game')
+      ->executeOnce([])
+    ;
+
+    $swfResult = unlink(self::swfPath($id));
+    $imgResult = unlink(self::imgPath($id));
+
+    return [
+      'db' => $dbResult,
+      'swf' => $swfResult,
+      'img' => $imgResult,
+    ];
+  }
+
+  public function reset(): void {
+    $this->verify();
+    $this->clear();
+
+    $addingGameQuery = $this->get('db-query-set')->get('add-game');
+    $games = PredefinedGames::create()->getData();
+
+    foreach ($games as $id => $info) {
+      $addingGameQuery->executeOnce([
+        $id,
+        $info['name'],
+        self::serializeGenres($info['genre']),
+        $info['description'],
+      ]);
+
+      copy(
+        __DIR__ . "/../media/games/$id",
+        self::swfPath($id)
+      );
+
+      copy(
+        __DIR__ . "/../media/images/$id/0",
+        self::imgPath($id)
+      );
+    }
+  }
+
+  public function clear(): void {
+    $this->verify();
+
+    foreach ($this->list() as [$name]) {
+      unlink(self::swfPath($name));
+      unlink(self::imgPath($name));
+    }
+
+    $this
+      ->get('db-query-set')
+      ->get('clear-games')
+      ->executeOnce([])
+    ;
+  }
+
+  public function exists(string $id): bool {
+    [[$existence]] = $this->checkingQuery->executeOnce([$id], 1);
+    return $existence > 0;
+  }
+
+  public function list(): array {
+    return $this
+      ->get('db-query-set')
+      ->get('list-games')
+      ->executeOnce([], 4)
+      ->fetch()
+    ;
+  }
+
+  public function getItemInfo(string $id): array {
+    return $this
+      ->get('db-query-set')
+      ->get('game-info')
+      ->executeOnce([$id], 4)
+      ->fetch()
+    ;
+  }
+
+  public function count(): int {
+    [[$count]] = $this
+      ->get('db-query-set')
+      ->get('count-games')
+      ->executeOnce([], 1)
+      ->fetch()
+    ;
+
+    return $count;
+  }
+
+  static private function swfPath(string $name): string {
+    return __DIR__ . '/../storage/game-swfs/' . $name;
+  }
+
+  static private function imgPath(string $name): string {
+    return __DIR__ . '/../storage/game-imgs/' . $name;
   }
 
   static private function serializeGenres(array $genres): string {
@@ -55,14 +165,10 @@ class GameManager extends LoginDoubleChecker {
   static private function unserializeGenres(string $genres): array {
     return explode(static::GENRE_SEPARATOR, $genres);
   }
-
-  public function exists(string $id): bool {
-    [[$existence]] = $this->checkingQuery->executeOnce([$id], 1);
-    return $existence > 0;
-  }
 }
 
 class GameInsertingException extends Exception {}
 class GameInvalidIdException extends GameInsertingException {}
 class GameDuplicatedException extends GameInsertingException {}
+class GameInvalidMimeException extends GameInsertingException {}
 ?>

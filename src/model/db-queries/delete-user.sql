@@ -1,2 +1,2 @@
-delete user_accounts
+delete from user_accounts
 where username = ?
