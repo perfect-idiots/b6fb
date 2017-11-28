@@ -471,14 +471,13 @@ class AdminResetDatabase extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('#reset-database', [
-      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt lại Cơ sở dữ liệu'),
+      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt Lại Cơ sở dữ liệu'),
       HtmlElement::emmetTop('.warning', MarkdownView::indented('
-        ## Cảnh báo
+        ## Cảnh báo !!!
 
-        Thao tác sau đây sẽ đặt lại CSDL.
-        Hành động này **không thể hoàn tác**.
+        Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.
       ')),
-      HtmlElement::emmetBottom('.question>strong', 'Bạn có muốn tiếp tục?'),
+      HtmlElement::emmetBottom('.question>strong>h3', 'Bạn có muốn tiếp tục?'),
       HtmlElement::emmetBottom('.answer>form', [
         'method' => 'POST',
         'action' => $urlQuery->assign([
