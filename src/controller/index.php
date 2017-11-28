@@ -217,21 +217,6 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'users',
       ])->redirect();
       break;
-<<<<<<< HEAD
-    case 'add-game':
-      $uploadedFile = $this->get('files')->getFile('input-name');
-      $gameInserter = $this->get('game-inserter');
-      $gameManager->add($uploadedFile);
-      $urlQuery->without([
-        'action',
-      ])->assign([
-        'type' => 'html',
-        'page' => 'admin',
-        'subpage' => 'games',
-      ])->redirect();
-=======
-
->>>>>>> 8a4248cf05cd16e2fcc7b9d8a0c31da7e6305153
     case 'reset-database':
       $postData = $param->get('post-data');
       $urlQuery = $param->get('url-query');
