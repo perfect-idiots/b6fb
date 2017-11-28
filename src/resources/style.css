@@ -1,3 +1,9 @@
+* {
+  transition-timing-function: ease;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
 html, body {
   margin: 0;
   border: 0;
@@ -10,13 +16,33 @@ body {
   font-family: 'Arial', 'Helvatica', sans-serif;
 }
 
+*::-webkit-scrollbar {
+  width: 1em;
+}
+
+*::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*:hover::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb:hover {
+  background-color: [[scrollbar-hover-color]];
+}
+
+*:hover::-webkit-scrollbar-thumb:active, *::-webkit-scrollbar-thumb:active {
+  background-color: [[scrollbar-active-color]];
+}
+
 .x-component--header-section {
   background: [[header-background-color]];
   box-shadow: 0px 1px 2px black;
 }
 
 .x-component--header-section {
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   z-index: 1000;
@@ -33,14 +59,19 @@ body {
   display: inline-block;
 }
 
+.x-component--header-section .segment.left-corner,
 .x-component--header-section .segment.right-corner {
-  position: absolute;
+  [[corner-segment-size-block]]
+}
+
+.x-component--header-section .segment.right-corner {
+  position: fixed;
   right: 0px;
   top: [[header-vertical-padding]];
 }
 
 .x-component--header-section .segment.middle-segment {
-  position: absolute;
+  position: fixed;
   left: [[middle-segment-padding]];
   right: [[middle-segment-padding]];
 }
@@ -63,6 +94,25 @@ body {
   text-align: center;
   line-height: [[logo-line-height]];
   color: [[header-text-color]];
+}
+
+#nav-hiding-button {
+  zoom: 0.7;
+  border: none;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url([[menu-icon]]);
+  [[header-square-button-size-block]]
+}
+
+.nav-hidden nav {
+  right: 101%;
+}
+
+.nav-hidden .main.outer {
+  left: 0px;
 }
 
 .x-component--logo a {
@@ -194,17 +244,19 @@ body {
 
 nav {
   text-transform: uppercase;
-  position: absolute;
+  position: fixed;
   width: [[logo-width]];
-  height: 100%;
-  top: 0px;
+  top: [[unit-size]];
+  bottom: 0px;
   z-index: 500;
+  overflow-x: hidden;
+  overflow-y: scrollbar;
   background-color: [[navigation-background-color]];
   box-shadow: 0px 0px 1px black;
 }
 
-nav > :first-child {
-  margin-top: [[unit-size]];
+nav::-webkit-scrollbar {
+  width: 0.4em;
 }
 
 nav .subpage.title {
@@ -215,10 +267,15 @@ nav .subpage.title {
 nav ul, nav li {
   list-style: none;
   padding: 0px;
+  margin: 0px;
 }
 
 nav li {
   margin: 5px;
+}
+
+nav > ul > ul > li {
+  padding-left: 10px;
 }
 
 nav > ul > ul > li:hover {
@@ -251,10 +308,33 @@ nav > ul > ul > li a[href]:hover {
   filter: brightness(1.8);
 }
 
-main {
+nav ul ul:last-child > li {
+  height: 30px;
+  background-image: transparent;
+  text-decoration: underline;
+  text-transform: none;
+  font-size: 0.85em;
+  color: [[text-color]];
+}
+
+nav ul ul:last-child > li > a {
+  line-height: [[header-square-button-height]];
+}
+
+.main.outer {
   display: inline-block;
-  margin-left: [[logo-width]];
-  margin-top: [[unit-size]];
+  position: fixed;
+  left: [[logo-width]];
+  top: [[unit-size]];
+  right: 0px;
+  bottom: 0px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 0px;
+  margin: 0px;
+}
+
+.main.inner {
   padding: 15px;
 }
 
@@ -323,8 +403,8 @@ button:hover {
 
 .x-component--game-item figcaption {
   text-align: center ;
-  text-transform: uppercase;
   height: [[game-item-figcaptionheight]];
+  color: [[text-color]];
 }
 
 .x-component--game-item:hover {
@@ -340,4 +420,43 @@ button:hover {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+.embed-container {
+  width: 100%;
+  object-fit: contain;
+}
+
+.embed-container .embed {
+  display: block;
+  height: 500px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.main-footer {
+  text-align: center;
+}
+
+#main-footer{
+  display: block;
+  text-align: center;
+  height: [[footer-height]];
+}
+
+.copyright {
+  display: inline-block;
+  padding-right: 5px;
+  margin-top: [[footer-margin]];;
+}
+
+.about {
+  display: inline-block;
+  border-left: 2px solid [[text-color]];
+  padding: 0 10px 0 10px;
+  margin-top: [[footer-margin]];
+}
+
+.about a {
+  color: [[text-color]];
 }

@@ -4,6 +4,8 @@ return [
   'background-color' => '#222',
   'clickable-text-color' => '#ddd',
   'hover-clickable-text-color' => 'white',
+  'scrollbar-hover-color' => '#333',
+  'scrollbar-active-color' => '#444',
   'primary-button-text-color' => 'white',
   'primary-button-background-color' => '#404040',
   'primary-button-hover-background-color' => '#444',
