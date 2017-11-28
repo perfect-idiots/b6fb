@@ -3,6 +3,12 @@ require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class GameItem extends RawDataContainer implements Component {
+  static protected function requiredFieldSchema(): array {
+    return array_merge(parent::requiredFieldSchema(), [
+      'game-name' => 'string',
+    ]);
+  }
+
   public function render(): Component {
     $urlQuery = $this->get('url-query');
     $id = $this->get('game-id');
