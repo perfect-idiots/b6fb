@@ -7,6 +7,7 @@ require_once __DIR__ . '/header-section.php';
 require_once __DIR__ . '/sidebar-navigator.php';
 require_once __DIR__ . '/hidden-input.php';
 require_once __DIR__ . '/labeled-input.php';
+require_once __DIR__ . '/markdown-view.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class AdminUserInterface extends RawDataContainer implements Component {
@@ -140,6 +141,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminDeleteUser($data);
       case 'add-game':
         return new AdminAddGame($data);
+      case 'reset-database':
+        return new AdminResetDatabase($data);
       default:
         throw new NotFoundException();
     }
@@ -459,6 +462,46 @@ class AdminDeleteUser extends RawDataContainer implements Component {
             'Quay lại'
           ]),
         ]),
+      ]),
+    ]);
+  }
+}
+
+class AdminResetDatabase extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::emmetTop('#reset-database', [
+      HtmlElement::emmetTop('h1', 'Xóa và Đặt lại Cơ sở dữ liệu'),
+      HtmlElement::emmetTop('.warning', MarkdownView::indented('
+        ## Cảnh báo
+
+        Thao tác sau đây sẽ đặt lại CSDL.
+        Hành động này **không thể hoàn tác**.
+      ')),
+      HtmlElement::emmetBottom('.question>strong', 'Bạn có muốn tiếp tục?'),
+      HtmlElement::emmetBottom('.answer>form', [
+        'method' => 'POST',
+        'action' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'reset-database',
+        ])->getUrlQuery(),
+        HtmlElement::emmetTop('.input-container', [
+          SecretLabeledInput::text('password', 'Mật khẩu Admin'),
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::emmetTop('button.confirm.dangerous', [
+            'type' => 'confirm',
+            'Xóa và Đặt lại CSDL',
+          ]),
+          HtmlElement::emmetBottom('button.cancel.safe>a', [
+            'href' => $urlQuery->set('subpage', 'advanced')->getUrlQuery(),
+            'Quay lại',
+          ]),
+        ]),
+        new HiddenInputSet(
+          $urlQuery->set('confirmed', 'on')->getData()
+        ),
       ]),
     ]);
   }
