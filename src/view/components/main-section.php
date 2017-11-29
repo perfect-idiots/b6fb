@@ -99,16 +99,14 @@ class PlayerUserInterface extends RawDataContainer implements Component {
 
     [
       'name' => $name,
-      'genre-ids' => $genreIDs,
-      'genre-names' => $genreNames,
+      'genre' => $genre,
       'description' => $description,
     ] = $info;
 
     $commonParams = $this->assign([
       'game-id' => $id,
       'game-name' => $name,
-      'game-genre-ids' => $genreIDs,
-      'game-genre-names' => $genreNames,
+      'game-genre' => $genre,
       'game-description' => $description,
     ]);
 

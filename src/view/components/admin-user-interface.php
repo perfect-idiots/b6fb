@@ -210,13 +210,13 @@ class AdminGames extends RawDataContainer implements Component {
         [
           'id' => $id,
           'name' => $name,
-          'genre-ids' => $genreIDs,
+          'genre' => $genre,
         ] = $userinfo;
 
         return HtmlElement::create('tr', [
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
-          HtmlElement::create('td', implode(', ', $genreIDs)),
+          HtmlElement::create('td', implode(', ', array_values($genre))),
           HtmlElement::create('td', new AdminGameController()),
         ]);
       },

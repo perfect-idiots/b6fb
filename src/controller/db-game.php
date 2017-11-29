@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
 require_once __DIR__ . '/../model/predefined.php';
+require_once __DIR__ . '/../lib/utils.php';
 require_once __DIR__ . '/db-game-genre.php';
 
 class GameManager extends GameGenreRelationshipManager {
@@ -134,8 +135,7 @@ class GameManager extends GameGenreRelationshipManager {
         return array_merge($row, [
           'id' => $row[0],
           'name' => $row[1],
-          'genre-ids' => preg_split('/\s*,\s*/', $row[2]),
-          'genre-names' => preg_split('/\s*,\s*/', $row[3]),
+          'genre' => splitAndCombine($row[2], $row[3]),
           'description' => $row[4],
         ]);
       },
@@ -157,8 +157,7 @@ class GameManager extends GameGenreRelationshipManager {
 
     return array_merge($row, [
       'name' => $row[0],
-      'genre-ids' => preg_split('/\s*,\s*/', $row[1]),
-      'genre-names' => preg_split('/\s*,\s*/', $row[2]),
+      'genre' => splitAndCombine($row[1], $row[2]),
       'description' => $row[3],
       'id' => $id,
     ]);
