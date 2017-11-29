@@ -154,6 +154,13 @@ class DatabaseQueryStatement extends RawDataContainer {
 
     if (!$this->statement) {
       $error = $link->error;
+      echo "
+        <strong class='message'>An error occurred while preparing a MySQL statement</strong>
+        <h3>Template</h3>
+        <code class='code mysql template'><pre>$template</pre></code>
+        <h3>Error Message</h3>
+        <code class='error message'><pre>$error</pre></code>
+      ";
       throw new Error($error);
     }
   }
