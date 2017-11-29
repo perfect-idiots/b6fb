@@ -370,20 +370,14 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
 
 class AdminAdvancedAdminManagementSection extends RawDataContainer implements Component {
   public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
     return HtmlElement::emmetTop('article', [
       HtmlElement::create('h2', 'Quản lý Tài khoản Quản trị'),
       HtmlElement::create('div', [
         HtmlElement::create('ul', [
           HtmlElement::emmetBottom('li>a', [
-            'href' => '',
-            'Thêm tài khoản',
-          ]),
-          HtmlElement::emmetBottom('li>a', [
-            'href' => '',
-            'Xóa tài khoản',
-          ]),
-          HtmlElement::emmetBottom('li>a', [
-            'href' => '',
+            'href' => $urlQuery->set('subpage', 'change-admin-password')->getUrlQuery(),
             'Đổi mật khẩu',
           ]),
         ]),
