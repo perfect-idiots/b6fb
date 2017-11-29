@@ -18,7 +18,6 @@ class AdminUserInterface extends RawDataContainer implements Component {
     $isLoggedIn = $login->isLoggedIn();
     $cssFileName = $isLoggedIn ? 'admin' : 'login';
     $images = $this->get('images');
-    $listGames = $this->get('game-manager')->list();
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -208,11 +207,16 @@ class AdminGames extends RawDataContainer implements Component {
     $games = $this->get('game-manager')->list();
     $listgame = array_map(
       function (array $userinfo) {
-        [$id, $name, $genre] = $userinfo;
+        [
+          'id' => $id,
+          'name' => $name,
+          'genre-ids' => $genreIDs,
+        ] = $userinfo;
+
         return HtmlElement::create('tr', [
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
-          HtmlElement::create('td', $genre),
+          HtmlElement::create('td', implode(', ', $genreIDs)),
           HtmlElement::create('td', new AdminGameController()),
         ]);
       },
