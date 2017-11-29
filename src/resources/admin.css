@@ -113,13 +113,13 @@ nav > ul > ul > li.current-page a[href] {
   color: black;
 }
 
-ul {
+nav ul {
   list-style-type: none;
   background: #f8f8f8;
   padding: 0px;
 }
 
-ul li {
+nav ul li {
   padding-left: 15px;
   border-bottom: 1px solid #e7e7e7;
 }
@@ -307,7 +307,7 @@ fieldset button {
   padding: 5px;
 }
 
-#reset-db form * {
+.x-component--admin-advanced-reset-database-section form * {
   padding-bottom: 10px;
 }
 
@@ -351,3 +351,20 @@ form .cancel:hover {
   background-color: #FFBABA;
 }
 
+.x-component--admin-advanced-admin-management-section ul {
+  list-style-type: circle;
+  color:red;
+}
+
+.x-component--admin-advanced-admin-management-section ul li {
+  margin-bottom: 10px;
+}
+
+.x-component--admin-advanced-admin-management-section a {
+  font-weight: bold;
+  color:blue;
+}
+
+.x-component--admin-advanced-admin-management-section a:hover {
+  text-decoration: underline;
+}
