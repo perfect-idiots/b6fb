@@ -30,6 +30,8 @@ class MainContent extends RawDataContainer implements Component {
     switch ($page) {
       case 'index':
         return new GameMenu($this->getData());
+      case 'genre':
+        return new GameMenuByGenre($this->getData());
       case 'play':
         return new PlayerUserInterface(
           $this
@@ -63,18 +65,50 @@ class GameMenu extends RawDataContainer implements Component {
   }
 }
 
+class GameMenuByGenre extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $urlQuery = $this->get('url-query');
+    $genre = $urlQuery->getDefault('genre', '');
+
+    $gamelist = $this
+      ->get('game-genre-relationship-manager')
+      ->getGames($genre)
+    ;
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        [$id, $name] = $info;
+
+        return new GameItem($self->assign([
+          'game-id' => $id,
+          'game-name' => $name,
+        ])->getData());
+      },
+      $gamelist
+    ));
+  }
+}
+
 class PlayerUserInterface extends RawDataContainer implements Component {
   public function render(): Component {
     $id = $this->get('url-query')->getDefault('game-id', '');
     $info = $this->get('game-manager')->getItemInfo($id);
 
-    if (!sizeof($info)) throw new NotFoundException("Game '$id' doesn't exist");
-    [[$name, $genre, $description]] = $info;
+    if (!$info) throw new NotFoundException("Game '$id' doesn't exist");
+
+    [
+      'name' => $name,
+      'genre-ids' => $genreIDs,
+      'genre-names' => $genreNames,
+      'description' => $description,
+    ] = $info;
 
     $commonParams = $this->assign([
       'game-id' => $id,
       'game-name' => $name,
-      'game-genre' => $genre,
+      'game-genre-ids' => $genreIDs,
+      'game-genre-names' => $genreNames,
       'game-description' => $description,
     ]);
 
@@ -116,14 +150,12 @@ class SearchResult extends RawDataContainer implements Component {
         [
           $id,
           $name,
-          $genre,
           $description,
         ] = $element;
 
         return new SearchResultItem($this->assign([
           'game-id' => $id,
           'game-name' => $name,
-          'game-genre' => $genre,
           'game-description' => $description,
         ])->getData());
       },

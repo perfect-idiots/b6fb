@@ -12,7 +12,7 @@ class SearchEngine extends RawDataContainer {
     return $this
       ->get('db-query-set')
       ->get('search-games')
-      ->executeOnce([$search], 4)
+      ->executeOnce([$search], 3)
       ->fetch()
     ;
   }
