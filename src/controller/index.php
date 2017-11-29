@@ -218,6 +218,40 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'users',
       ])->redirect();
       break;
+
+    case 'update-admin-password':
+      $postData = $param->get('post-data');
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+
+      $loginDoubleChecker = $param->get('login-double-checker');
+      $login = $loginDoubleChecker->get('login');
+      $loginDoubleChecker->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+
+      $param
+        ->get('admin-manager')
+        ->updatePassword($login->username(), $newPassword)
+      ;
+
+      $param
+        ->get('cookie')
+        ->set('admin-password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
+
     case 'reset-database':
       $postData = $param->get('post-data');
       $urlQuery = $param->get('url-query');
