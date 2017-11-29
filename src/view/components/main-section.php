@@ -30,6 +30,8 @@ class MainContent extends RawDataContainer implements Component {
     switch ($page) {
       case 'index':
         return new GameMenu($this->getData());
+      case 'genre':
+        return new GameMenuByGenre($this->getData());
       case 'play':
         return new PlayerUserInterface(
           $this
@@ -48,6 +50,31 @@ class GameMenu extends RawDataContainer implements Component {
   public function render(): Component {
     $self = $this;
     $gamelist = $this->get('game-manager')->list();
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        [$id, $name] = $info;
+
+        return new GameItem($self->assign([
+          'game-id' => $id,
+          'game-name' => $name,
+        ])->getData());
+      },
+      $gamelist
+    ));
+  }
+}
+
+class GameMenuByGenre extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $urlQuery = $this->get('url-query');
+    $genre = $urlQuery->getDefault('genre', '');
+
+    $gamelist = $this
+      ->get('game-genre-relationship-manager')
+      ->getGames($genre)
+    ;
 
     return HtmlElement::emmetTop('#game-menu', array_map(
       function (array $info) use($self) {
