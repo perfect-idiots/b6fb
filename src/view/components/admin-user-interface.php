@@ -329,30 +329,63 @@ class AdminUsers extends RawDataContainer implements Component {
 
 class AdminAdvanced extends RawDataContainer implements Component {
   public function render(): Component {
-    $urlQuery = $this->get('url-query');
+    $data = $this->getData();
 
     return HtmlElement::emmetBottom('div#dashboard.content', [
       HtmlElement::emmetBottom('.header-subpage>h1', 'Nâng cao'),
-      HtmlElement::emmetTop('#reset-db', [
-        HtmlElement::create('h2', 'Reset và Khởi tạo'),
-        HtmlElement::create('form', [
-          'method' => 'GET',
-          HtmlElement::emmetTop('.input-container', [
-            LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
-            LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
-            LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+      new AdminAdvancedResetDatabaseSection($data),
+      new AdminAdvancedAdminManagementSection($data),
+    ]);
+  }
+}
+
+class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::emmetTop('article', [
+      HtmlElement::create('h2', 'Reset và Khởi tạo'),
+      HtmlElement::create('form', [
+        'method' => 'GET',
+        HtmlElement::emmetTop('.input-container', [
+          LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
+          LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
+          LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::create('button', [
+            'type' => 'confirm',
+            'Xóa và Đặt lại CSDL',
           ]),
-          HtmlElement::emmetTop('.button-container', [
-            HtmlElement::create('button', [
-              'type' => 'confirm',
-              'Xóa và Đặt lại CSDL',
-            ]),
+        ]),
+        new HiddenInputSet(
+          $urlQuery
+            ->set('subpage', 'reset-database')
+            ->getData()
+        ),
+      ]),
+    ]);
+  }
+}
+
+class AdminAdvancedAdminManagementSection extends RawDataContainer implements Component {
+  public function render(): Component {
+    return HtmlElement::emmetTop('article', [
+      HtmlElement::create('h2', 'Quản lý Tài khoản Quản trị'),
+      HtmlElement::create('div', [
+        HtmlElement::create('ul', [
+          HtmlElement::emmetBottom('li>a', [
+            'href' => '',
+            'Thêm tài khoản',
           ]),
-          new HiddenInputSet(
-            $urlQuery
-              ->set('subpage', 'reset-database')
-              ->getData()
-          ),
+          HtmlElement::emmetBottom('li>a', [
+            'href' => '',
+            'Xóa tài khoản',
+          ]),
+          HtmlElement::emmetBottom('li>a', [
+            'href' => '',
+            'Đổi mật khẩu',
+          ]),
         ]),
       ]),
     ]);
@@ -475,14 +508,13 @@ class AdminResetDatabase extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('#reset-database', [
-      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt lại Cơ sở dữ liệu'),
+      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt Lại Cơ sở dữ liệu'),
       HtmlElement::emmetTop('.warning', MarkdownView::indented('
-        ## Cảnh báo
+        ## Cảnh báo !!!
 
-        Thao tác sau đây sẽ đặt lại CSDL.
-        Hành động này **không thể hoàn tác**.
+        Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.
       ')),
-      HtmlElement::emmetBottom('.question>strong', 'Bạn có muốn tiếp tục?'),
+      HtmlElement::emmetBottom('.question>strong>h3', 'Bạn có muốn tiếp tục?'),
       HtmlElement::emmetBottom('.answer>form', [
         'method' => 'POST',
         'action' => $urlQuery->assign([

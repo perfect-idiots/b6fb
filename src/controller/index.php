@@ -218,7 +218,6 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'users',
       ])->redirect();
       break;
-
     case 'reset-database':
       $postData = $param->get('post-data');
       $urlQuery = $param->get('url-query');
