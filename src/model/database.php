@@ -151,6 +151,11 @@ class DatabaseQueryStatement extends RawDataContainer {
     $template = $this->get('template');
     $this->clear();
     $this->statement = $link->prepare($template);
+
+    if (!$this->statement) {
+      $error = $link->error;
+      throw new Error($error);
+    }
   }
 
   private function clear(): void {
