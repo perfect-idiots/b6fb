@@ -4,6 +4,7 @@ require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
+require_once __DIR__ . '/db-game-genre.php';
 require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
@@ -313,6 +314,7 @@ function main(): string {
   ]);
 
   $loginDoubleChecker = new LoginDoubleChecker($securityCommonParam);
+  $gameGenreRelationshipManager = new GameGenreRelationshipManager($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
@@ -339,6 +341,7 @@ function main(): string {
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
     'login-double-checker' => $loginDoubleChecker,
+    'game-genre-relationship-manager' => $gameGenreRelationshipManager,
     'game-manager' => $gameManager,
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
