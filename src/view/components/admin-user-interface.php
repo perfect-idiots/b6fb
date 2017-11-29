@@ -335,8 +335,8 @@ class AdminAdvanced extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('div#dashboard.content', [
       HtmlElement::emmetBottom('.header-subpage>h1', 'Nâng cao'),
-      new AdminAdvancedResetDatabaseSection($data),
       new AdminAdvancedAdminManagementSection($data),
+      new AdminAdvancedResetDatabaseSection($data),
     ]);
   }
 }
