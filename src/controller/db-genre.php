@@ -1,15 +1,18 @@
 <?php
-require_once __DIR__ . '/security.php';
+require_once __DIR__ . '/db-game-genre.php';
 require_once __DIR__ . '/../model/predefined.php';
 
-class GenreManager extends LoginDoubleChecker {
+class GenreManager extends GameGenreRelationshipManager {
   public function clear(): void {
     $this->verify();
+
     $this
       ->get('db-query-set')
       ->get('clear-genres')
       ->executeOnce([])
     ;
+
+    parent::clear();
   }
 
   public function reset(): void {
@@ -25,12 +28,22 @@ class GenreManager extends LoginDoubleChecker {
   }
 
   public function list(): array {
-    return $this
+    $list = $this
       ->get('db-query-set')
       ->get('list-genres')
       ->executeOnce([], 2)
       ->fetch()
     ;
+
+    return array_map(
+      function (array $row) {
+        return array_merge($row, [
+          'id' => $row[0],
+          'name' => $row[1],
+        ]);
+      },
+      $list
+    );
   }
 }
 ?>

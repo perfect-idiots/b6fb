@@ -68,13 +68,20 @@ class PlayerUserInterface extends RawDataContainer implements Component {
     $id = $this->get('url-query')->getDefault('game-id', '');
     $info = $this->get('game-manager')->getItemInfo($id);
 
-    if (!sizeof($info)) throw new NotFoundException("Game '$id' doesn't exist");
-    [[$name, $genre, $description]] = $info;
+    if (!$info) throw new NotFoundException("Game '$id' doesn't exist");
+
+    [
+      'name' => $name,
+      'genre-ids' => $genreIDs,
+      'genre-names' => $genreNames,
+      'description' => $description,
+    ] = $info;
 
     $commonParams = $this->assign([
       'game-id' => $id,
       'game-name' => $name,
-      'game-genre' => $genre,
+      'game-genre-ids' => $genreIDs,
+      'game-genre-names' => $genreNames,
       'game-description' => $description,
     ]);
 
@@ -116,14 +123,12 @@ class SearchResult extends RawDataContainer implements Component {
         [
           $id,
           $name,
-          $genre,
           $description,
         ] = $element;
 
         return new SearchResultItem($this->assign([
           'game-id' => $id,
           'game-name' => $name,
-          'game-genre' => $genre,
           'game-description' => $description,
         ])->getData());
       },
