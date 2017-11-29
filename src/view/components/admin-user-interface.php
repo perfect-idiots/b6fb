@@ -18,7 +18,6 @@ class AdminUserInterface extends RawDataContainer implements Component {
     $isLoggedIn = $login->isLoggedIn();
     $cssFileName = $isLoggedIn ? 'admin' : 'login';
     $images = $this->get('images');
-    $listGames = $this->get('game-manager')->list();
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -143,6 +142,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAddGame($data);
       case 'reset-database':
         return new AdminResetDatabase($data);
+      case 'change-admin-password':
+        return new AdminChangePassword($data);
       default:
         throw new NotFoundException();
     }
@@ -157,7 +158,7 @@ class AdminDashboard extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#dashboard', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h1', 'Dashboard'),
+        HtmlElement::create('h1', 'Bảng điều khiển'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         DashboardPanel::create($this, 'games', 'gamepad-image', 'Trò chơi', $gameManager->count()),
@@ -208,11 +209,16 @@ class AdminGames extends RawDataContainer implements Component {
     $games = $this->get('game-manager')->list();
     $listgame = array_map(
       function (array $userinfo) {
-        [$id, $name, $genre] = $userinfo;
+        [
+          'id' => $id,
+          'name' => $name,
+          'genre' => $genre,
+        ] = $userinfo;
+
         return HtmlElement::create('tr', [
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
-          HtmlElement::create('td', $genre),
+          HtmlElement::create('td', implode(', ', array_values($genre))),
           HtmlElement::create('td', new AdminGameController()),
         ]);
       },
@@ -221,11 +227,11 @@ class AdminGames extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#list-games', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h1', 'Danh sách Games'),
+        HtmlElement::create('h1', 'Danh sách trò chơi'),
         HtmlElement::emmetTop('button.btn-add#btn-add-game', [
           HtmlElement::emmetTop('a', [
             'href' => $urlQuery->set('subpage', 'add-game')->getUrlQuery(),
-            'Thêm Game',
+            'Thêm trò chơi',
           ]),
         ]),
       ]),
@@ -307,7 +313,7 @@ class AdminUsers extends RawDataContainer implements Component {
 
     return HtmlElement::emmetTop('#user-account', [
       HtmlElement::emmetTop('#header-user-page.header-subpage', [
-        HtmlElement::create('h1', 'Tài khoản User'),
+        HtmlElement::create('h1', 'Tài khoản người dùng'),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetTop('table#tb-games', [
@@ -318,7 +324,6 @@ class AdminUsers extends RawDataContainer implements Component {
           ]),
           HtmlElement::create('tbody', $children),
         ]),
-        $userEditDialog,
       ]),
     ]);
   }
@@ -326,30 +331,99 @@ class AdminUsers extends RawDataContainer implements Component {
 
 class AdminAdvanced extends RawDataContainer implements Component {
   public function render(): Component {
-    $urlQuery = $this->get('url-query');
+    $data = $this->getData();
 
     return HtmlElement::emmetBottom('div#dashboard.content', [
-      HtmlElement::create('h1', 'Nâng cao'),
-      HtmlElement::emmetTop('#reset-db', [
-        HtmlElement::create('h2', 'Reset và Khởi tạo'),
-        HtmlElement::create('form', [
-          'method' => 'GET',
-          HtmlElement::emmetTop('.input-container', [
-            LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
-            LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
-            LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+      HtmlElement::emmetBottom('.header-subpage>h1', 'Nâng cao'),
+      new AdminAdvancedAdminManagementSection($data),
+      new AdminAdvancedResetDatabaseSection($data),
+    ]);
+  }
+}
+
+class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::emmetTop('article', [
+      HtmlElement::create('h2', 'Reset và Khởi tạo'),
+      HtmlElement::create('form', [
+        'method' => 'GET',
+        HtmlElement::emmetTop('.input-container', [
+          LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
+          LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
+          LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::create('button', [
+            'type' => 'confirm',
+            'Xóa và Đặt lại CSDL',
           ]),
-          HtmlElement::emmetTop('.button-container', [
-            HtmlElement::create('button', [
-              'type' => 'confirm',
-              'Xóa và Đặt lại CSDL',
-            ]),
+        ]),
+        new HiddenInputSet(
+          $urlQuery
+            ->set('subpage', 'reset-database')
+            ->getData()
+        ),
+      ]),
+    ]);
+  }
+}
+
+class AdminAdvancedAdminManagementSection extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::emmetTop('article', [
+      HtmlElement::create('h2', 'Quản lý Tài khoản Quản trị'),
+      HtmlElement::create('div', [
+        HtmlElement::create('ul', [
+          HtmlElement::emmetBottom('li>a', [
+            'href' => $urlQuery->set('subpage', 'change-admin-password')->getUrlQuery(),
+            'Đổi mật khẩu',
           ]),
-          new HiddenInputSet(
-            $urlQuery
-              ->set('subpage', 'reset-database')
-              ->getData()
-          ),
+        ]),
+      ]),
+    ]);
+  }
+}
+
+class AdminChangePassword extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return  HtmlElement::emmetTop('#update-password-account', [
+      HtmlElement::emmetTop('#header-user-page.header-subpage', [
+        HtmlElement::create('h1', 'Thay đổi mật khẩu'),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage>form', [
+        'method' => 'POST',
+        'action' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'update-admin-password',
+        ])->getUrlQuery(),
+        HtmlElement::emmetTop('.input-container', [
+          SecretLabeledInput::text('current-password', 'Mật khẩu hiện tại'),
+          SecretLabeledInput::text('new-password', 'Mật khẩu mới'),
+          SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::create('button', [
+            'type' => 'submit',
+            'Lưu',
+          ]),
+          HtmlElement::create('button', [
+            'type' => 'reset',
+            'Nhập lại',
+          ]),
+          HtmlElement::emmetBottom('button>a.back', [
+            'href' => $urlQuery
+              ->without(['current-password', 'new-password', 're-password'])
+              ->set('subpage', 'advanced')
+              ->getUrlQuery()
+            ,
+            'Quay lại',
+          ]),
         ]),
       ]),
     ]);
@@ -386,7 +460,6 @@ class AdminEditUser extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#edit-user-page', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h2', ''),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form#edit-user-form', [
@@ -472,14 +545,13 @@ class AdminResetDatabase extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('#reset-database', [
-      HtmlElement::emmetTop('h1', 'Xóa và Đặt lại Cơ sở dữ liệu'),
+      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt Lại Cơ sở dữ liệu'),
       HtmlElement::emmetTop('.warning', MarkdownView::indented('
-        ## Cảnh báo
+        ## Cảnh báo !!!
 
-        Thao tác sau đây sẽ đặt lại CSDL.
-        Hành động này **không thể hoàn tác**.
+        Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.
       ')),
-      HtmlElement::emmetBottom('.question>strong', 'Bạn có muốn tiếp tục?'),
+      HtmlElement::emmetBottom('.question>strong>h3', 'Bạn có muốn tiếp tục?'),
       HtmlElement::emmetBottom('.answer>form', [
         'method' => 'POST',
         'action' => $urlQuery->assign([

@@ -7,6 +7,26 @@ a {
   text-decoration: none;
 }
 
+button {
+  background-color: #5cb85c;
+  border: 0px;
+  padding: 10px;
+  color: white;
+}
+
+button:hover {
+  background-color: #1A7F1A;
+}
+
+button a {
+  color: white;
+}
+
+input {
+  color: #555;
+  padding: 5px;
+}
+
 header {
   height: 50px;
   background-color: blue;
@@ -40,6 +60,7 @@ header {
 }
 
 #profile-button {
+  padding: 3px;
   width: 30px;
   height: 30px;
   background-color: transparent;
@@ -92,23 +113,23 @@ nav > ul > ul > li.current-page a[href] {
   color: black;
 }
 
-ul {
+nav ul {
   list-style-type: none;
   background: #f8f8f8;
   padding: 0px;
 }
 
-ul li {
+nav ul li {
+  padding-left: 15px;
   border-bottom: 1px solid #e7e7e7;
-  padding: 10px;
 }
 
-nav>ul>li{
-  padding: 0px;
-}
 
-ul li a {
-  padding: 10px 15px;
+nav ul li a {
+  padding: 10px 0px;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
 nav ul:nth-child(2) li:hover {
@@ -123,34 +144,17 @@ nav ul:nth-child(2) li:hover {
   padding: 15px;
 }
 
-#user-account {
-  margin-top: 0px;
-}
-
 .header-subpage {
   padding-bottom: 9px;
   border-bottom: 1px solid #eee;
   padding-top: 20px;
-
 }
 
 button.btn-add {
   position: absolute;
   right: 150px;
   top: 100px;
-  background-color: #5cb85c;
-  border: 0px;
-  padding: 10px;
 }
-
-button.btn-add:hover {
-  background-color: #1A7F1A;
-}
-
-.btn-add a {
-  color: white;
-}
-
 .body-subpage {
   margin-top: 30px;
   margin-left: 20px;
@@ -203,7 +207,7 @@ table#tb-games {
 
 table, th, td {
   border: 1px solid #ddd;
-  padding: 5px 100px 0px 10px;
+  padding: 3px 15px 3px 15px;
 }
 
 th {
@@ -253,18 +257,6 @@ legend {
   margin-bottom: 20px;
 }
 
-#edit-user-form button:hover {
-  background-color: #1A7F1A;
-}
-
-a.edit-user, a.delete-user {
-  margin-left: 15px;
-}
-
-.edit a:hover {
-  color: red;
-}
-
 #add-game-form {
   height: 570px;
   width: 100%;
@@ -307,10 +299,7 @@ fieldset {
 
 fieldset button {
   margin-top: 20px;
-  background-color: #5cb85c;
-  border: 0px;
   padding: 10px 20px;
-  color: white;
 }
 
 #add-game-form input, output, textarea {
@@ -318,6 +307,64 @@ fieldset button {
   padding: 5px;
 }
 
-.header-subpage-game {
-  padding-top: 20px;
+.x-component--admin-advanced-reset-database-section form * {
+  padding-bottom: 10px;
+}
+
+input[type='checkbox'] {
+  transform: scale(1.5);
+}
+
+
+reset-db button:hover {
+  background-color: rgb(175, 10, 10);
+}
+
+.answer input {
+  padding: 3px;
+}
+
+.answer form >* {
+  padding-bottom: 30px;
+}
+
+form .dangerous {
+  background-color: #ce0000;
+}
+
+form .dangerous:hover {
+  background-color: darkred;
+}
+
+form .cancel {
+  background-color: blue;
+}
+
+form .cancel:hover {
+  background-color: darkblue;
+}
+
+.warning {
+  color: #D8000C;
+  padding-left: 10px;
+  border: 1px solid red;
+  background-color: #FFBABA;
+}
+
+.x-component--admin-advanced-admin-management-section ul {
+  list-style-type: circle;
+  color:red;
+}
+
+.x-component--admin-advanced-admin-management-section ul li {
+  margin-bottom: 10px;
+}
+
+.x-component--admin-advanced-admin-management-section a {
+  font-weight: bold;
+  color:blue;
+}
+
+.x-component--admin-advanced-admin-management-section a:hover {
+  text-decoration: underline;
 }
