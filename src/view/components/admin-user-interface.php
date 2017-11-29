@@ -142,6 +142,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAddGame($data);
       case 'reset-database':
         return new AdminResetDatabase($data);
+      case 'change-admin-password':
+        return new AdminChangePassword($data);
       default:
         throw new NotFoundException();
     }
@@ -386,6 +388,48 @@ class AdminAdvancedAdminManagementSection extends RawDataContainer implements Co
   }
 }
 
+class AdminChangePassword extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return  HtmlElement::emmetTop('#update-password-account', [
+      HtmlElement::emmetTop('#header-user-page.header-subpage', [
+        HtmlElement::create('h1', 'Thay đổi mật khẩu'),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage>form', [
+        'method' => 'POST',
+        'action' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'update-admin-password',
+        ])->getUrlQuery(),
+        HtmlElement::emmetTop('.input-container', [
+          SecretLabeledInput::text('current-password', 'Mật khẩu hiện tại'),
+          SecretLabeledInput::text('new-password', 'Mật khẩu mới'),
+          SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
+        ]),
+        HtmlElement::emmetTop('.button-container', [
+          HtmlElement::create('button', [
+            'type' => 'submit',
+            'Lưu',
+          ]),
+          HtmlElement::create('button', [
+            'type' => 'reset',
+            'Nhập lại',
+          ]),
+          HtmlElement::emmetBottom('button>a.back', [
+            'href' => $urlQuery
+              ->without(['current-password', 'new-password', 're-password'])
+              ->set('subpage', 'advanced')
+              ->getUrlQuery()
+            ,
+            'Quay lại',
+          ]),
+        ]),
+      ]),
+    ]);
+  }
+}
+
 class AdminUserController extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query')->assign([
@@ -416,7 +460,6 @@ class AdminEditUser extends RawDataContainer implements Component {
 
     return HtmlElement::emmetBottom('#edit-user-page', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h2', ''),
       ]),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form#edit-user-form', [

@@ -17,6 +17,7 @@ return [
   'game-info' => 's',
   'get-all-games-by-genre' => 's',
   'get-all-genres-by-game' => 's',
+  'update-admin-password' => 'ss',
   'update-user-profile' => 'ss',
   'remove-all-games-from-genre' => 's',
   'remove-all-genres-from-game' => 's',
