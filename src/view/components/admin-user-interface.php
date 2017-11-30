@@ -515,15 +515,19 @@ class AdminDeleteUser extends RawDataContainer implements Component {
     $username = $urlQuery->get('username');
 
     return HtmlElement::emmetTop('#delete-user-page', [
-      HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h2', ''),
-      ]),
-      HtmlElement::emmetBottom('.body-subpage>#delete-user-page', [
+      HtmlElement::emmetBottom('.header-subpage>h1','Xóa Người Dùng'), 
+      HtmlElement::emmetTop('.warning', MarkdownView::indented('
+      ## Cảnh báo !!!
+
+      Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.
+    ')),
+      HtmlElement::emmetBottom('.body-subpage', [
         HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa người dùng',
-          HtmlElement::emmetTop('span.username', $username),
-          '?',
+          HtmlElement::emmetTop('span.username', '"' . $username . '"'),
+          ' không?',
         ]),
+        HtmlElement::emmetBottom('.answer', [
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::emmetTop('a#delete', [
             'href' => $urlQuery->assign([
@@ -544,7 +548,8 @@ class AdminDeleteUser extends RawDataContainer implements Component {
           ]),
         ]),
       ]),
-    ]);
+    ]),
+  ]);
   }
 }
 
