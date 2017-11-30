@@ -267,38 +267,37 @@ legend {
   margin-bottom: 20px;
 }
 
-#add-game-form {
-  height: 570px;
+.form-add {
   width: 100%;
-  border: 1px solid #e3e3e3;
-  background-color: #f5f5f5;
 }
 
-#add-game-form h2 {
+.form-add h2 {
   display: inline-block;
 }
 
-#add-game-form fieldset {
+.form-add fieldset {
+  border: 1px solid #C8C8C8;
+  padding: 40px 30px;
+  background-color: aliceblue;
   font-size: 17px;
   position: absolute;
-  left: 500px;
 }
 
-#add-game-form fieldset textarea {
+.form-add fieldset textarea {
   width: 400px;
   height: 100px;
 }
 
-#add-game-form fieldset *:not(button) {
+.form-add fieldset *:not(button) {
   display: block;
 }
 
-#add-game-form legend {
+.form-add legend {
   height: 60px;
   text-align: center;
 }
 
-#add-game-form input, textarea {
+.form-add input, textarea {
   margin-bottom: 15px;
 }
 
@@ -311,7 +310,7 @@ fieldset button {
   padding: 10px 20px;
 }
 
-#add-game-form input, output, textarea {
+.form-add input, output, textarea {
   color: #555;
   padding: 5px;
 }

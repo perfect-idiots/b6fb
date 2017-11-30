@@ -141,6 +141,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminDeleteUser($data);
       case 'add-game':
         return new AdminAddGame($data);
+      case 'add-genre':
+        return new AdminAddGenre($data);
       case 'reset-database':
         return new AdminResetDatabase($data);
       case 'change-admin-password':
@@ -249,7 +251,7 @@ class AdminGames extends RawDataContainer implements Component {
         HtmlElement::create('h1', 'Quản lý Trò chơi'),
         HtmlElement::emmetTop('button.btn-add#btn-add-genre', [
           HtmlElement::emmetTop('a', [
-            'href' => '',
+            'href' => $urlQuery->set('subpage', 'add-genre')->getUrlQuery(),
             'Thêm thể loại',
           ]),
         ]),
@@ -295,7 +297,7 @@ class AdminAddGame extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.header-subpage', [
         HtmlElement::create('h2','Thêm game'),
       ]),
-      HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form', [
+      HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form.form-add', [
         'method' => 'GET',
         'action' => '',
         HtmlElement::emmetTop('fieldset#input-container', [
@@ -305,6 +307,34 @@ class AdminAddGame extends RawDataContainer implements Component {
           LabeledTextArea::text('game-description', 'Mô tả'),
           LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
           LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
+          HtmlElement::create('button',[
+            'type' => 'submit',
+            'name' => 'submit',
+            'Lưu'
+          ]),
+          HtmlElement::create('button', [
+            'type' => 'reset',
+            'name' => 'reset',
+            'Đặt lại',
+          ]),
+        ]),
+      ]),
+    ]);
+  }
+}
+
+class AdminAddGenre extends RawDataContainer implements Component {
+  public function render(): Component {
+    return HtmlElement::emmetTop('#edit-genre-page', [
+      HtmlElement::emmetTop('.header-subpage', [
+        HtmlElement::create('h2','Thêm Thể loại'),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage>form#add-genre-form.form-add', [
+        'method' => 'GET',
+        'action' => '',
+        HtmlElement::emmetTop('fieldset#input-container', [
+          PlainLabeledInput::text('genre-id', 'ID'),
+          PlainLabeledInput::text('game-genre', 'Tên thể loại'),
           HtmlElement::create('button',[
             'type' => 'submit',
             'name' => 'submit',
