@@ -1,4 +1,11 @@
 <?php
+function splitAndCombine(string $keys, string $values, string $seprgx = '/\s*,\s*/') {
+  return array_combine(
+    preg_split($seprgx, $keys),
+    preg_split($seprgx, $values)
+  );
+}
+
 class ClassChecker {
   private $parents, $implements;
 
