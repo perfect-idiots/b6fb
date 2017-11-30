@@ -214,6 +214,20 @@ function sendAction(DataContainer $param): string {
       ])->redirect();
       break;
 
+    case 'delete-game':
+      $game = $urlQuery->getDefault('game', '');
+      $param->get('game-manager')->delete($game);
+
+      $urlQuery->without([
+        'action',
+        'game',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
     case 'delete-genre':
       $genre = $urlQuery->getDefault('genre', '');
       $param->get('genre-manager')->delete($genre);
