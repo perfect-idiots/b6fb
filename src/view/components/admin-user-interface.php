@@ -686,9 +686,17 @@ class AdminResetDatabase extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
 
+    $subaction = $urlQuery->getDefault('subaction', '');
+
+    if ($subaction !== 'clear' && $subaction !== 'reset') {
+      throw new NotFoundException();
+    }
+
+    $actionName = $subaction === 'reset' ? 'Đặt lại' : 'Làm trống';
+
     return HtmlElement::emmetTop('#reset-database', [
-      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt Lại Cơ sở dữ liệu'),
-      new AdminWarningBox('Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.'),
+      HtmlElement::emmetBottom('.header-subpage>h1', "$actionName Cơ sở dữ liệu"),
+      new AdminWarningBox('CSDL sẽ bị **xóa sạch**. Hành động này **không thể hoàn tác**.'),
       HtmlElement::emmetBottom('.question>strong>h3', 'Bạn có muốn tiếp tục?'),
       HtmlElement::emmetBottom('.answer>form', [
         'method' => 'POST',

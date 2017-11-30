@@ -289,21 +289,27 @@ function sendAction(DataContainer $param): string {
             ->set('password', $password)
         )->verify();
 
+        $subaction = $urlQuery->getDefault('subaction', '');
+
+        if ($subaction !== 'clear' && $subaction !== 'reset') {
+          throw new NotFoundException();
+        }
+
         $check = function (string $key) use($urlQuery) {
           return $urlQuery->getDefault($key, 'off') === 'on';
         };
 
         if ($check('game')) {
-          $param->get('genre-manager')->reset();
-          $param->get('game-manager')->reset();
+          $param->get('genre-manager')->$subaction();
+          $param->get('game-manager')->$subaction();
         }
 
         if ($check('user')) {
-          $param->get('user-manager')->reset();
+          $param->get('user-manager')->$subaction();
         }
 
         if ($check('admin')) {
-          $param->get('admin-manager')->reset();
+          $param->get('admin-manager')->$subaction();
         }
       }
 
