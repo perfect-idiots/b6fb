@@ -529,7 +529,6 @@ class AdminDeleteUser extends RawDataContainer implements Component {
     return new AdminDeleteConfirmBox(
       $this->assign([
         'url-query' => $urlQuery->assign([
-          'type' => 'action',
           'previous-page' => 'users',
           'username' => $username,
         ]),
@@ -607,6 +606,7 @@ class AdminDeleteConfirmBox extends RawDataContainer implements Component {
             HtmlElement::emmetBottom('button.dangerous>a#delete', [
               'href' => $urlQuery
                 ->except('subpage')
+                ->set('type', 'action')
                 ->set('action', $this->get('delete-action'))
                 ->getUrlQuery()
               ,
