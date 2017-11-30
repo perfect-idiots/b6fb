@@ -38,6 +38,14 @@ class LoginDoubleChecker extends RawDataContainer {
   public function checkPermission(): bool {
     return $this->get('login')->isAdmin();
   }
+
+  public function username(): string {
+    return $this->get('login')->username();
+  }
+
+  public function password(): string {
+    return $this->get('login')->password();
+  }
 }
 
 class SecurityException extends Exception {
