@@ -527,7 +527,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
     $username = $urlQuery->get('username');
 
     return HtmlElement::emmetTop('#delete-user-page', [
-      HtmlElement::emmetBottom('.header-subpage>h1','Xóa Người Dùng'), 
+      HtmlElement::emmetBottom('.header-subpage>h1','Xóa Người Dùng'),
       new AdminWarningBox('Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.'),
       HtmlElement::emmetBottom('.body-subpage', [
         HtmlElement::emmetTop('.question', [
@@ -536,28 +536,28 @@ class AdminDeleteUser extends RawDataContainer implements Component {
           ' không?',
         ]),
         HtmlElement::emmetBottom('.answer', [
-        HtmlElement::emmetTop('.button-container', [
-          HtmlElement::emmetBottom('button.dangerous>a#delete', [
-            'href' => $urlQuery->assign([
-              'type' => 'action',
-              'action' => 'delete-user',
-              'previous-page' => 'users',
-              'username' => $username,
-            ])->getUrlQuery(),
-            'Xóa'
-          ]),
-          HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
-            'href' => $urlQuery->assign([
-              'type' => 'html',
-              'page' => 'admin',
-              'subpage' => 'users',
-            ])->getUrlQuery(),
-            'Quay lại'
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::emmetBottom('button.dangerous>a#delete', [
+              'href' => $urlQuery->assign([
+                'type' => 'action',
+                'action' => 'delete-user',
+                'previous-page' => 'users',
+                'username' => $username,
+              ])->getUrlQuery(),
+              'Xóa',
+            ]),
+            HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
+              'href' => $urlQuery->assign([
+                'type' => 'html',
+                'page' => 'admin',
+                'subpage' => 'users',
+              ])->getUrlQuery(),
+              'Quay lại',
+            ]),
           ]),
         ]),
       ]),
-    ]),
-  ]);
+    ]);
   }
 }
 
