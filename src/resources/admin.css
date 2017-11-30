@@ -1,9 +1,10 @@
-body , h1 {
+body, h1 {
   margin: 0px;
   font-family: 'Roboto', 'Cantarell', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
 }
 
 a {
+  color: #0d0dcc;
   text-decoration: none;
 }
 
@@ -267,15 +268,16 @@ legend {
   margin-bottom: 20px;
 }
 
-.form-add {
+form.add {
   width: 100%;
 }
 
-.form-add h2 {
+form.add h2 {
   display: inline-block;
 }
 
-.form-add fieldset {
+form.add {
+  width: auto;
   border: 1px solid #C8C8C8;
   padding: 40px 30px;
   background-color: aliceblue;
@@ -283,34 +285,34 @@ legend {
   position: absolute;
 }
 
-.form-add fieldset textarea {
+textarea {
   width: 400px;
   height: 100px;
 }
 
-.form-add fieldset *:not(button) {
+form.add *:not(button) {
   display: block;
 }
 
-.form-add legend {
+form.add legend {
   height: 60px;
   text-align: center;
 }
 
-.form-add input, textarea {
+form.add input, textarea {
   margin-bottom: 15px;
 }
 
-fieldset {
+form.add {
   border: 0px;
 }
 
-fieldset button {
+form.add button {
   margin-top: 20px;
   padding: 10px 20px;
 }
 
-.form-add input, output, textarea {
+form.add input, output, textarea {
   color: #555;
   padding: 5px;
 }
