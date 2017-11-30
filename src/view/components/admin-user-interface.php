@@ -145,6 +145,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAddGenre($data);
       case 'delete-genre':
         return new AdminDeleteGenre($data);
+      case 'delete-game':
+        return new AdminDeleteGame($data);
       case 'reset-database':
         return new AdminResetDatabase($data);
       case 'change-admin-password':
@@ -226,7 +228,11 @@ class AdminGames extends RawDataContainer implements Component {
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
           HtmlElement::create('td', implode(', ', array_values($genre))),
-          HtmlElement::create('td', new AdminEditDeletePair($urlQuery, 'edit-game', 'delete-game')),
+          HtmlElement::create('td', new AdminEditDeletePair(
+            $urlQuery->set('game', $id),
+            'edit-game',
+            'delete-game'
+          )),
         ]);
       },
       $games
@@ -323,6 +329,38 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
           ' không?',
         ]),
         'delete-action' => 'delete-genre',
+        'back-subpage' => 'games',
+      ])->getData()
+    );
+  }
+}
+
+class AdminDeleteGame extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $game = $urlQuery->get('game');
+    $gameInfo = $this->get('game-manager')->info($game);
+
+    $gameName = $gameInfo
+      ? '"' . $gameInfo['name'] . '"'
+      : HtmlElement::create('strong', '(Không biết)')
+    ;
+
+    return new AdminDeleteConfirmBox(
+      $this->assign([
+        'url-query' => $urlQuery->assign([
+          'type' => 'action',
+          'previous-page' => 'games',
+          'game' => $game,
+        ]),
+        'title' => 'Xóa trò chơi',
+        'warning' => 'Thao tác sau đây sẽ xóa trò chơi. Hành động này **không thể hoàn tác**.',
+        'question' => HtmlElement::emmetTop('.question', [
+          'Bạn có thực muốn xóa trò chơi',
+          HtmlElement::emmetTop('span.gamename', $gameName),
+          ' không?',
+        ]),
+        'delete-action' => 'delete-game',
         'back-subpage' => 'games',
       ])->getData()
     );
