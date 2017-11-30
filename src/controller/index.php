@@ -73,6 +73,7 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
     ? [
       'profile' => 'Tài khoản',
       'favourite' => 'Yêu thích',
+      'history' => 'Lịch sử',
     ]
     : [
       'explore' => 'Khám phá',
@@ -80,17 +81,13 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
     ]
   ;
 
-  $namemap = array_merge($customized, [
-    'history' => 'Lịch sử',
-  ]);
-
   $result = [[
     'page' => 'index',
     'title' => 'Trang chủ',
     'href' => '.',
   ]];
 
-  foreach ($namemap as $page => $title) {
+  foreach ($customized as $page => $title) {
     $href = $urlQuery->set('page', $page)->getUrlQuery();
 
     array_push($result, [
@@ -296,6 +293,17 @@ function sendAction(DataContainer $param): string {
   }
 }
 
+function recordHistory(DataContainer $param): void {
+  $urlQuery = $param->get('url-query');
+
+  if ($urlQuery->getDefault('type', 'html') !== 'html') return;
+  if ($urlQuery->getDefault('page', 'play') !== 'play') return;
+  if (!$param->get('login')->isLoggedIn()) return;
+
+  $game = $urlQuery->getDefault('game-id', '');
+  $param->get('user-profile')->addHistory($game);
+}
+
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
@@ -352,6 +360,7 @@ function main(): string {
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
   $adminManager = new AdminManager($securityCommonParam);
+  $userProfile = new UserProfile($securityCommonParam);
   $searchEngine = new SearchEngine($securityCommonParam);
 
   $param = RawDataContainer::instance([
@@ -359,6 +368,7 @@ function main(): string {
     'url-query' => $urlQuery,
     'post-data' => $postData,
     'files' => $files,
+    'constants' => $constants,
     'predefined-games' => $predefinedGames,
     'predefined-genres' => $predefinedGenres,
     'theme-name' => $themeColorSet['name'],
@@ -379,11 +389,14 @@ function main(): string {
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
+    'user-profile' => $userProfile,
     'search-engine' => $searchEngine,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
   ]);
+
+  recordHistory($param);
 
   try {
     switch ($urlQuery->getDefault('type', 'html')) {
