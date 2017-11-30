@@ -349,6 +349,7 @@ function main(): string {
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
   $adminManager = new AdminManager($securityCommonParam);
+  $userProfile = new UserProfile($securityCommonParam);
   $searchEngine = new SearchEngine($securityCommonParam);
 
   $param = RawDataContainer::instance([
@@ -376,6 +377,7 @@ function main(): string {
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
+    'user-profile' => $userProfile,
     'search-engine' => $searchEngine,
     'signup' => $signup,
     'login' => $login,
