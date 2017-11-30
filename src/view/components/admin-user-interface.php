@@ -310,11 +310,7 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
 
     return new AdminDeleteConfirmBox(
       $this->assign([
-        'url-query' => $urlQuery->assign([
-          'type' => 'action',
-          'previous-page' => 'games',
-          'genre' => $genre,
-        ]),
+        'url-query' => $urlQuery->set('genre', $genre),
         'title' => 'Xóa thể loại',
         'warning' => 'Thao tác sau đây sẽ xóa thể loại. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
