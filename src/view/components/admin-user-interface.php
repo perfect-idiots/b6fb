@@ -537,7 +537,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
         ]),
         HtmlElement::emmetBottom('.answer', [
         HtmlElement::emmetTop('.button-container', [
-          HtmlElement::emmetTop('a#delete', [
+          HtmlElement::emmetBottom('button.dangerous>a#delete', [
             'href' => $urlQuery->assign([
               'type' => 'action',
               'action' => 'delete-user',
@@ -546,7 +546,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
             ])->getUrlQuery(),
             'Xóa'
           ]),
-          HtmlElement::emmetTop('a#cancel', [
+          HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
             'href' => $urlQuery->assign([
               'type' => 'html',
               'page' => 'admin',

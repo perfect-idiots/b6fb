@@ -337,19 +337,19 @@ reset-db button:hover {
   padding-bottom: 30px;
 }
 
-form .dangerous {
+button.dangerous {
   background-color: #ce0000;
 }
 
-form .dangerous:hover {
+button.dangerous:hover {
   background-color: darkred;
 }
 
-form .cancel {
+button.safe {
   background-color: blue;
 }
 
-form .cancel:hover {
+button.safe:hover {
   background-color: darkblue;
 }
 
