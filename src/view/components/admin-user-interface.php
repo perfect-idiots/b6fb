@@ -320,7 +320,7 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
         'title' => 'Xóa thể loại',
         'warning' => "Thao tác sau đây sẽ xóa thể loại _“{$genreName}”_. Hành động này **không thể hoàn tác**.",
         'question' => HtmlElement::emmetTop('.question', [
-          'Bạn có thực sự muốn xóa thể loại',
+          'Bạn có thực sự muốn xóa vĩnh viễn thể loại',
           HtmlElement::emmetTop('em.target.name', "“{$genreName}”"),
           ' không?',
         ]),
@@ -350,7 +350,7 @@ class AdminDeleteGame extends RawDataContainer implements Component {
         'title' => 'Xóa trò chơi',
         'warning' => "Thao tác sau đây sẽ xóa trò chơi _“{$gameName}”_. Hành động này **không thể hoàn tác**.",
         'question' => HtmlElement::emmetTop('.question', [
-          'Bạn có thực sự muốn xóa trò chơi',
+          'Bạn có thực sự muốn xóa vĩnh viễn trò chơi',
           HtmlElement::emmetTop('em.target.name', "“{$gameName}”"),
           ' không?',
         ]),
@@ -671,7 +671,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
         'title' => 'Xóa người dùng',
         'warning' => "Thao tác sau đây sẽ xóa người dùng _“{$username}”_. Hành động này **không thể hoàn tác**.",
         'question' => HtmlElement::emmetTop('.question', [
-          'Bạn có thực sự muốn xóa người dùng',
+          'Bạn có thực sự muốn xóa vĩnh viễn người dùng',
           HtmlElement::emmetTop('em.target.name', "“{$username}”"),
           ' không?',
         ]),
