@@ -297,7 +297,7 @@ function recordHistory(DataContainer $param): void {
   $urlQuery = $param->get('url-query');
 
   if ($urlQuery->getDefault('type', 'html') !== 'html') return;
-  if ($urlQuery->getDefault('page', 'play') !== 'play') return;
+  if ($urlQuery->getDefault('page', 'index') !== 'play') return;
   if (!$param->get('login')->isLoggedIn()) return;
 
   $game = $urlQuery->getDefault('game-id', '');
