@@ -537,7 +537,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
             'name' => 'subaction',
             'type' => 'submmit',
             'value' => 'clear',
-            'Làm trống',
+            'Làm trống CSDL',
           ]),
           HtmlElement::create('button', [
             'name' => 'subaction',
