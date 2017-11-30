@@ -16,6 +16,7 @@ return [
   'add-user-playing-history' => 'ss',
   'user-info' => 's',
   'game-info' => 's',
+  'genre-info' => 's',
   'get-all-games-by-genre' => 's',
   'get-all-genres-by-game' => 's',
   'get-history-by-user' => 's',
@@ -35,6 +36,7 @@ return [
   'clear-history-by-game' => 's',
   'clear-game-genre-pairs' => '',
   'delete-user' => 's',
+  'delete-genre' => 's',
   'delete-game-genre-pair' => 'ss',
   'search-games' => 's',
 ];

@@ -216,6 +216,20 @@ function sendAction(DataContainer $param): string {
       ])->redirect();
       break;
 
+    case 'delete-genre':
+      $genre = $urlQuery->getDefault('genre', '');
+      $param->get('genre-manager')->delete($genre);
+
+      $urlQuery->without([
+        'action',
+        'genre',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
     case 'update-admin-password':
       $postData = $param->get('post-data');
       $currentPassword = $postData->getDefault('current-password', '');

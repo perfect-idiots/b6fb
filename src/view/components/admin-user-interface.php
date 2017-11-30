@@ -143,6 +143,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAddGame($data);
       case 'add-genre':
         return new AdminAddGenre($data);
+      case 'delete-genre':
+        return new AdminDeleteGenre($data);
       case 'reset-database':
         return new AdminResetDatabase($data);
       case 'change-admin-password':
@@ -240,7 +242,11 @@ class AdminGames extends RawDataContainer implements Component {
         return HtmlElement::create('tr', [
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
-          HtmlElement::create('td', new AdminEditDeletePair($urlQuery, 'edit-genre', 'delete-genre')),
+          HtmlElement::create('td', new AdminEditDeletePair(
+            $urlQuery->set('genre', $id),
+            'edit-genre',
+            'delete-genre'
+          )),
         ]);
       },
       $genres
@@ -288,6 +294,38 @@ class AdminGames extends RawDataContainer implements Component {
         ]),
       ]),
     ]);
+  }
+}
+
+class AdminDeleteGenre extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $genre = $urlQuery->get('genre');
+    $genreInfo = $this->get('genre-manager')->info($genre);
+
+    $genreName = $genreInfo
+      ? '"' . $genreInfo['name'] . '"'
+      : HtmlElement::create('strong', '(Không biết)')
+    ;
+
+    return new AdminDeleteConfirmBox(
+      $this->assign([
+        'url-query' => $urlQuery->assign([
+          'type' => 'action',
+          'previous-page' => 'games',
+          'genre' => $genre,
+        ]),
+        'title' => 'Xóa thể loại',
+        'warning' => 'Thao tác sau đây sẽ xóa thể loại. Hành động này **không thể hoàn tác**.',
+        'question' => HtmlElement::emmetTop('.question', [
+          'Bạn có thực muốn xóa thể loại',
+          HtmlElement::emmetTop('span.username', $genreName),
+          ' không?',
+        ]),
+        'delete-action' => 'delete-genre',
+        'back-subpage' => 'games',
+      ])->getData()
+    );
   }
 }
 
