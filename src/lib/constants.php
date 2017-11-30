@@ -7,7 +7,7 @@ class Constants extends LazyLoadedDataContainer {
   }
 
   private function time(): array {
-    $sec = 1;
+    $sec = 1000;
     $min = 60 * $sec;
     $hour = 60 * $min;
     $day = 24 * $hour;
