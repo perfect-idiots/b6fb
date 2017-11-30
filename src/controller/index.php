@@ -4,10 +4,12 @@ require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
+require_once __DIR__ . '/db-game-genre.php';
 require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/db-admin.php';
+require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
@@ -47,6 +49,7 @@ function switchPage(array $data): Page {
     case 'history':
     case 'genre':
     case 'play':
+    case 'search':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
@@ -216,6 +219,39 @@ function sendAction(DataContainer $param): string {
       ])->redirect();
       break;
 
+    case 'update-admin-password':
+      $postData = $param->get('post-data');
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+
+      $loginDoubleChecker = $param->get('login-double-checker');
+      $login = $loginDoubleChecker->get('login');
+      $loginDoubleChecker->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+
+      $param
+        ->get('admin-manager')
+        ->updatePassword($login->username(), $newPassword)
+      ;
+
+      $param
+        ->get('cookie')
+        ->set('admin-password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
+
     case 'reset-database':
       $postData = $param->get('post-data');
       $urlQuery = $param->get('url-query');
@@ -311,10 +347,12 @@ function main(): string {
   ]);
 
   $loginDoubleChecker = new LoginDoubleChecker($securityCommonParam);
+  $gameGenreRelationshipManager = new GameGenreRelationshipManager($securityCommonParam);
   $gameManager = new GameManager($securityCommonParam);
   $genreManager = new GenreManager($securityCommonParam);
   $userManager = new UserManager($securityCommonParam);
   $adminManager = new AdminManager($securityCommonParam);
+  $searchEngine = new SearchEngine($securityCommonParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
@@ -336,10 +374,12 @@ function main(): string {
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
     'login-double-checker' => $loginDoubleChecker,
+    'game-genre-relationship-manager' => $gameGenreRelationshipManager,
     'game-manager' => $gameManager,
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
+    'search-engine' => $searchEngine,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,

@@ -119,8 +119,11 @@ class DatabaseQuerySet extends DatabaseConnection {
 
     $queries = [];
     foreach ($queryFormats as $name => $format) {
+      $filename = realpath(__DIR__ . "/db-queries/$name.sql");
+
       $queries[$name] = [
-        'template' => file_get_contents(__DIR__ . "/db-queries/$name.sql"),
+        'filename' => $filename,
+        'template' => file_get_contents($filename),
         'format' => $format,
       ];
     }
@@ -151,6 +154,22 @@ class DatabaseQueryStatement extends RawDataContainer {
     $template = $this->get('template');
     $this->clear();
     $this->statement = $link->prepare($template);
+
+    if (!$this->statement) {
+      $error = $link->error;
+      $filename = $this->getDefault('filename', '(Unknown)');
+
+      echo "
+        <strong class='message'>An error occurred while preparing a MySQL statement</strong>
+        <h3>File</h3>
+        <code class='file sql'><pre>$filename</pre></code>
+        <h3>Template</h3>
+        <code class='code mysql template'><pre>$template</pre></code>
+        <h3>Error Message</h3>
+        <code class='error message'><pre>$error</pre></code>
+      ";
+      throw new Error($error);
+    }
   }
 
   private function clear(): void {
