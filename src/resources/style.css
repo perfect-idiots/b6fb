@@ -1,3 +1,9 @@
+* {
+  transition-timing-function: ease;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
 html, body {
   margin: 0;
   border: 0;
@@ -88,6 +94,25 @@ body {
   text-align: center;
   line-height: [[logo-line-height]];
   color: [[header-text-color]];
+}
+
+#nav-hiding-button {
+  zoom: 0.7;
+  border: none;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url([[menu-icon]]);
+  [[header-square-button-size-block]]
+}
+
+.nav-hidden nav {
+  right: 101%;
+}
+
+.nav-hidden .main.outer {
+  left: 0px;
 }
 
 .x-component--logo a {
@@ -221,8 +246,8 @@ nav {
   text-transform: uppercase;
   position: fixed;
   width: [[logo-width]];
-  height: 100%;
-  top: 0px;
+  top: [[unit-size]];
+  bottom: 0px;
   z-index: 500;
   overflow-x: hidden;
   overflow-y: scrollbar;
@@ -231,11 +256,7 @@ nav {
 }
 
 nav::-webkit-scrollbar {
-  width: 0.75em;
-}
-
-nav > :first-child {
-  margin-top: [[unit-size]];
+  width: 0.4em;
 }
 
 nav .subpage.title {
@@ -246,6 +267,7 @@ nav .subpage.title {
 nav ul, nav li {
   list-style: none;
   padding: 0px;
+  margin: 0px;
 }
 
 nav li {
@@ -419,19 +441,47 @@ button:hover {
 #main-footer{
   display: block;
   text-align: center;
+  height: [[footer-height]];
 }
 
 .copyright {
   display: inline-block;
   padding-right: 5px;
+  margin-top: [[footer-margin]];;
 }
 
 .about {
   display: inline-block;
   border-left: 2px solid [[text-color]];
   padding: 0 10px 0 10px;
+  margin-top: [[footer-margin]];
 }
 
 .about a {
   color: [[text-color]];
 }
+
+.x-component--game-item.x-component--search-result-item {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  text-align: justify;
+}
+
+.x-component--game-item.x-component--search-result-item article {
+  display: inline-flex;
+  color: [[text-color]];
+}
+
+.x-component--game-item.x-component--search-result-item * {
+  text-align: justify;
+}
+
+.x-component--game-item.x-component--search-result-item figure {
+  position: relative;
+}
+
+.x-component--game-item.x-component--search-result-item .text {
+  padding: 15px 15px 0px 0px;;
+}
+
