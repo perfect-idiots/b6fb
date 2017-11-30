@@ -66,10 +66,8 @@ function switchPage(array $data): Page {
   }
 }
 
-function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
-  $username = $cookie->getDefault('username', null);
-
-  $customized = $username
+function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
+  $customized = $login->isLoggedIn()
     ? [
       'profile' => 'Tài khoản',
       'favourite' => 'Yêu thích',
@@ -393,7 +391,7 @@ function main(): string {
     'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
-    'subpages' => createSubpageList($urlQuery, $cookie),
+    'subpages' => createSubpageList($urlQuery, $login),
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
