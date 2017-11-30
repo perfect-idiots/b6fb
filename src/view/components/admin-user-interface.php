@@ -558,11 +558,7 @@ class AdminResetDatabase extends RawDataContainer implements Component {
 
     return HtmlElement::emmetTop('#reset-database', [
       HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt Lại Cơ sở dữ liệu'),
-      HtmlElement::emmetTop('.warning', MarkdownView::indented('
-        ## Cảnh báo !!!
-
-        Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.
-      ')),
+      new AdminWarningBox('Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.'),
       HtmlElement::emmetBottom('.question>strong>h3', 'Bạn có muốn tiếp tục?'),
       HtmlElement::emmetBottom('.answer>form', [
         'method' => 'POST',
@@ -610,6 +606,20 @@ class AdminEditDeletePair implements Component {
         $this->urlQuery->set('subpage', $this->delete)->getUrlQuery(),
         ['Xóa']
       ),
+    ]);
+  }
+}
+
+class AdminWarningBox implements Component {
+  private $content;
+
+  public function __construct(string $content) {
+    $this->content = $content;
+  }
+
+  public function render(): Component {
+    return HtmlElement::emmetTop('.warning', [
+      MarkdownView::indented("⚠ **Cảnh báo:** $this->content"),
     ]);
   }
 }
