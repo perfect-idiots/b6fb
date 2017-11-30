@@ -20,6 +20,7 @@ button:hover {
 
 button a {
   color: white;
+  padding: 10px;
 }
 
 input {
@@ -150,10 +151,14 @@ nav ul:nth-child(2) li:hover {
   padding-top: 20px;
 }
 
+.header-subpage * {
+  display: inline;
+}
+
 button.btn-add {
-  position: absolute;
-  right: 150px;
-  top: 100px;
+  display: inline;
+  float: right;
+  margin-right: 10px;
 }
 .body-subpage {
   margin-top: 30px;
@@ -200,10 +205,11 @@ button.btn-add {
   font-size: 40px;
 }
 
-table#tb-games {
-  position: absolute;
+ table {
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
+
 
 table, th, td {
   border: 1px solid #ddd;
@@ -213,6 +219,10 @@ table, th, td {
 th {
   text-align: center;
   background-color: #eee;
+}
+
+.controller a:hover {
+  color: red;
 }
 
 #edit-user-page h2 {
@@ -269,7 +279,6 @@ legend {
 }
 
 #add-game-form fieldset {
-  top: 80px;
   font-size: 17px;
   position: absolute;
   left: 500px;
@@ -328,19 +337,19 @@ reset-db button:hover {
   padding-bottom: 30px;
 }
 
-form .dangerous {
+button.dangerous {
   background-color: #ce0000;
 }
 
-form .dangerous:hover {
+button.dangerous:hover {
   background-color: darkred;
 }
 
-form .cancel {
+button.safe {
   background-color: blue;
 }
 
-form .cancel:hover {
+button.safe:hover {
   background-color: darkblue;
 }
 
