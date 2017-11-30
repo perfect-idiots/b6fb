@@ -596,11 +596,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
 
     return new AdminDeleteConfirmBox(
       $this->assign([
-        'url-query' => $urlQuery->assign([
-          'type' => 'action',
-          'previous-page' => 'users',
-          'username' => $username,
-        ]),
+        'url-query' => $urlQuery->set('username', $username),
         'title' => 'Xóa người dùng',
         'warning' => 'Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
@@ -675,6 +671,7 @@ class AdminDeleteConfirmBox extends RawDataContainer implements Component {
             HtmlElement::emmetBottom('button.dangerous>a#delete', [
               'href' => $urlQuery
                 ->except('subpage')
+                ->set('type', 'action')
                 ->set('action', $this->get('delete-action'))
                 ->getUrlQuery()
               ,
@@ -682,7 +679,7 @@ class AdminDeleteConfirmBox extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
               'href' => $urlQuery
-                ->without(['action', 'previous-page'])
+                ->without(['action', 'previous-page', 'type'])
                 ->set('subpage', $this->get('back-subpage'))
                 ->getUrlQuery()
               ,
