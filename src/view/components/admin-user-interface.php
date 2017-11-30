@@ -356,9 +356,17 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
-            'type' => 'confirm',
-            'Xóa và Đặt lại CSDL',
+            'name' => 'subaction',
+            'type' => 'submmit',
+            'value' => 'clear',
+            'Làm trống',
           ]),
+          HtmlElement::create('button', [
+            'name' => 'subaction',
+            'type' => 'submmit',
+            'value' => 'reset',
+            'Đặt lại CSDL',
+          ])
         ]),
         new HiddenInputSet(
           $urlQuery
