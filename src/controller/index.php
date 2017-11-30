@@ -293,6 +293,17 @@ function sendAction(DataContainer $param): string {
   }
 }
 
+function recordHistory(DataContainer $param): void {
+  $urlQuery = $param->get('url-query');
+
+  if ($urlQuery->getDefault('type', 'html') !== 'html') return;
+  if ($urlQuery->getDefault('page', 'play') !== 'play') return;
+  if (!$param->get('login')->isLoggedIn()) return;
+
+  $game = $urlQuery->getDefault('game-id', '');
+  $param->get('user-profile')->addHistory($game);
+}
+
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
@@ -357,6 +368,7 @@ function main(): string {
     'url-query' => $urlQuery,
     'post-data' => $postData,
     'files' => $files,
+    'constants' => $constants,
     'predefined-games' => $predefinedGames,
     'predefined-genres' => $predefinedGenres,
     'theme-name' => $themeColorSet['name'],
@@ -383,6 +395,8 @@ function main(): string {
     'login' => $login,
     'logout' => $logout,
   ]);
+
+  recordHistory($param);
 
   try {
     switch ($urlQuery->getDefault('type', 'html')) {

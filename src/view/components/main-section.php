@@ -32,6 +32,8 @@ class MainContent extends RawDataContainer implements Component {
         return new GameMenu($this->getData());
       case 'genre':
         return new GameMenuByGenre($this->getData());
+      case 'history':
+        return new GameMenuByHistory($this->getData());
       case 'play':
         return new PlayerUserInterface(
           $this
@@ -84,6 +86,33 @@ class GameMenuByGenre extends RawDataContainer implements Component {
           'game-id' => $id,
           'game-name' => $name,
         ])->getData());
+      },
+      $gamelist
+    ));
+  }
+}
+
+class GameMenuByHistory extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $urlQuery = $this->get('url-query');
+    $genre = $urlQuery->getDefault('genre', '');
+
+    $gamelist = $this
+      ->get('user-profile')
+      ->getHistory()
+    ;
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        $description = strftime('%H giờ %M phút %S — ngày %d tháng %m năm %Y', $info['date']);
+
+        return new PlayingHistoryItem(
+          $self
+            ->assign($info)
+            ->set('game-description', $description)
+            ->getData()
+        );
       },
       $gamelist
     ));
@@ -168,6 +197,12 @@ class SearchResult extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetTop('.result-list', $children),
     ]);
+  }
+}
+
+class PlayingHistoryItem extends RawDataContainer implements Component {
+  public function render(): Component {
+    return new GameItem($this->getData());
   }
 }
 
