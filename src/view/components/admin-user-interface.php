@@ -672,7 +672,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
         'warning' => 'Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa người dùng',
-          HtmlElement::emmetTop('span.username', '"' . $username . '"'),
+          HtmlElement::emmetTop('span.username', "“{$username}”"),
           ' không?',
         ]),
         'delete-action' => 'delete-user',
