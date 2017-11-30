@@ -1,9 +1,10 @@
-body , h1 {
+body, h1 {
   margin: 0px;
   font-family: 'Roboto', 'Cantarell', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
 }
 
 a {
+  color: #0d0dcc;
   text-decoration: none;
 }
 
