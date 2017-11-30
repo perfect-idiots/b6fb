@@ -13,7 +13,7 @@ class GenreManager extends GameGenreRelationshipManager {
 
     if (!sizeof($dbResult)) return null;
 
-    [[$name, $id]] = $dbResult;
+    [[$name]] = $dbResult;
     return [
       $name,
       $id,
