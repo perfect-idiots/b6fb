@@ -73,6 +73,7 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
     ? [
       'profile' => 'Tài khoản',
       'favourite' => 'Yêu thích',
+      'history' => 'Lịch sử',
     ]
     : [
       'explore' => 'Khám phá',
@@ -80,17 +81,13 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
     ]
   ;
 
-  $namemap = array_merge($customized, [
-    'history' => 'Lịch sử',
-  ]);
-
   $result = [[
     'page' => 'index',
     'title' => 'Trang chủ',
     'href' => '.',
   ]];
 
-  foreach ($namemap as $page => $title) {
+  foreach ($customized as $page => $title) {
     $href = $urlQuery->set('page', $page)->getUrlQuery();
 
     array_push($result, [
