@@ -526,38 +526,24 @@ class AdminDeleteUser extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
     $username = $urlQuery->get('username');
 
-    return HtmlElement::emmetTop('#delete-user-page', [
-      HtmlElement::emmetBottom('.header-subpage>h1','Xóa Người Dùng'),
-      new AdminWarningBox('Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.'),
-      HtmlElement::emmetBottom('.body-subpage', [
-        HtmlElement::emmetTop('.question', [
+    return new AdminDeleteConfirmBox(
+      $this->assign([
+        'url-query' => $urlQuery->assign([
+          'type' => 'action',
+          'previous-page' => 'users',
+          'username' => $username,
+        ]),
+        'title' => 'Xóa người dùng',
+        'warning' => 'Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.',
+        'question' => HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa người dùng',
           HtmlElement::emmetTop('span.username', '"' . $username . '"'),
           ' không?',
         ]),
-        HtmlElement::emmetBottom('.answer', [
-          HtmlElement::emmetTop('.button-container', [
-            HtmlElement::emmetBottom('button.dangerous>a#delete', [
-              'href' => $urlQuery->assign([
-                'type' => 'action',
-                'action' => 'delete-user',
-                'previous-page' => 'users',
-                'username' => $username,
-              ])->getUrlQuery(),
-              'Xóa',
-            ]),
-            HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
-              'href' => $urlQuery->assign([
-                'type' => 'html',
-                'page' => 'admin',
-                'subpage' => 'users',
-              ])->getUrlQuery(),
-              'Quay lại',
-            ]),
-          ]),
-        ]),
-      ]),
-    ]);
+        'delete-action' => 'delete-user',
+        'back-subpage' => 'users',
+      ])->getData()
+    );
   }
 }
 
@@ -591,6 +577,51 @@ class AdminResetDatabase extends RawDataContainer implements Component {
         new HiddenInputSet(
           $urlQuery->set('confirmed', 'on')->getData()
         ),
+      ]),
+    ]);
+  }
+}
+
+class AdminDeleteConfirmBox extends RawDataContainer implements Component {
+  static protected function requiredFieldSchema(): array {
+    return [
+      'url-query' => 'UrlQuery',
+      'title' => '',
+      'warning' => 'string',
+      'question' => '',
+      'delete-action' => 'string',
+      'back-subpage' => 'string',
+    ];
+  }
+
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::emmetTop('#delete-user-page', [
+      HtmlElement::emmetBottom('.header-subpage>h1', $this->get('title')),
+      new AdminWarningBox($this->get('warning')),
+      HtmlElement::emmetBottom('.body-subpage', [
+        HtmlElement::emmetTop('.question', $this->get('question')),
+        HtmlElement::emmetBottom('.answer', [
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::emmetBottom('button.dangerous>a#delete', [
+              'href' => $urlQuery
+                ->except('subpage')
+                ->set('action', $this->get('delete-action'))
+                ->getUrlQuery()
+              ,
+              'Xóa',
+            ]),
+            HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
+              'href' => $urlQuery
+                ->without(['action', 'previous-page'])
+                ->set('subpage', $this->get('back-subpage'))
+                ->getUrlQuery()
+              ,
+              'Quay lại',
+            ]),
+          ]),
+        ]),
       ]),
     ]);
   }
