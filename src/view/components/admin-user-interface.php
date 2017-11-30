@@ -614,7 +614,7 @@ class AdminDeleteConfirmBox extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetBottom('button.safe.cancel>a#cancel', [
               'href' => $urlQuery
-                ->without(['action', 'previous-page'])
+                ->without(['action', 'previous-page', 'type'])
                 ->set('subpage', $this->get('back-subpage'))
                 ->getUrlQuery()
               ,
