@@ -309,10 +309,8 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
     $genre = $urlQuery->get('genre');
     $genreInfo = $this->get('genre-manager')->info($genre);
 
-    $genreName = $genreInfo
-      ? '"' . $genreInfo['name'] . '"'
-      : HtmlElement::create('strong', '(Không biết)')
-    ;
+    if (!$genreInfo) throw new NotFoundException();
+    [$genreName] = $genreInfo;
 
     return new AdminDeleteConfirmBox(
       $this->assign([
@@ -325,7 +323,7 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
         'warning' => 'Thao tác sau đây sẽ xóa thể loại. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa thể loại',
-          HtmlElement::emmetTop('span.genrename', $genreName),
+          HtmlElement::emmetTop('span.genrename', '"' . $genreName . '"'),
           ' không?',
         ]),
         'delete-action' => 'delete-genre',
@@ -341,10 +339,8 @@ class AdminDeleteGame extends RawDataContainer implements Component {
     $game = $urlQuery->get('game');
     $gameInfo = $this->get('game-manager')->info($game);
 
-    $gameName = $gameInfo
-      ? '"' . $gameInfo['name'] . '"'
-      : HtmlElement::create('strong', '(Không biết)')
-    ;
+    if (!$gameInfo) throw new NotFoundException();
+    [$gameName] = $gameInfo;
 
     return new AdminDeleteConfirmBox(
       $this->assign([
@@ -357,7 +353,7 @@ class AdminDeleteGame extends RawDataContainer implements Component {
         'warning' => 'Thao tác sau đây sẽ xóa trò chơi. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa trò chơi',
-          HtmlElement::emmetTop('span.gamename', $gameName),
+          HtmlElement::emmetTop('span.gamename', '"' . $gameName . '"'),
           ' không?',
         ]),
         'delete-action' => 'delete-game',
