@@ -528,10 +528,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
 
     return new AdminDeleteConfirmBox(
       $this->assign([
-        'url-query' => $urlQuery->assign([
-          'previous-page' => 'users',
-          'username' => $username,
-        ]),
+        'url-query' => $urlQuery->set('username', $username),
         'title' => 'Xóa người dùng',
         'warning' => 'Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
