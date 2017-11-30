@@ -528,11 +528,7 @@ class AdminDeleteUser extends RawDataContainer implements Component {
 
     return HtmlElement::emmetTop('#delete-user-page', [
       HtmlElement::emmetBottom('.header-subpage>h1','Xóa Người Dùng'), 
-      HtmlElement::emmetTop('.warning', MarkdownView::indented('
-      ## Cảnh báo !!!
-
-      Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.
-    ')),
+      new AdminWarningBox('Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.'),
       HtmlElement::emmetBottom('.body-subpage', [
         HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa người dùng',
