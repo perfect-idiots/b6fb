@@ -325,7 +325,7 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
         'warning' => 'Thao tác sau đây sẽ xóa thể loại. Hành động này **không thể hoàn tác**.',
         'question' => HtmlElement::emmetTop('.question', [
           'Bạn có thực muốn xóa thể loại',
-          HtmlElement::emmetTop('span.username', $genreName),
+          HtmlElement::emmetTop('span.genrename', $genreName),
           ' không?',
         ]),
         'delete-action' => 'delete-genre',
