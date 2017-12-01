@@ -556,9 +556,9 @@ function main(): string {
         throw new NotFoundException();
     }
   } catch (NotFoundException $err) {
-    return ErrorPage::status(404)->render();
+    return ErrorPage::status(404, $err)->render();
   } catch (SecurityException $err) {
-    return ErrorPage::status(401)->render();
+    return ErrorPage::status(401, $err)->render();
   }
 }
 ?>
