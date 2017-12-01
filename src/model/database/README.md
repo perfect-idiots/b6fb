@@ -5,7 +5,7 @@ Create `database.php` in this folder with the following structure:
 ```php
 <?php
 return [
-  'domain' => '<Domain>',
+  'host' => '<Host>',
   'username' => '<Database Admin Username>',
   'password' => '<Password>',
   'dbname' => '<Database Name>',
@@ -18,7 +18,7 @@ return [
 ```php
 <?php
 return [
-  'domain' => 'localhost',
+  'host' => 'localhost',
   'username' => 'root',
   'password' => '',
   'dbname' => 'b6fb',
