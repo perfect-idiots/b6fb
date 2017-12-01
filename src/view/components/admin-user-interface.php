@@ -433,7 +433,7 @@ class AdminAddGame extends RawDataContainer implements Component {
           PlainLabeledInput::text('genre', 'Thể loại'),
           LabeledTextArea::text('description', 'Mô tả'),
           LabeledFileInput::text('swf', 'Tệp trò chơi'),
-          LabeledFileInput::text('image', 'Tệp hình ảnh'),
+          LabeledFileInput::text('img', 'Tệp hình ảnh'),
         ]),
         new AdminSubmitResetPair(),
       ]),
