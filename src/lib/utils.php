@@ -30,7 +30,7 @@ function dbDecodeParams(array $list): array {
   return array_map(
     function ($element) {
       return gettype($element) === 'string'
-        ? '"' . json_decode($element) . '"'
+        ? json_decode('"' . $element . '"')
         : $element
       ;
     },
