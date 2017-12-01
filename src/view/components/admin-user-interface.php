@@ -139,6 +139,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminEditUser($data);
       case 'edit-genre':
         return new AdminEditGenre($data);
+      case 'edit-game':
+        return new AdminEditGame($data);
       case 'delete-user':
         return new AdminDeleteUser($data);
       case 'add-game':
@@ -412,13 +414,53 @@ class AdminEditGenre extends RawDataContainer implements Component {
   }
 }
 
+
+class AdminEditGame extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $id = $urlQuery->getDefault('game', '');
+    $info = $this->get('game-manager')->info($id);
+
+    if (!$info) {
+      throw new NotFoundException();
+    }
+
+    return HtmlElement::emmetTop('#edit-game-page', [
+      HtmlElement::emmetTop('.header-subpage', [
+        HtmlElement::create('h2','Sửa trò chơi'),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form.add', [
+        'method' => 'POST',
+        'action' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'edit-game',
+        ])->getUrlQuery(),
+        'enctype' => 'multipart/form-data',
+        HtmlElement::emmetTop('.input-container', [
+          PlainLabeledInput::text('id', 'ID', $id),
+          PlainLabeledInput::text('name', 'Tên trò chơi', $info['name']),
+          PlainLabeledInput::text('genre', 'Thể loại', implode(', ', array_keys($info['genre']))),
+          new UnescapedText(
+            '<textarea name="description" required>' .
+            htmlspecialchars($info['description']) .
+            '</textarea>'
+          ),
+          LabeledFileInput::text('swf', 'Tệp trò chơi (.swf)'),
+          LabeledFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
+        ]),
+        new AdminSubmitResetPair(),
+      ]),
+    ]);
+  }
+}
+
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('#edit-game-page', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h2','Thêm game'),
+        HtmlElement::create('h2','Thêm trò chơi'),
       ]),
       HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form.add', [
         'method' => 'POST',
@@ -431,9 +473,9 @@ class AdminAddGame extends RawDataContainer implements Component {
           PlainLabeledInput::text('id', 'ID'),
           PlainLabeledInput::text('name', 'Tên trò chơi'),
           PlainLabeledInput::text('genre', 'Thể loại'),
-          LabeledTextArea::text('description', 'Mô tả'),
-          LabeledFileInput::text('swf', 'Tệp trò chơi (.swf)'),
-          LabeledFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
+          RequiredTextArea::text('description', 'Mô tả'),
+          RequiredFileInput::text('swf', 'Tệp trò chơi (.swf)'),
+          RequiredFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
         ]),
         new AdminSubmitResetPair(),
       ]),
