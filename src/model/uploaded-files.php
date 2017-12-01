@@ -9,6 +9,10 @@ class UploadedFileSet extends LazyLoadedDataContainer {
   public function getFile(string $name): UploadedFile {
     return new UploadedFile($this->get($name));
   }
+
+  public function getFileNullable(string $name): ?UploadedFile {
+    return $this->hasKey($name) ? $this->getFile($name) : null;
+  }
 }
 
 class UploadedFile extends RawDataContainer {
