@@ -37,7 +37,7 @@ class GenreManager extends GameGenreRelationshipManager {
 
     $this
       ->get('db-query-set')
-      ->get('update-genre-profile')
+      ->get('update-genre')
       ->executeOnce([$genre, $genrename])
     ;
   }
