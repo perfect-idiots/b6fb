@@ -73,8 +73,8 @@ class DatabaseConnection extends DatabaseInfo {
         <h1>Connection Error</h1>
         <p>
           Failed to connect to
-          <code>{$info['username']}@{$info['domain']}</code>
-          using account {$info['username']}.
+          <code>{$info['dbname']}@{$info['domain']}</code>
+          using account <code>{$info['username']}</code>.
         </p>
         <p><pre><code>$error</code></pre></p>
       ");
@@ -84,6 +84,7 @@ class DatabaseConnection extends DatabaseInfo {
     mb_language('uni');
     mb_internal_encoding('UTF-8');
     $link->query('set names "utf8"');
+    $link->set_charset('utf8mb4');
     $this->loaded = true;
     return array_merge($info, ['info' => $info, 'link' => $link]);
   }
@@ -196,6 +197,7 @@ class DatabaseQueryStatement extends RawDataContainer {
       ]);
     }
 
+    $param = dbEncodeParams($param);
     $refs = $this->arrOfRefs($param);
 
     $bindSuccess = call_user_func_array(
@@ -304,7 +306,7 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
       foreach ($buffer as $key => $value) {
         $row[$key] = $value;
       }
-      array_push($result, $row);
+      array_push($result, dbDecodeParams($row));
     }
 
     return $result;

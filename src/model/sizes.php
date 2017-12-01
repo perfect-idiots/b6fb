@@ -60,6 +60,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $gameItemFigureMargin = ($gameItemWidth - $gameItemImageWidth) / 2;
     $gameItemFigcaptionHeight = $unitSize / 2;
     $footerHeight = 2 * $unitSize;
+    $userprofileSettingWidth = 10 *$unitSize;
 
     $begin = Tree::instance([
       'unit' => [
@@ -100,6 +101,9 @@ class SizeSet extends LazyLoadedDataContainer {
           'size' => $profileSettingAvatarSize,
         ],
         'identity' => BlockSize::xy($profileSettingIdentityWidth, $profileSettingAvatarSize),
+      ],
+      'user-profile-setting' => [
+        'width' => $userprofileSettingWidth,
       ],
       'navigation' => [
         'entry-height' => $navigationEntryHeight,

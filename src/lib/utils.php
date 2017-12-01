@@ -6,6 +6,30 @@ function splitAndCombine(string $keys, string $values, string $seprgx = '/\s*,\s
   );
 }
 
+function dbEncodeParams(array $list): array {
+  return array_map(
+    function ($element) {
+      return gettype($element) === 'string'
+        ? htmlentities($element)
+        : $element
+      ;
+    },
+    $list
+  );
+}
+
+function dbDecodeParams(array $list): array {
+  return array_map(
+    function ($element) {
+      return gettype($element) === 'string'
+        ? html_entity_decode($element)
+        : $element
+      ;
+    },
+    $list
+  );
+}
+
 class ClassChecker {
   private $parents, $implements;
 
