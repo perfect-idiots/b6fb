@@ -171,6 +171,7 @@ function sendFile(UrlQuery $urlQuery): string {
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
   $postData = $param->get('post-data');
+  $files = $param->get('files');
   $dbQuerySet = $param->get('db-query-set');
   $cookie = $param->get('cookie');
   $session = $param->get('session');
@@ -184,6 +185,51 @@ function sendAction(DataContainer $param): string {
       return '
         <strong>Authenticated</strong>
       ';
+
+    case 'add-game':
+      $id = $postData->getDefault('id', '');
+      $name = $postData->getDefault('name', '');
+      $genre = $postData->getDefault('genre', '');
+      $description = $postData->getDefault('description', '');
+      $swf = $files->getFileNullable('swf', null);
+      $img = $files->getFileNullable('img', null);
+
+      $required = [
+        'id' => $id,
+        'name' => $name,
+        'genre' => $genre,
+        'description' => $description,
+        'swf' => $swf,
+        'img' => $img,
+      ];
+
+      foreach ($required as $key => $value) {
+        if (!$value) {
+          http_response_code(400);
+          die("
+            Field <code>$key</code> is missing
+          ");
+        }
+      }
+
+      $param->get('game-manager')->add([
+        'id' => $id,
+        'name' => $name,
+        'genre' => preg_split('/\s*,\s*/', $genre),
+        'description' => $description,
+        'swf' => $swf,
+        'img' => $img,
+      ]);
+
+      $urlQuery->without([
+        'action',
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
 
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
