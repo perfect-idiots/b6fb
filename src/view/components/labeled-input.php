@@ -9,6 +9,7 @@ class LabeledInput extends RawDataContainer implements Component {
     $type = $this->getDefault('type', null);
     $label = $this->getDefault('label', '');
     $value = $this->getDefault('value', static::defaultValue());
+    $valueField = $this->valueField();
 
     $labelAttr = array_merge(
       static::defaultLabelAttr(),
@@ -18,7 +19,12 @@ class LabeledInput extends RawDataContainer implements Component {
     $inputAttr = array_merge(
       static::defaultInputAttr(),
       $this->getDefault('input-attr', []),
-      $value ? [$this->valueField() => $value] : []
+      $value
+        ? ($valueField
+          ? [$valueField => $value]
+          : [$value]
+        )
+        : []
     );
 
     $labelElement = HtmlElement::create('label', array_merge(
@@ -133,6 +139,10 @@ class LabeledTextArea extends LabeledInput {
   protected function defaultTagName(): string {
     return 'textarea';
   }
+
+  protected function valueField(): string {
+    return '';
+  }
 }
 
 class LabeledFileInput extends LabeledInput {
@@ -144,6 +154,10 @@ class LabeledFileInput extends LabeledInput {
 class RequiredTextArea extends RequiredLabeledInput {
   protected function defaultTagName(): string {
     return 'textarea';
+  }
+
+  protected function valueField(): string {
+    return '';
   }
 }
 
