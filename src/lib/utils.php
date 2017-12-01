@@ -6,6 +6,38 @@ function splitAndCombine(string $keys, string $values, string $seprgx = '/\s*,\s
   );
 }
 
+function sliceString(string $str, $start, $end = FALSE): string {
+  $max = strlen($str);
+  $start = ($start < 0) ? $max + $start : $start;
+  $end = ($end < 0) ? $max + $end : (($end === FALSE) ? $max : $end);
+  $slice = substr($str, $start, ($end > $start)? $end-$start : 0);
+  return ($slice === FALSE) ? '' : $slice;
+}
+
+function dbEncodeParams(array $list): array {
+  return array_map(
+    function ($element) {
+      return gettype($element) === 'string'
+        ? sliceString(json_encode($element), 1, -1)
+        : $element
+      ;
+    },
+    $list
+  );
+}
+
+function dbDecodeParams(array $list): array {
+  return array_map(
+    function ($element) {
+      return gettype($element) === 'string'
+        ? '"' . json_decode($element) . '"'
+        : $element
+      ;
+    },
+    $list
+  );
+}
+
 class ClassChecker {
   private $parents, $implements;
 
