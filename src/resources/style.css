@@ -463,13 +463,14 @@ button:hover {
 
 .x-component--game-item.x-component--search-result-item {
   width: 100%;
-  height: 150px;
+  height: 170px;
   display: flex;
   text-align: justify;
 }
 
 .x-component--game-item.x-component--search-result-item article {
   display: inline-flex;
+  margin: 10px;
   color: [[text-color]];
 }
 
@@ -482,7 +483,13 @@ button:hover {
 }
 
 .x-component--game-item.x-component--search-result-item .text {
-  padding: 15px 15px 0px 0px;;
+  padding: 15px 15px 0px 0px;
+}
+
+.x-component--game-item.x-component--search-result-item .subtitle {
+  font-weight: bold;
+  font-size: 1.5em;
+  display: block;
 }
 
 .x-component--user-profile-setting article {
@@ -536,16 +543,15 @@ button:hover {
   height: 90px;
   margin: 10px;
   box-shadow: 2px 2px 6px #333;
+  text-align: justify;
 }
 
 .x-component--playing-history-item:hover {
-  background: [[navigation-hover-background-color]];
+  background: [[game-item-hover-background]];
 }
  
 .x-component--playing-history-item article {
-  height: 100%;
-  width: 100%;
-  text-align: left;
+  display: inline-flex;
 }
 
 .x-component--playing-history-item article figure {
