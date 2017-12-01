@@ -170,6 +170,7 @@ function sendFile(UrlQuery $urlQuery): string {
 
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
+  $postData = $param->get('post-data');
   $dbQuerySet = $param->get('db-query-set');
   $cookie = $param->get('cookie');
   $session = $param->get('session');
@@ -243,7 +244,6 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'update-admin-password':
-      $postData = $param->get('post-data');
       $currentPassword = $postData->getDefault('current-password', '');
       $newPassword = $postData->getDefault('new-password', '');
       $rePassword = $postData->getDefault('re-password', '');
@@ -276,7 +276,6 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'reset-database':
-      $postData = $param->get('post-data');
       $urlQuery = $param->get('url-query');
       $password = $postData->getDefault('password', '');
 
