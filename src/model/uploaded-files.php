@@ -28,8 +28,12 @@ class UploadedFile extends RawDataContainer {
     return $this->getDefault('type', '');
   }
 
+  public function tmpName(): string {
+    return $this->get('tmp_name');
+  }
+
   public function move(string $destination): bool {
-    return move_uploaded_file($destination);
+    return move_uploaded_file($this->tmpName(), $destination);
   }
 }
 ?>
