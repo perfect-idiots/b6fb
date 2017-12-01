@@ -214,27 +214,6 @@ class DatabaseQueryStatement extends RawDataContainer {
     ]);
   }
 
-  public function executeMultipleTimes(array $param): array {
-    $refs = $this->arrOfRefs($param);
-    $statement = $this->statement;
-    $success = [];
-
-    foreach ($param as $index => $subparam) {
-      $bindSuccess = call_user_func_array(
-        [$statement, 'bind_param'],
-        array_merge([$this->get('format')], $refs)
-      );
-
-      if (!$bindSuccess) throw new Exception("Cannot bind param[$index]");
-      $success[$index] = $statement->execute();
-    }
-
-    return [
-      'success' => $success,
-      'statement' => $statement,
-    ];
-  }
-
   private function arrOfRefs(array &$array): array {
     $refs = [];
     foreach ($array as $key => &$value) {
