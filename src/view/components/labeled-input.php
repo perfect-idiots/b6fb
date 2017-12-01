@@ -64,10 +64,11 @@ class LabeledInput extends RawDataContainer implements Component {
     return [];
   }
 
-  static public function text(string $id, string $label): self {
+  static public function text(string $id, string $label, $value = ''): self {
     return new static([
       'id' => $id,
       'label' => $label,
+      'value' => $value,
       'input-attr' => static::textInputAttr(),
       'label-attr' => static::textLabelAttr(),
     ]);
