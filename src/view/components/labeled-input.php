@@ -8,6 +8,7 @@ class LabeledInput extends RawDataContainer implements Component {
     $id = $this->getDefault('id', null);
     $type = $this->getDefault('type', null);
     $label = $this->getDefault('label', '');
+    $value = $this->getDefault('value', static::defaultValue());
 
     $labelAttr = array_merge(
       static::defaultLabelAttr(),
@@ -16,7 +17,8 @@ class LabeledInput extends RawDataContainer implements Component {
 
     $inputAttr = array_merge(
       static::defaultInputAttr(),
-      $this->getDefault('input-attr', [])
+      $this->getDefault('input-attr', []),
+      $value ? [$this->valueField() => $value] : []
     );
 
     $labelElement = HtmlElement::create('label', array_merge(
@@ -44,6 +46,14 @@ class LabeledInput extends RawDataContainer implements Component {
 
   protected function defaultTagName(): string {
     return 'input';
+  }
+
+  protected function valueField(): string {
+    return 'value';
+  }
+
+  static protected function defaultValue() {
+    return '';
   }
 
   static protected function defaultLabelAttr(): array {
@@ -78,13 +88,23 @@ class ReversedLabeledInput extends LabeledInput {
   }
 }
 
-class LabeledCheckbox extends ReversedLabeledInput {
+abstract class LabeledCheckboxRadio extends ReversedLabeledInput {
+  protected function valueField(): string {
+    return 'checked';
+  }
+
+  static protected function defaultValue() {
+    return false;
+  }
+}
+
+class LabeledCheckbox extends LabeledCheckboxRadio {
   static protected function defaultInputAttr(): array {
     return array_merge(parent::defaultInputAttr(), ['type' => 'checkbox']);
   }
 }
 
-class LabeledRadio extends ReversedLabeledInput {
+class LabeledRadio extends LabeledCheckboxRadio {
   static protected function defaultInputAttr(): array {
     return array_merge(parent::defaultInputAttr(), ['type' => 'radio']);
   }
