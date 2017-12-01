@@ -456,21 +456,21 @@ function main(): string {
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
-  $securityCommonParam = ([
+  $securitySharedParam = ([
     'cookie' => $cookie,
     'session' => $session,
     'db-query-set' => $dbQuerySet,
     'login' => $login,
   ]);
 
-  $loginDoubleChecker = new LoginDoubleChecker($securityCommonParam);
-  $gameGenreRelationshipManager = new GameGenreRelationshipManager($securityCommonParam);
-  $gameManager = new GameManager($securityCommonParam);
-  $genreManager = new GenreManager($securityCommonParam);
-  $userManager = new UserManager($securityCommonParam);
-  $adminManager = new AdminManager($securityCommonParam);
-  $userProfile = new UserProfile($securityCommonParam);
-  $searchEngine = new SearchEngine($securityCommonParam);
+  $loginDoubleChecker = new LoginDoubleChecker($securitySharedParam);
+  $gameGenreRelationshipManager = new GameGenreRelationshipManager($securitySharedParam);
+  $gameManager = new GameManager($securitySharedParam);
+  $genreManager = new GenreManager($securitySharedParam);
+  $userManager = new UserManager($securitySharedParam);
+  $adminManager = new AdminManager($securitySharedParam);
+  $userProfile = new UserProfile($securitySharedParam);
+  $searchEngine = new SearchEngine($securitySharedParam);
 
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
