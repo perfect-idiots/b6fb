@@ -426,6 +426,7 @@ class AdminAddGame extends RawDataContainer implements Component {
           'type' => 'action',
           'action' => 'add-game',
         ])->getUrlQuery(),
+        'enctype' => 'multipart/form-data',
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('game-id', 'ID'),
           PlainLabeledInput::text('game-name', 'Tên trò chơi'),
