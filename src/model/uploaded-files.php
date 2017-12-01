@@ -29,7 +29,7 @@ class UploadedFile extends RawDataContainer {
   }
 
   public function move(string $destination): bool {
-    return move_uploaded_file($this->clientPath(), $destination);
+    return move_uploaded_file($destination);
   }
 }
 ?>
