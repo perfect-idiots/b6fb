@@ -212,14 +212,9 @@ function sendAction(DataContainer $param): string {
         }
       }
 
-      $param->get('game-manager')->add([
-        'id' => $id,
-        'name' => $name,
+      $param->get('game-manager')->add(array_merge($required, [
         'genre' => preg_split('/\s*,\s*/', $genre),
-        'description' => $description,
-        'swf' => $swf,
-        'img' => $img,
-      ]);
+      ]));
 
       $urlQuery->without([
         'action',
