@@ -373,7 +373,7 @@ class AdminEditGenre extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form#edit-user-form', [
           'method' => 'GET',
-          'action' => '',
+          'action' => '.',
           HtmlElement::emmetTop('',[
             HtmlElement::emmetBottom('legend>h2', 'Cập nhật thể loại'),
             HtmlElement::emmetTop('#form-group', [
@@ -491,7 +491,7 @@ class AdminAddGenre extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetBottom('.body-subpage>form#add-genre-form.add', [
         'method' => 'GET',
-        'action' => '',
+        'action' => '.',
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('genre-id', 'ID'),
           PlainLabeledInput::text('game-genre', 'Tên thể loại'),
@@ -568,6 +568,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
       HtmlElement::create('h2', 'Reset và Khởi tạo'),
       HtmlElement::create('form', [
         'method' => 'GET',
+        'action' => '.',
         HtmlElement::emmetTop('.input-container', [
           LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
           LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
@@ -656,7 +657,7 @@ class AdminEditUser extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form#edit-user-form.update', [
           'method' => 'GET',
-          'action' => '',
+          'action' => '.',
           HtmlElement::create('div', [
             HtmlElement::emmetBottom('legend>h2', 'Cập nhật người dùng'),
             HtmlElement::emmetTop('#form-group', [
