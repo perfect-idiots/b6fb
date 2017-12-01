@@ -139,12 +139,12 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminEditGenre($data);
       case 'edit-game':
         return new AdminEditGame($data);
-      case 'delete-user':
-        return new AdminDeleteUser($data);
       case 'add-game':
         return new AdminAddGame($data);
       case 'add-genre':
         return new AdminAddGenre($data);
+      case 'delete-user':
+        return new AdminDeleteUser($data);
       case 'delete-genre':
         return new AdminDeleteGenre($data);
       case 'delete-game':
