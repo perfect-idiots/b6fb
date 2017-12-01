@@ -293,6 +293,7 @@ function sendAction(DataContainer $param): string {
         'action',
         'fullname',
         'previous-page',
+        'game',
       ])->assign([
         'type' => 'html',
         'subpage' => 'games',
