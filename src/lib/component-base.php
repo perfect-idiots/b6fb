@@ -167,7 +167,7 @@ class TextNode extends TextBase {
   }
 
   public function getText(): string {
-    return htmlspecialchars($this->text);
+    return htmlentities($this->text);
   }
 }
 
