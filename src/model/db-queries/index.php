@@ -23,6 +23,7 @@ return [
   'get-history-by-game' => 's',
   'update-admin-password' => 'ss',
   'update-user-profile' => 'ss',
+  'update-game' => 'ssss',
   'update-genre' => 'ss',
   'remove-all-games-from-genre' => 's',
   'remove-all-genres-from-game' => 's',

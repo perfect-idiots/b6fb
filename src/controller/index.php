@@ -258,6 +258,47 @@ function sendAction(DataContainer $param): string {
       ])->redirect();
       break;
 
+    case 'edit-game':
+      $prevId = $urlQuery->getDefault('game', '');
+      $id = $postData->getDefault('id', '');
+      $name = $postData->getDefault('name', '');
+      $genre = $postData->getDefault('genre', '');
+      $description = $postData->getDefault('description', '');
+      $swf = $files->getFileNullable('swf', null);
+      $img = $files->getFileNullable('img', null);
+
+      $required = [
+        'id' => $id,
+        'name' => $name,
+        'genre' => $genre,
+        'description' => $description,
+      ];
+
+      foreach ($required as $key => $value) {
+        if (!$value) {
+          http_response_code(400);
+          die("
+            Field <code>$key</code> is missing
+          ");
+        }
+      }
+
+      $param->get('game-manager')->update($prevId, array_merge($required, [
+        'genre' => preg_split('/\s*,\s*/', $genre),
+        'swf' => $swf,
+        'img' => $img,
+      ]));
+
+      $urlQuery->without([
+        'action',
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
     case 'edit-genre':
       $genre = $urlQuery->getDefault('genre', '');
       $genreName = $urlQuery->getDefault('genreName', '');

@@ -61,6 +61,42 @@ class GameManager extends GameGenreRelationshipManager {
     $img->move(self::imgPath($id));
   }
 
+  public function update(string $prevId, array $param): void {
+    $this->verify();
+    $id = $param['id'];
+
+    $this
+      ->get('db-query-set')
+      ->get('update-game')
+      ->executeOnce([
+        $param['id'],
+        $param['name'],
+        $param['description'],
+        $prevId,
+      ])
+    ;
+
+    parent::clearGenres($prevId, $param['genre']);
+    parent::addGenres($id, $param['genre']);
+
+    $mv = $id === $prevId
+      ? function () {}
+      : 'rename'
+    ;
+
+    foreach (['swf', 'img'] as $key) {
+      $file = $param[$key];
+      $pathmtd = $key . 'Path';
+
+      if ($file) {
+        unlink(self::$pathmtd($prevId));
+        $file->move(self::$pathmtd($id));
+      } else {
+        $mv(self::$pathmtd($prevId), self::$pathmtd($id));
+      }
+    }
+  }
+
   public function delete(string $id): void {
     $this->verify();
     if (!$this->exists($id)) return;
