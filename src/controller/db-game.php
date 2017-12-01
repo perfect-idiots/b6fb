@@ -20,7 +20,7 @@ class GameManager extends GameGenreRelationshipManager {
 
     return array_merge($row, [
       'name' => $row[0],
-      'genre' => splitAndCombine($row[1], $row[2]),
+      'genre' => splitAndCombine($row[2], $row[1]),
       'description' => $row[3],
       'id' => $id,
     ]);
