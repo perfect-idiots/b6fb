@@ -11,7 +11,8 @@ class UploadedFileSet extends LazyLoadedDataContainer {
   }
 
   public function getFileNullable(string $name): ?UploadedFile {
-    return $this->hasKey($name) ? $this->getFile($name) : null;
+    $existence = (bool) $this->getDefault($name, ['name' => ''])['name'];
+    return $existence ? $this->getFile($name) : null;
   }
 }
 
