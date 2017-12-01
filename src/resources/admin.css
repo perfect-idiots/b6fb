@@ -11,7 +11,7 @@ a {
 button {
   background-color: #5cb85c;
   border: 0px;
-  padding: 10px;
+  padding: 10px 20px;
   color: white;
 }
 
@@ -81,11 +81,9 @@ header {
 
 }
 #profile-setting a {
+  display: block;
+  padding: 10px 30px;
   color: black;
-}
-
-#profile-setting div {
-  padding: 8px 15px 8px 8px;
 }
 
 #profile-setting div:hover {
@@ -211,6 +209,13 @@ button.btn-add {
   margin-bottom: 20px;
 }
 
+th,td {
+  width: auto;
+}
+
+table th:last-child {
+
+}
 
 table, th, td {
   border: 1px solid #ddd;
@@ -243,19 +248,13 @@ th {
   margin-bottom: 15px;
 }
 
-#form-group label, #edit-user-form button {
-  position: absolute;
-  left: 400px;
-  font-weight: bold;
-}
-
 #form-group input, output {
   color: #1716de;
   font-size: 15px;
   font-weight: bold;
   padding: 5px;
   position: relative;
-  margin-left: 300px;
+  margin-left: 10px;
 }
 
 output {
@@ -270,6 +269,7 @@ legend {
 
 form.add {
   width: 100%;
+  border: 0px;
 }
 
 form.add h2 {
@@ -279,7 +279,7 @@ form.add h2 {
 form.add {
   width: auto;
   border: 1px solid #C8C8C8;
-  padding: 40px 30px;
+  padding: 50px 30px;
   background-color: aliceblue;
   font-size: 17px;
   position: absolute;
@@ -294,6 +294,10 @@ form.add *:not(button) {
   display: block;
 }
 
+form.add a {
+  padding: 0px;
+}
+
 form.add legend {
   height: 60px;
   text-align: center;
@@ -303,18 +307,47 @@ form.add input, textarea {
   margin-bottom: 15px;
 }
 
-form.add {
-  border: 0px;
-}
-
 form.add button {
   margin-top: 20px;
   padding: 10px 20px;
+  width:48%;
 }
 
 form.add input, output, textarea {
   color: #555;
-  padding: 5px;
+}
+
+form.change label, form.update label{
+  display: inline-block;
+  text-align: right;
+  width: 30%;
+}
+
+form.update .button-container {
+  text-align: right;
+  width: 30%;
+}
+
+form.change input {
+  margin: 5px 10px;
+  width: 40%;
+}
+
+form.change  {
+  padding: 30px 0px;
+  width: 600px;
+  border: 1px solid #C8C8C8;
+  background-color: aliceblue;
+  font-size: 17px;
+}
+
+form.change .button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+form.change button {
+  width: 100px;
 }
 
 .x-component--admin-advanced-reset-database-section form * {
@@ -324,7 +357,6 @@ form.add input, output, textarea {
 input[type='checkbox'] {
   transform: scale(1.5);
 }
-
 
 reset-db button:hover {
   background-color: rgb(175, 10, 10);

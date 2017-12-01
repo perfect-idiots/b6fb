@@ -41,7 +41,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
               'style' => [
                 'padding-left' => '10px',
               ],
-              'href' => $urlQuery->set('page', 'admin')->getUrlQuery(),
+              'href' => '?page=admin',
               'Quản trị',
             ]),
             HtmlElement::emmetBottom('#username-admin', [
@@ -54,10 +54,8 @@ class AdminUserInterface extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetTop('#profile-setting', [
               'hidden' => true,
-              HtmlElement::emmetBottom('#profile-admin', [
-                'Hồ sơ'
-              ]),
-              HtmlElement::emmetBottom('#setting-admin', [
+              HtmlElement::emmetBottom('#setting-admin>a', [
+                'href' => $urlQuery->set('subpage', 'change-admin-password')->getUrlQuery(),
                 'Cài đặt',
               ]),
               HtmlElement::emmetBottom('#logout-admin>a', [
@@ -462,7 +460,7 @@ class AdminAddGame extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.header-subpage', [
         HtmlElement::create('h2','Thêm trò chơi'),
       ]),
-      HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form.add', [
+      HtmlElement::emmetBottom('.body-subpage-game>form.add', [
         'method' => 'POST',
         'action' => $urlQuery->assign([
           'type' => 'action',
@@ -574,6 +572,8 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
           LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
           LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
           LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+          LabeledCheckbox::text('history', 'Lịch sử Truy cập Trò chơi'),
+          LabeledCheckbox::text('favorite', 'Danh sách Trò chơi được Yêu thích'),
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
@@ -625,7 +625,7 @@ class AdminChangePassword extends RawDataContainer implements Component {
       HtmlElement::emmetTop('#header-user-page.header-subpage', [
         HtmlElement::create('h1', 'Thay đổi mật khẩu'),
       ]),
-      HtmlElement::emmetBottom('.body-subpage>form', [
+      HtmlElement::emmetBottom('.body-subpage>form.change', [
         'method' => 'POST',
         'action' => $urlQuery->assign([
           'type' => 'action',
@@ -637,22 +637,7 @@ class AdminChangePassword extends RawDataContainer implements Component {
           SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
         ]),
         HtmlElement::emmetTop('.button-container', [
-          HtmlElement::create('button', [
-            'type' => 'submit',
-            'Lưu',
-          ]),
-          HtmlElement::create('button', [
-            'type' => 'reset',
-            'Nhập lại',
-          ]),
-          HtmlElement::emmetBottom('button>a.back', [
-            'href' => $urlQuery
-              ->without(['current-password', 'new-password', 're-password'])
-              ->set('subpage', 'advanced')
-              ->getUrlQuery()
-            ,
-            'Quay lại',
-          ]),
+          new AdminSubmitResetPair(),
         ]),
       ]),
     ]);
@@ -669,7 +654,7 @@ class AdminEditUser extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.header-subpage', [
       ]),
       HtmlElement::emmetTop('.body-subpage', [
-        HtmlElement::emmetBottom('form#edit-user-form', [
+        HtmlElement::emmetBottom('form#edit-user-form.update', [
           'method' => 'GET',
           'action' => '',
           HtmlElement::create('div', [
@@ -686,7 +671,7 @@ class AdminEditUser extends RawDataContainer implements Component {
                 'value' => $fullname,
               ]),
             ]),
-            HtmlElement::emmetBottom('#form-group>button', [
+            HtmlElement::emmetBottom('.button-container>button', [
               'type' => 'submit',
               'Lưu',
             ]),
