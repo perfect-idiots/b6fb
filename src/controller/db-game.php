@@ -6,7 +6,25 @@ require_once __DIR__ . '/../lib/utils.php';
 require_once __DIR__ . '/db-game-genre.php';
 
 class GameManager extends GameGenreRelationshipManager {
-  const GENRE_SEPARATOR = ',';
+  public function info(string $id): ?array {
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('game-info')
+      ->executeOnce([$id], 3 + 2)
+      ->fetch()
+    ;
+
+    if (!sizeof($dbResult)) return null;
+
+    [$row] = $dbResult;
+
+    return array_merge($row, [
+      'name' => $row[0],
+      'genre' => splitAndCombine($row[1], $row[2]),
+      'description' => $row[3],
+      'id' => $id,
+    ]);
+  }
 
   public function add(array $param): void {
     $this->verify();
@@ -26,14 +44,6 @@ class GameManager extends GameGenreRelationshipManager {
 
     if ($this->exists($id)) {
       throw new GameDuplicatedException("Game '$id' already exist");
-    }
-
-    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
-      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
-    }
-
-    if ($img->mimetype() !== 'image/jpeg') {
-      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg'");
     }
 
     if (gettype($genre) !== 'array') {
