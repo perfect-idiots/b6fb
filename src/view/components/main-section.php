@@ -42,6 +42,10 @@ class MainContent extends RawDataContainer implements Component {
         );
       case 'search':
         return new SearchResult($this->getData());
+      case 'profile':
+        return new UserProfileSetting($this->getData());
+      case 'password-setting':
+        return new UserPasswordSetting($this->getData());
       default:
         return new TextNode('');
     }
@@ -196,6 +200,68 @@ class SearchResult extends RawDataContainer implements Component {
         ' trò chơi',
       ]),
       HtmlElement::emmetTop('.result-list', $children),
+    ]);
+  }
+}
+
+class UserProfileSetting extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetTop('article', [
+        HtmlElement::create('h2','Thông tin cá nhân'),
+        HtmlElement::create('form', [
+          'method' => 'POST',
+          'action' => $urlQuery->assign([
+            'type' => 'action',
+            'action' => 'update-user-profile',
+          ])->getUrlQuery(),
+          HtmlElement::emmetTop('.input-container', [
+            HtmlElement::create('div', [
+              HtmlElement::create('label', 'Tên đăng nhập: '),
+              HtmlElement::emmetTop('output#username', $this->get('login')->username()),
+            ]),
+            HtmlElement::create('div', [
+              HtmlElement::create('label', [
+                'for' => 'fullname',
+                'Họ và Tên',
+              ]),
+              HtmlElement::emmetTop('input#fullname', [
+                'name' => 'fullname',
+                'value' => '',
+              ]),
+            ]),
+          ]),
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('button', [
+              'type' => 'submit',
+              'Lưu',
+            ]),
+          ]),
+        ])
+      ]),
+      HtmlElement::create('article', [
+        HtmlElement::create('h2','Bảo Mật'),
+        HtmlElement::create('form', [
+          'method' => 'POST',
+          'action' => $urlQuery->assign([
+            'type' => 'action',
+            'action' => 'update-user-password',
+          ])->getUrlQuery(),
+          HtmlElement::emmetTop('.input-container', [
+            SecretLabeledInput::text('current-password', 'Mật khẩu hiện tại'),
+            SecretLabeledInput::text('new-password', 'Mật khẩu mới'),
+            SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
+          ]),
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('button', [
+              'type' => 'submit',
+              'Lưu',
+            ]),
+          ]),
+        ]),
+      ]),
     ]);
   }
 }
