@@ -37,6 +37,7 @@ return [
   'clear-history-by-game' => 's',
   'clear-game-genre-pairs' => '',
   'delete-user' => 's',
+  'delete-game' => 's',
   'delete-genre' => 's',
   'delete-game-genre-pair' => 'ss',
   'search-games' => 's',

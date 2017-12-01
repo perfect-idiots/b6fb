@@ -147,6 +147,8 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminAddGenre($data);
       case 'delete-genre':
         return new AdminDeleteGenre($data);
+      case 'delete-game':
+        return new AdminDeleteGame($data);
       case 'reset-database':
         return new AdminResetDatabase($data);
       case 'change-admin-password':
@@ -228,7 +230,11 @@ class AdminGames extends RawDataContainer implements Component {
           HtmlElement::create('td', $id),
           HtmlElement::create('td', $name),
           HtmlElement::create('td', implode(', ', array_values($genre))),
-          HtmlElement::create('td', new AdminEditDeletePair($urlQuery, 'edit-game', 'delete-game')),
+          HtmlElement::create('td', new AdminEditDeletePair(
+            $urlQuery->set('game', $id),
+            'edit-game',
+            'delete-game'
+          )),
         ]);
       },
       $games
@@ -305,22 +311,50 @@ class AdminDeleteGenre extends RawDataContainer implements Component {
     $genre = $urlQuery->get('genre');
     $genreInfo = $this->get('genre-manager')->info($genre);
 
-    $genreName = $genreInfo
-      ? '"' . $genreInfo['name'] . '"'
-      : HtmlElement::create('strong', '(Không biết)')
-    ;
+    if (!$genreInfo) throw new NotFoundException();
+    [$genreName] = $genreInfo;
 
     return new AdminDeleteConfirmBox(
       $this->assign([
         'url-query' => $urlQuery->set('genre', $genre),
         'title' => 'Xóa thể loại',
-        'warning' => 'Thao tác sau đây sẽ xóa thể loại. Hành động này **không thể hoàn tác**.',
+        'warning' => "Thao tác sau đây sẽ xóa thể loại _“{$genreName}”_. Hành động này **không thể hoàn tác**.",
         'question' => HtmlElement::emmetTop('.question', [
-          'Bạn có thực muốn xóa thể loại',
-          HtmlElement::emmetTop('span.username', $genreName),
+          'Bạn có thực sự muốn xóa vĩnh viễn thể loại',
+          HtmlElement::emmetTop('em.target.name', "“{$genreName}”"),
           ' không?',
         ]),
         'delete-action' => 'delete-genre',
+        'back-subpage' => 'games',
+      ])->getData()
+    );
+  }
+}
+
+class AdminDeleteGame extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $game = $urlQuery->get('game');
+    $gameInfo = $this->get('game-manager')->info($game);
+
+    if (!$gameInfo) throw new NotFoundException();
+    [$gameName] = $gameInfo;
+
+    return new AdminDeleteConfirmBox(
+      $this->assign([
+        'url-query' => $urlQuery->assign([
+          'type' => 'action',
+          'previous-page' => 'games',
+          'game' => $game,
+        ]),
+        'title' => 'Xóa trò chơi',
+        'warning' => "Thao tác sau đây sẽ xóa trò chơi _“{$gameName}”_. Hành động này **không thể hoàn tác**.",
+        'question' => HtmlElement::emmetTop('.question', [
+          'Bạn có thực sự muốn xóa vĩnh viễn trò chơi',
+          HtmlElement::emmetTop('em.target.name', "“{$gameName}”"),
+          ' không?',
+        ]),
+        'delete-action' => 'delete-game',
         'back-subpage' => 'games',
       ])->getData()
     );
@@ -503,7 +537,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
             'name' => 'subaction',
             'type' => 'submmit',
             'value' => 'clear',
-            'Làm trống',
+            'Làm trống CSDL',
           ]),
           HtmlElement::create('button', [
             'name' => 'subaction',
@@ -635,10 +669,10 @@ class AdminDeleteUser extends RawDataContainer implements Component {
       $this->assign([
         'url-query' => $urlQuery->set('username', $username),
         'title' => 'Xóa người dùng',
-        'warning' => 'Thao tác sau đây sẽ xóa người dùng. Hành động này **không thể hoàn tác**.',
+        'warning' => "Thao tác sau đây sẽ xóa người dùng _“{$username}”_. Hành động này **không thể hoàn tác**.",
         'question' => HtmlElement::emmetTop('.question', [
-          'Bạn có thực muốn xóa người dùng',
-          HtmlElement::emmetTop('span.username', '"' . $username . '"'),
+          'Bạn có thực sự muốn xóa vĩnh viễn người dùng',
+          HtmlElement::emmetTop('em.target.name', "“{$username}”"),
           ' không?',
         ]),
         'delete-action' => 'delete-user',
@@ -652,9 +686,17 @@ class AdminResetDatabase extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
 
+    $subaction = $urlQuery->getDefault('subaction', '');
+
+    if ($subaction !== 'clear' && $subaction !== 'reset') {
+      throw new NotFoundException();
+    }
+
+    $actionName = $subaction === 'reset' ? 'Đặt lại' : 'Làm trống';
+
     return HtmlElement::emmetTop('#reset-database', [
-      HtmlElement::emmetBottom('.header-subpage>h1', 'Xóa và Đặt Lại Cơ sở dữ liệu'),
-      new AdminWarningBox('Thao tác sau đây sẽ đặt lại CSDL. Hành động này **không thể hoàn tác**.'),
+      HtmlElement::emmetBottom('.header-subpage>h1', "$actionName Cơ sở dữ liệu"),
+      new AdminWarningBox('CSDL sẽ bị **xóa sạch**. Hành động này **không thể hoàn tác**.'),
       HtmlElement::emmetBottom('.question>strong>h3', 'Bạn có muốn tiếp tục?'),
       HtmlElement::emmetBottom('.answer>form', [
         'method' => 'POST',

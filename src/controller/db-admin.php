@@ -2,7 +2,7 @@
 require_once __DIR__ . '/security.php';
 
 class AdminManager extends LoginDoubleChecker {
-  public function reset(): void {
+  public function clear(): void {
     $this->verify();
 
     $this
@@ -10,6 +10,11 @@ class AdminManager extends LoginDoubleChecker {
       ->get('clear-admins')
       ->executeOnce([])
     ;
+  }
+
+  public function reset(): void {
+    $this->verify();
+    $this->clear();
   }
 
   public function updatePassword(string $username, string $password): void {
