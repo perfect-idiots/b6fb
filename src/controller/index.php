@@ -231,6 +231,22 @@ function sendAction(DataContainer $param): string {
       ])->redirect();
       break;
 
+      case 'add-genre':
+        $genreId = $urlQuery->getDefault('genre-id', '');
+        $genreName = $urlQuery->getDefault('game-genre', '');
+        $param->get('genre-manager')->add($genreId, $genreName);
+
+        $urlQuery->without([
+          'action',
+          'genre-id',
+          'game-genre',
+        ])->assign([
+          'type' => 'html',
+          'page' => 'admin',
+          'subpage' => 'games',
+        ])->redirect();
+        break;
+
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
@@ -262,22 +278,6 @@ function sendAction(DataContainer $param): string {
         'subpage' => 'games',
       ])->redirect();
       break;
-
-      case 'add-genre':
-        $genreId = $urlQuery->getDefault('genre-id', '');
-        $genreName = $urlQuery->getDefault('game-genre', '');
-        $param->get('genre-manager')->add($genreId, $genreName);
-
-        $urlQuery->without([
-          'action',
-          'genre-id',
-          'game-genre',
-        ])->assign([
-          'type' => 'html',
-          'page' => 'admin',
-          'subpage' => 'games',
-        ])->redirect();
-        break;
 
     case 'delete-user':
       $username = $urlQuery->getDefault('username', '');
