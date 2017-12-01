@@ -84,6 +84,7 @@ class DatabaseConnection extends DatabaseInfo {
     mb_language('uni');
     mb_internal_encoding('UTF-8');
     $link->query('set names "utf8"');
+    $link->set_charset('utf8mb4');
     $this->loaded = true;
     return array_merge($info, ['info' => $info, 'link' => $link]);
   }
