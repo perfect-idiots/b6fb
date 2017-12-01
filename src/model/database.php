@@ -196,6 +196,7 @@ class DatabaseQueryStatement extends RawDataContainer {
       ]);
     }
 
+    $param = dbEncodeParams($param);
     $refs = $this->arrOfRefs($param);
 
     $bindSuccess = call_user_func_array(
@@ -304,7 +305,7 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
       foreach ($buffer as $key => $value) {
         $row[$key] = $value;
       }
-      array_push($result, $row);
+      array_push($result, dbDecodeParams($row));
     }
 
     return $result;
