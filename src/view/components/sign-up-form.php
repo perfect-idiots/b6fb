@@ -11,7 +11,7 @@ class SignUpForm extends RawDataContainer implements Component {
 
     return HtmlElement::create('form', [
       'method' => 'POST',
-      'action' => '',
+      'action' => '.',
       HtmlElement::emmetTop('.input-container', [
         new SignUpField(
           'PlainInstructedInput',

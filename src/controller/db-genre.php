@@ -3,6 +3,55 @@ require_once __DIR__ . '/db-game-genre.php';
 require_once __DIR__ . '/../model/predefined.php';
 
 class GenreManager extends GameGenreRelationshipManager {
+  public function info(string $id): ?array {
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('genre-info')
+      ->executeOnce([$id], 2)
+      ->fetch()
+    ;
+
+    if (!sizeof($dbResult)) return null;
+
+    [[$name]] = $dbResult;
+    return [
+      $name,
+      $id,
+      'name' => $name,
+      'id' => $id,
+    ];
+  }
+
+  public function delete(string $id): void {
+    $this->verify();
+
+    $this
+      ->get('db-query-set')
+      ->get('delete-genre')
+      ->executeOnce([$id])
+    ;
+  }
+
+  public function update(string $genre, string $genrename): void {
+    $this->verify();
+
+    $this
+      ->get('db-query-set')
+      ->get('update-genre')
+      ->executeOnce([$genre, $genrename])
+    ;
+  }
+
+  public function add(string $genre, string $genrename): void {
+    $this->verify();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-genre')
+      ->executeOnce([$genre, $genrename])
+    ;
+  }
+
   public function clear(): void {
     $this->verify();
 

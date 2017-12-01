@@ -30,6 +30,10 @@ class MainContent extends RawDataContainer implements Component {
     switch ($page) {
       case 'index':
         return new GameMenu($this->getData());
+      case 'genre':
+        return new GameMenuByGenre($this->getData());
+      case 'history':
+        return new GameMenuByHistory($this->getData());
       case 'play':
         return new PlayerUserInterface(
           $this
@@ -38,6 +42,10 @@ class MainContent extends RawDataContainer implements Component {
         );
       case 'search':
         return new SearchResult($this->getData());
+      case 'profile':
+        return new UserProfileSetting($this->getData());
+      case 'password-setting':
+        return new UserPasswordSetting($this->getData());
       default:
         return new TextNode('');
     }
@@ -63,6 +71,58 @@ class GameMenu extends RawDataContainer implements Component {
   }
 }
 
+class GameMenuByGenre extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $urlQuery = $this->get('url-query');
+    $genre = $urlQuery->getDefault('genre', '');
+
+    $gamelist = $this
+      ->get('game-genre-relationship-manager')
+      ->getGames($genre)
+    ;
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        [$id, $name] = $info;
+
+        return new GameItem($self->assign([
+          'game-id' => $id,
+          'game-name' => $name,
+        ])->getData());
+      },
+      $gamelist
+    ));
+  }
+}
+
+class GameMenuByHistory extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $urlQuery = $this->get('url-query');
+    $genre = $urlQuery->getDefault('genre', '');
+
+    $gamelist = $this
+      ->get('user-profile')
+      ->getHistory()
+    ;
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        $description = strftime('%H giờ %M phút %S — ngày %d tháng %m năm %Y', $info['date']);
+
+        return new PlayingHistoryItem(
+          $self
+            ->assign($info)
+            ->set('game-description', $description)
+            ->getData()
+        );
+      },
+      $gamelist
+    ));
+  }
+}
+
 class PlayerUserInterface extends RawDataContainer implements Component {
   public function render(): Component {
     $id = $this->get('url-query')->getDefault('game-id', '');
@@ -72,16 +132,14 @@ class PlayerUserInterface extends RawDataContainer implements Component {
 
     [
       'name' => $name,
-      'genre-ids' => $genreIDs,
-      'genre-names' => $genreNames,
+      'genre' => $genre,
       'description' => $description,
     ] = $info;
 
     $commonParams = $this->assign([
       'game-id' => $id,
       'game-name' => $name,
-      'game-genre-ids' => $genreIDs,
-      'game-genre-names' => $genreNames,
+      'game-genre' => $genre,
       'game-description' => $description,
     ]);
 
@@ -143,6 +201,74 @@ class SearchResult extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetTop('.result-list', $children),
     ]);
+  }
+}
+
+class UserProfileSetting extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetTop('article', [
+        HtmlElement::create('h2','Thông tin cá nhân'),
+        HtmlElement::create('form', [
+          'method' => 'POST',
+          'action' => $urlQuery->assign([
+            'type' => 'action',
+            'action' => 'update-user-profile',
+          ])->getUrlQuery(),
+          HtmlElement::emmetTop('.input-container', [
+            HtmlElement::create('div', [
+              HtmlElement::create('label', 'Tên đăng nhập: '),
+              HtmlElement::emmetTop('output#username', $this->get('login')->username()),
+            ]),
+            HtmlElement::create('div', [
+              HtmlElement::create('label', [
+                'for' => 'fullname',
+                'Họ và Tên',
+              ]),
+              HtmlElement::emmetTop('input#fullname', [
+                'name' => 'fullname',
+                'value' => '',
+              ]),
+            ]),
+          ]),
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('button', [
+              'type' => 'submit',
+              'Lưu',
+            ]),
+          ]),
+        ])
+      ]),
+      HtmlElement::create('article', [
+        HtmlElement::create('h2','Bảo Mật'),
+        HtmlElement::create('form', [
+          'method' => 'POST',
+          'action' => $urlQuery->assign([
+            'type' => 'action',
+            'action' => 'update-user-password',
+          ])->getUrlQuery(),
+          HtmlElement::emmetTop('.input-container', [
+            SecretLabeledInput::text('current-password', 'Mật khẩu hiện tại'),
+            SecretLabeledInput::text('new-password', 'Mật khẩu mới'),
+            SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
+          ]),
+          HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('button', [
+              'type' => 'submit',
+              'Lưu',
+            ]),
+          ]),
+        ]),
+      ]),
+    ]);
+  }
+}
+
+class PlayingHistoryItem extends RawDataContainer implements Component {
+  public function render(): Component {
+    return new GameItem($this->getData());
   }
 }
 

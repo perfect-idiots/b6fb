@@ -2,10 +2,29 @@
 require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
 require_once __DIR__ . '/../model/predefined.php';
+require_once __DIR__ . '/../lib/utils.php';
 require_once __DIR__ . '/db-game-genre.php';
 
 class GameManager extends GameGenreRelationshipManager {
-  const GENRE_SEPARATOR = ',';
+  public function info(string $id): ?array {
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('game-info')
+      ->executeOnce([$id], 3 + 2)
+      ->fetch()
+    ;
+
+    if (!sizeof($dbResult)) return null;
+
+    [$row] = $dbResult;
+
+    return array_merge($row, [
+      'name' => $row[0],
+      'genre' => splitAndCombine($row[2], $row[1]),
+      'description' => $row[3],
+      'id' => $id,
+    ]);
+  }
 
   public function add(array $param): void {
     $this->verify();
@@ -27,14 +46,6 @@ class GameManager extends GameGenreRelationshipManager {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
-    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
-      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
-    }
-
-    if ($img->mimetype() !== 'image/jpeg') {
-      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg'");
-    }
-
     if (gettype($genre) !== 'array') {
       throw new TypeError("Field 'genre' must be an array of string");
     }
@@ -48,6 +59,42 @@ class GameManager extends GameGenreRelationshipManager {
     parent::addGenres($id, $genre);
     $swf->move(self::swfPath($id));
     $img->move(self::imgPath($id));
+  }
+
+  public function update(string $prevId, array $param): void {
+    $this->verify();
+    $id = $param['id'];
+
+    $this
+      ->get('db-query-set')
+      ->get('update-game')
+      ->executeOnce([
+        $param['id'],
+        $param['name'],
+        $param['description'],
+        $prevId,
+      ])
+    ;
+
+    parent::clearGenres($prevId, $param['genre']);
+    parent::addGenres($id, $param['genre']);
+
+    $mv = $id === $prevId
+      ? function () {}
+      : 'rename'
+    ;
+
+    foreach (['swf', 'img'] as $key) {
+      $file = $param[$key];
+      $pathmtd = $key . 'Path';
+
+      if ($file) {
+        unlink(self::$pathmtd($prevId));
+        $file->move(self::$pathmtd($id));
+      } else {
+        $mv(self::$pathmtd($prevId), self::$pathmtd($id));
+      }
+    }
   }
 
   public function delete(string $id): void {
@@ -134,8 +181,7 @@ class GameManager extends GameGenreRelationshipManager {
         return array_merge($row, [
           'id' => $row[0],
           'name' => $row[1],
-          'genre-ids' => preg_split('/\s*,\s*/', $row[2]),
-          'genre-names' => preg_split('/\s*,\s*/', $row[3]),
+          'genre' => splitAndCombine($row[2], $row[3]),
           'description' => $row[4],
         ]);
       },
@@ -157,8 +203,7 @@ class GameManager extends GameGenreRelationshipManager {
 
     return array_merge($row, [
       'name' => $row[0],
-      'genre-ids' => preg_split('/\s*,\s*/', $row[1]),
-      'genre-names' => preg_split('/\s*,\s*/', $row[2]),
+      'genre' => splitAndCombine($row[1], $row[2]),
       'description' => $row[3],
       'id' => $id,
     ]);

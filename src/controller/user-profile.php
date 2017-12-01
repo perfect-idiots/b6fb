@@ -3,21 +3,15 @@ require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/../lib/utils.php';
 
 class UserProfile extends LoginDoubleChecker {
-  static protected function requiredFieldSchema(): array {
-    return array_merge(parent::requiredFieldSchema(), [
-      'username' => 'string',
-    ]);
-  }
-
   public function checkPermission(): bool {
     $login = $this->get('login');
-    return $login->username() === $this->get('username') || $login->isAdmin();
+    return $login->username() === $this->username() || $login->isAdmin();
   }
 
   public function update(array $param): DatabaseQuerySingleResult {
     $this->verify();
     $dbQuerySet = $this->get('db-query-set');
-    $username = $this->get('username');
+    $username = $this->username();
     $query = $dbQuerySet->get('update-user-profile');
 
     $profile = UserInfo::instance([
@@ -30,6 +24,42 @@ class UserProfile extends LoginDoubleChecker {
     ] = array_merge($profile, $param);
 
     return $query->executeOnce([$fullname, $username]);
+  }
+
+  public function getHistory(): array {
+    $this->verify();
+    $username = $this->username();
+
+    $list = $this
+      ->get('db-query-set')
+      ->get('get-history-by-user')
+      ->executeOnce([$username], 2 + 2 + 1)
+      ->fetch()
+    ;
+
+    return array_map(
+      function (array $row) {
+        return array_merge($row, [
+          'game-id' => $row[0],
+          'date' => $row[1],
+          'game-name' => $row[2],
+          'player-name' => $row[3],
+          'player-id' => $row[4],
+        ]);
+      },
+      $list
+    );
+  }
+
+  public function addHistory(string $game): DatabaseQuerySingleResult {
+    $this->verify();
+    $username = $this->username();
+
+    return $this
+      ->get('db-query-set')
+      ->get('add-user-playing-history')
+      ->executeOnce([$username, $game])
+    ;
   }
 }
 
