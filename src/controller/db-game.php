@@ -46,14 +46,6 @@ class GameManager extends GameGenreRelationshipManager {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
-    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
-      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
-    }
-
-    if ($img->mimetype() !== 'image/jpeg') {
-      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg'");
-    }
-
     if (gettype($genre) !== 'array') {
       throw new TypeError("Field 'genre' must be an array of string");
     }
