@@ -74,7 +74,7 @@ class DatabaseConnection extends DatabaseInfo {
         <p>
           Failed to connect to
           <code>{$info['username']}@{$info['domain']}</code>
-          using account {$info['username']}.
+          using account <code>{$info['username']}</code>.
         </p>
         <p><pre><code>$error</code></pre></p>
       ");
