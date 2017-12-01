@@ -129,13 +129,25 @@ class SecretLabeledInput extends RequiredLabeledInput {
   }
 }
 
-class LabeledTextArea extends RequiredLabeledInput {
+class LabeledTextArea extends LabeledInput {
   protected function defaultTagName(): string {
     return 'textarea';
   }
 }
 
-class LabeledFileInput extends RequiredLabeledInput {
+class LabeledFileInput extends LabeledInput {
+  static protected function defaultInputAttr(): array {
+    return array_merge(parent::defaultInputAttr(), ['type' => 'file']);
+  }
+}
+
+class RequiredTextArea extends RequiredLabeledInput {
+  protected function defaultTagName(): string {
+    return 'textarea';
+  }
+}
+
+class RequiredFileInput extends RequiredLabeledInput {
   static protected function defaultInputAttr(): array {
     return array_merge(parent::defaultInputAttr(), ['type' => 'file']);
   }
