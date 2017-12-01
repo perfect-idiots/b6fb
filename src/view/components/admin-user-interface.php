@@ -419,7 +419,7 @@ class AdminEditGame extends RawDataContainer implements Component {
     $id = $urlQuery->getDefault('game', '');
     $info = $this->get('game-manager')->info($id);
 
-    if (!$info) {
+    if (!$id || !$info) {
       throw new NotFoundException();
     }
 
