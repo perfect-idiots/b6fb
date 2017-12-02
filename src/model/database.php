@@ -31,7 +31,7 @@ class DatabaseInfo extends LazyLoadedDataContainer {
       ");
     }
 
-    $required = ['domain', 'username', 'password', 'dbname'];
+    $required = ['host', 'username', 'password', 'dbname'];
     foreach ($required as $key) {
       if (!array_key_exists($key, $result)) {
         die("
@@ -64,7 +64,7 @@ class DatabaseConnection extends DatabaseInfo {
 
   protected function load(): array {
     $info = parent::load();
-    $link = new mysqli($info['domain'], $info['username'], $info['password'], $info['dbname']);
+    $link = new mysqli($info['host'], $info['username'], $info['password'], $info['dbname']);
 
     if (mysqli_connect_errno()) {
       $error = mysqli_connect_error();
@@ -73,7 +73,7 @@ class DatabaseConnection extends DatabaseInfo {
         <h1>Connection Error</h1>
         <p>
           Failed to connect to
-          <code>{$info['dbname']}@{$info['domain']}</code>
+          <code>{$info['dbname']}@{$info['host']}</code>
           using account <code>{$info['username']}</code>.
         </p>
         <p><pre><code>$error</code></pre></p>
@@ -212,27 +212,6 @@ class DatabaseQueryStatement extends RawDataContainer {
       'statement' => $statement,
       'columns' => $columns,
     ]);
-  }
-
-  public function executeMultipleTimes(array $param): array {
-    $refs = $this->arrOfRefs($param);
-    $statement = $this->statement;
-    $success = [];
-
-    foreach ($param as $index => $subparam) {
-      $bindSuccess = call_user_func_array(
-        [$statement, 'bind_param'],
-        array_merge([$this->get('format')], $refs)
-      );
-
-      if (!$bindSuccess) throw new Exception("Cannot bind param[$index]");
-      $success[$index] = $statement->execute();
-    }
-
-    return [
-      'success' => $success,
-      'statement' => $statement,
-    ];
   }
 
   private function arrOfRefs(array &$array): array {
