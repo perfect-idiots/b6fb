@@ -76,8 +76,10 @@ class GameManager extends GameGenreRelationshipManager {
       ])
     ;
 
-    parent::clearGenres($prevId, $param['genre']);
-    parent::addGenres($id, $param['genre']);
+    if ($id !== $prevId) {
+      parent::clearGenres($prevId, $param['genre']);
+      parent::addGenres($id, $param['genre']);
+    }
 
     $mv = $id === $prevId
       ? function () {}
