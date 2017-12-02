@@ -1,4 +1,35 @@
 <?php
+function splitAndCombine(string $keys, string $values, string $seprgx = '/\s*,\s*/') {
+  return array_combine(
+    preg_split($seprgx, $keys),
+    preg_split($seprgx, $values)
+  );
+}
+
+function dbEncodeParams(array $list): array {
+  return array_map(
+    function ($element) {
+      return gettype($element) === 'string'
+        ? htmlentities($element)
+        : $element
+      ;
+    },
+    $list
+  );
+}
+
+function dbDecodeParams(array $list): array {
+  return array_map(
+    function ($element) {
+      return gettype($element) === 'string'
+        ? html_entity_decode($element)
+        : $element
+      ;
+    },
+    $list
+  );
+}
+
 class ClassChecker {
   private $parents, $implements;
 

@@ -20,7 +20,8 @@ class UserProfileView extends RawDataContainer implements Component {
             HtmlElement::emmetTop('img#popup-profile-image', [
               'src' => $images['default-avatar-image'],
             ]),
-            HtmlElement::emmetTop('#popup-profile-identity', [
+            HtmlElement::emmetBottom('a#popup-profile-identity', [
+              'href' => $urlQuery->set('page', 'profile')->getUrlQuery(),
               HtmlElement::emmetTop('span#popup-username', [
                 '@' . $login->username()
               ]),

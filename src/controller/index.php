@@ -4,7 +4,13 @@ require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/logout.php';
 require_once __DIR__ . '/sign-up.php';
+require_once __DIR__ . '/db-game-genre.php';
 require_once __DIR__ . '/db-game.php';
+require_once __DIR__ . '/db-genre.php';
+require_once __DIR__ . '/db-user.php';
+require_once __DIR__ . '/db-admin.php';
+require_once __DIR__ . '/db-history.php';
+require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
@@ -42,6 +48,9 @@ function switchPage(array $data): Page {
     case 'explore':
     case 'favourite':
     case 'history':
+    case 'genre':
+    case 'play':
+    case 'search':
       return MainPage::instance($data);
     case 'login':
       return LoginPage::instance($data);
@@ -58,18 +67,18 @@ function switchPage(array $data): Page {
   }
 }
 
-function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
-  $username = $cookie->getDefault('username', null);
-
-  $customized = $username
-    ? ['profile' => 'Tài khoản']
-    : ['explore' => 'Khám phá']
+function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
+  $customized = $login->isLoggedIn()
+    ? [
+      'profile' => 'Tài khoản',
+      'favourite' => 'Yêu thích',
+      'history' => 'Lịch sử',
+    ]
+    : [
+      'explore' => 'Khám phá',
+      'sign-up' => 'Tham gia',
+    ]
   ;
-
-  $namemap = array_merge($customized, [
-    'favourite' => 'Yêu thích',
-    'history' => 'Lịch sử',
-  ]);
 
   $result = [[
     'page' => 'index',
@@ -77,7 +86,7 @@ function createSubpageList(UrlQuery $urlQuery, Cookie $cookie): array {
     'href' => '.',
   ]];
 
-  foreach ($namemap as $page => $title) {
+  foreach ($customized as $page => $title) {
     $href = $urlQuery->set('page', $page)->getUrlQuery();
 
     array_push($result, [
@@ -133,13 +142,11 @@ function getFilePath(UrlQuery $urlQuery): string {
 
   switch ($urlQuery->get('purpose')) {
     case 'ui':
-      return __DIR__ . '/../resources/images/' . $name;
+      return __DIR__ . "/../resources/images/$name";
     case 'game-img':
-      $index = $urlQuery->get('image-index');
-      validateFileName($index);
-      return __DIR__ . "/../media/images/$name/$index";
+      return __DIR__ . "/../storage/game-imgs/$name";
     case 'game-swf':
-      return __DIR__ . "/../media/games/$name";
+      return __DIR__ . "/../storage/game-swfs/$name";
     default:
       throw new NotFoundException();
   }
@@ -164,6 +171,8 @@ function sendFile(UrlQuery $urlQuery): string {
 
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
+  $postData = $param->get('post-data');
+  $files = $param->get('files');
   $dbQuerySet = $param->get('db-query-set');
   $cookie = $param->get('cookie');
   $session = $param->get('session');
@@ -172,21 +181,76 @@ function sendAction(DataContainer $param): string {
   $dbQuerySet = DatabaseQuerySet::instance();
 
   switch ($action) {
+    case 'check-admin-auth':
+      $param->get('login-double-checker')->verify();
+      return '
+        <strong>Authenticated</strong>
+      ';
+
+    case 'add-game':
+      $id = $postData->getDefault('id', '');
+      $name = $postData->getDefault('name', '');
+      $genre = $postData->getDefault('genre', '');
+      $description = $postData->getDefault('description', '');
+      $swf = $files->getFileNullable('swf', null);
+      $img = $files->getFileNullable('img', null);
+
+      $required = [
+        'id' => $id,
+        'name' => $name,
+        'genre' => $genre,
+        'description' => $description,
+        'swf' => $swf,
+        'img' => $img,
+      ];
+
+      foreach ($required as $key => $value) {
+        if (!$value) {
+          http_response_code(400);
+          die("
+            Field <code>$key</code> is missing
+          ");
+        }
+      }
+
+      $param->get('game-manager')->add(array_merge($required, [
+        'genre' => preg_split('/\s*,\s*/', $genre),
+      ]));
+
+      $urlQuery->without([
+        'action',
+        'fullname',
+        'previous-page',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
+      case 'add-genre':
+        $genreId = $urlQuery->getDefault('genre-id', '');
+        $genreName = $urlQuery->getDefault('game-genre', '');
+        $param->get('genre-manager')->add($genreId, $genreName);
+
+        $urlQuery->without([
+          'action',
+          'genre-id',
+          'game-genre',
+        ])->assign([
+          'type' => 'html',
+          'page' => 'admin',
+          'subpage' => 'games',
+        ])->redirect();
+        break;
+
     case 'edit-user':
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
-      $userProfileUpdater = UserProfileUpdater::instance([
-        'cookie' => $cookie,
-        'session' => $session,
-        'login' => $login,
-        'db-query-set' => $dbQuerySet,
-        'username' => $urlQuery->get('username'),
-      ]);
-      $userProfileUpdater->update([
-        'fullname' => $urlQuery->get('fullname'),
-      ]);
+      $param->get('user-manager')->update($username, $fullname);
+
       $urlQuery->without([
+        'action',
         'fullname',
         'previous-page',
       ])->assign([
@@ -194,15 +258,255 @@ function sendAction(DataContainer $param): string {
         'subpage' => $urlQuery->get('previous-page'),
       ])->redirect();
       break;
+
+    case 'edit-game':
+      $prevId = $urlQuery->getDefault('game', '');
+      $id = $postData->getDefault('id', '');
+      $name = $postData->getDefault('name', '');
+      $genre = $postData->getDefault('genre', '');
+      $description = $postData->getDefault('description', '');
+      $swf = $files->getFileNullable('swf', null);
+      $img = $files->getFileNullable('img', null);
+
+      $required = [
+        'id' => $id,
+        'name' => $name,
+        'genre' => $genre,
+        'description' => $description,
+      ];
+
+      foreach ($required as $key => $value) {
+        if (!$value) {
+          http_response_code(400);
+          die("
+            Field <code>$key</code> is missing
+          ");
+        }
+      }
+
+      $param->get('game-manager')->update($prevId, array_merge($required, [
+        'genre' => preg_split('/\s*,\s*/', $genre),
+        'swf' => $swf,
+        'img' => $img,
+      ]));
+
+      $urlQuery->without([
+        'action',
+        'fullname',
+        'previous-page',
+        'game',
+      ])->assign([
+        'type' => 'html',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
+    case 'edit-genre':
+      $genre = $urlQuery->getDefault('genre', '');
+      $genreName = $urlQuery->getDefault('genreName', '');
+      $param->get('genre-manager')->update($genreName, $genre);
+
+      $urlQuery->without([
+        'action',
+        'genre',
+        'genreName',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
+    case 'delete-user':
+      $username = $urlQuery->getDefault('username', '');
+      $param->get('user-manager')->delete($username);
+
+      $urlQuery->without([
+        'action',
+        'username',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'users',
+      ])->redirect();
+      break;
+
+    case 'delete-game':
+      $game = $urlQuery->getDefault('game', '');
+      $param->get('game-manager')->delete($game);
+
+      $urlQuery->without([
+        'action',
+        'game',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
+    case 'delete-genre':
+      $genre = $urlQuery->getDefault('genre', '');
+      $param->get('genre-manager')->delete($genre);
+
+      $urlQuery->without([
+        'action',
+        'genre',
+      ])->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'games',
+      ])->redirect();
+      break;
+
+    case 'update-admin-password':
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+
+      $loginDoubleChecker = $param->get('login-double-checker');
+      $login = $loginDoubleChecker->get('login');
+      $loginDoubleChecker->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+
+      $param
+        ->get('admin-manager')
+        ->updatePassword($login->username(), $newPassword)
+      ;
+
+      $param
+        ->get('cookie')
+        ->set('admin-password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
+
+    case 'reset-database':
+      $urlQuery = $param->get('url-query');
+      $password = $postData->getDefault('password', '');
+
+      if ($postData->getDefault('confirmed', 'off') === 'on') {
+        $loginDoubleChecker = $param->get('login-double-checker');
+        $loginDoubleChecker->set(
+          'login',
+          $loginDoubleChecker
+            ->get('login')
+            ->set('password', $password)
+        )->verify();
+
+        $subaction = $urlQuery->getDefault('subaction', '');
+
+        if ($subaction !== 'clear' && $subaction !== 'reset') {
+          throw new NotFoundException();
+        }
+
+        $check = function (string $key) use($urlQuery) {
+          return $urlQuery->getDefault($key, 'off') === 'on';
+        };
+
+        if ($check('game')) {
+          $param->get('genre-manager')->$subaction();
+          $param->get('game-manager')->$subaction();
+        }
+
+        if ($check('user')) {
+          $param->get('user-manager')->$subaction();
+        }
+
+        if ($check('admin')) {
+          $param->get('admin-manager')->$subaction();
+        }
+
+        if ($check('history')) {
+          $param->get('history-manager')->$subaction();
+        }
+      }
+
+      $urlQuery->except('action')->assign([
+        'type' => 'html',
+        'page' => 'admin',
+        'subpage' => 'advanced',
+      ])->redirect();
+      break;
+
+    case 'update-user-profile':
+      $fullname = $postData->getDefault('fullname', '');
+      $userprofile = $param->get('user-profile');
+
+      if (!$fullname) {
+        http_response_code(400);
+        die('
+          Field <code>fullname</code> is missing
+        ');
+      }
+
+      $userprofile->update(['fullname' => $fullname]);
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
+      break;
+
+    case 'update-user-password':
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+      $userProfile = $param->get('user-profile');
+
+      $userProfile->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+      $userProfile->updatePassword($newPassword);
+
+      $param
+        ->get('cookie')
+        ->set('password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
+      break;
+
     default:
       throw new NotFoundException();
   }
+}
+
+function recordHistory(DataContainer $param): void {
+  $urlQuery = $param->get('url-query');
+
+  if ($urlQuery->getDefault('type', 'html') !== 'html') return;
+  if ($urlQuery->getDefault('page', 'index') !== 'play') return;
+  if (!$param->get('login')->isLoggedIn()) return;
+
+  $game = $urlQuery->getDefault('game-id', '');
+  $param->get('user-profile')->addHistory($game);
 }
 
 function main(): string {
   $constants = Constants::instance();
   $urlQuery = new UrlQuery($_GET);
   $postData = new HttpData($_POST);
+  $files = UploadedFileSet::instance();
+  $predefinedGames = PredefinedGames::create();
+  $predefinedGenres = PredefinedGenres::create();
   $page = $urlQuery->getDefault('page', 'index');
 
   $cookie = Cookie::instance([
@@ -239,10 +543,31 @@ function main(): string {
   $login = Login::instance($accountParams)->verify();
   $logout = Logout::instance($accountParams);
 
+  $securitySharedParam = ([
+    'cookie' => $cookie,
+    'session' => $session,
+    'db-query-set' => $dbQuerySet,
+    'login' => $login,
+  ]);
+
+  $loginDoubleChecker = new LoginDoubleChecker($securitySharedParam);
+  $gameGenreRelationshipManager = new GameGenreRelationshipManager($securitySharedParam);
+  $gameManager = new GameManager($securitySharedParam);
+  $genreManager = new GenreManager($securitySharedParam);
+  $userManager = new UserManager($securitySharedParam);
+  $adminManager = new AdminManager($securitySharedParam);
+  $historyManager = new HistoryManager($securitySharedParam);
+  $userProfile = new UserProfile($securitySharedParam);
+  $searchEngine = new SearchEngine($securitySharedParam);
+
   $param = RawDataContainer::instance([
     'title' => 'b6fb',
     'url-query' => $urlQuery,
     'post-data' => $postData,
+    'files' => $files,
+    'constants' => $constants,
+    'predefined-games' => $predefinedGames,
+    'predefined-genres' => $predefinedGenres,
     'theme-name' => $themeColorSet['name'],
     'colors' => $themeColorSet['colors'],
     'images' => $imageSet->getData(),
@@ -251,15 +576,25 @@ function main(): string {
     'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
-    'subpages' => createSubpageList($urlQuery, $cookie),
+    'subpages' => createSubpageList($urlQuery, $login),
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
     'admin-subpages' => createAdminSubpageList($urlQuery),
     'db-query-set' => $dbQuerySet,
-    'game-inserter' => new GameInserter($dbQuerySet),
+    'login-double-checker' => $loginDoubleChecker,
+    'game-genre-relationship-manager' => $gameGenreRelationshipManager,
+    'game-manager' => $gameManager,
+    'genre-manager' => $genreManager,
+    'user-manager' => $userManager,
+    'admin-manager' => $adminManager,
+    'history-manager' => $historyManager,
+    'user-profile' => $userProfile,
+    'search-engine' => $searchEngine,
     'signup' => $signup,
     'login' => $login,
     'logout' => $logout,
   ]);
+
+  recordHistory($param);
 
   try {
     switch ($urlQuery->getDefault('type', 'html')) {
@@ -273,9 +608,9 @@ function main(): string {
         throw new NotFoundException();
     }
   } catch (NotFoundException $err) {
-    return ErrorPage::status(404)->render();
+    return ErrorPage::status(404, $err)->render();
   } catch (SecurityException $err) {
-    return ErrorPage::status(401)->render();
+    return ErrorPage::status(401, $err)->render();
   }
 }
 ?>

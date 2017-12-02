@@ -2,7 +2,7 @@
 require_once __DIR__ . '/login.php';
 require_once __DIR__ . '/../lib/utils.php';
 
-abstract class LoginDoubleChecker extends RawDataContainer {
+class LoginDoubleChecker extends RawDataContainer {
   static protected function requiredFieldSchema(): array {
     return [
       'login' => 'LoginInfo',
@@ -37,6 +37,14 @@ abstract class LoginDoubleChecker extends RawDataContainer {
 
   public function checkPermission(): bool {
     return $this->get('login')->isAdmin();
+  }
+
+  public function username(): string {
+    return $this->get('login')->username();
+  }
+
+  public function password(): string {
+    return $this->get('login')->password();
   }
 }
 
