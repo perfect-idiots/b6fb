@@ -222,7 +222,7 @@ class UserProfileSetting extends RawDataContainer implements Component {
           ])->getUrlQuery(),
           HtmlElement::emmetTop('.input-container', [
             HtmlElement::create('div', [
-              HtmlElement::create('label', 'Tên đăng nhập: '),
+              HtmlElement::create('label', 'Tên đăng nhập'),
               HtmlElement::emmetTop('output#username', $username),
             ]),
             PlainLabeledInput::text('fullname', 'Họ và Tên', $fullname),
