@@ -453,6 +453,32 @@ function sendAction(DataContainer $param): string {
       ])->set('page', 'profile')->redirect();
       break;
 
+    case 'update-user-password':
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+      $userProfile = $param->get('user-profile');
+
+      $userProfile->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+      $userProfile->updatePassword($newPassword);
+
+      $param
+        ->get('cookie')
+        ->set('password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
+      break;
+
     default:
       throw new NotFoundException();
   }

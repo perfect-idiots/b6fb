@@ -45,6 +45,18 @@ class UserProfile extends LoginDoubleChecker {
     return $query->executeOnce([$fullname, $username]);
   }
 
+  public function updatePassword(string $password): void {
+    $this->verify();
+    $username = $this->username();
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    $this
+      ->get('db-query-set')
+      ->get('update-user-password')
+      ->executeOnce([$hash, $username])
+    ;
+  }
+
   public function getHistory(): array {
     $this->verify();
     $username = $this->username();
