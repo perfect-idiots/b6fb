@@ -546,10 +546,6 @@ button:hover {
   text-align: justify;
 }
 
-.x-component--playing-history-item:hover {
-  background: [[game-item-hover-background]];
-}
-
 .x-component--playing-history-item article {
   display: inline-flex;
 }
