@@ -20,7 +20,7 @@ class GameManager extends GameGenreRelationshipManager {
 
     return array_merge($row, [
       'name' => $row[0],
-      'genre' => splitAndCombine($row[1], $row[2]),
+      'genre' => splitAndCombine($row[2], $row[1]),
       'description' => $row[3],
       'id' => $id,
     ]);
@@ -46,14 +46,6 @@ class GameManager extends GameGenreRelationshipManager {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
-    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
-      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
-    }
-
-    if ($img->mimetype() !== 'image/jpeg') {
-      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg'");
-    }
-
     if (gettype($genre) !== 'array') {
       throw new TypeError("Field 'genre' must be an array of string");
     }
@@ -67,6 +59,49 @@ class GameManager extends GameGenreRelationshipManager {
     parent::addGenres($id, $genre);
     $swf->move(self::swfPath($id));
     $img->move(self::imgPath($id));
+  }
+
+  public function update(string $prevId, array $param): void {
+    $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
+    $id = $param['id'];
+
+    $dbQuerySet
+      ->get('update-game')
+      ->executeOnce([
+        $param['id'],
+        $param['name'],
+        $param['description'],
+        $prevId,
+      ])
+    ;
+
+    if ($id !== $prevId) {
+      parent::clearGenres($prevId, $param['genre']);
+      parent::addGenres($id, $param['genre']);
+
+      $dbQuerySet
+        ->get('update-history-game-id')
+        ->executeOnce([$id, $prevId])
+      ;
+    }
+
+    $mv = $id === $prevId
+      ? function () {}
+      : 'rename'
+    ;
+
+    foreach (['swf', 'img'] as $key) {
+      $file = $param[$key];
+      $pathmtd = $key . 'Path';
+
+      if ($file) {
+        unlink(self::$pathmtd($prevId));
+        $file->move(self::$pathmtd($id));
+      } else {
+        $mv(self::$pathmtd($prevId), self::$pathmtd($id));
+      }
+    }
   }
 
   public function delete(string $id): void {

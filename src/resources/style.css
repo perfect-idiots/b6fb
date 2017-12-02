@@ -463,13 +463,14 @@ button:hover {
 
 .x-component--game-item.x-component--search-result-item {
   width: 100%;
-  height: 150px;
+  height: 170px;
   display: flex;
   text-align: justify;
 }
 
 .x-component--game-item.x-component--search-result-item article {
   display: inline-flex;
+  margin: 10px;
   color: [[text-color]];
 }
 
@@ -482,6 +483,92 @@ button:hover {
 }
 
 .x-component--game-item.x-component--search-result-item .text {
-  padding: 15px 15px 0px 0px;;
+  padding: 15px 15px 0px 0px;
 }
 
+.x-component--game-item.x-component--search-result-item .subtitle {
+  font-weight: bold;
+  font-size: 1.5em;
+  display: block;
+}
+
+.x-component--user-profile-setting article {
+  padding: 1em;
+  margin: 1em auto 1em auto;
+  width: [[user-profile-setting-width]];
+  height: 100%;
+  box-shadow: 1px 1px 7px -1px black;
+}
+
+.x-component--user-profile-setting article h2 {
+  font-size: 2.1em;
+  font-weight: normal;
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+.x-component--user-profile-setting label {
+  width: 30%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  text-align: right;
+  display: inline-block;
+  font-weight: bold;
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.x-component--user-profile-setting output {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  display: inline-block;
+}
+
+.x-component--user-profile-setting input {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid [[text-color]];
+}
+
+.x-component--user-profile-setting button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 200px;
+  color: white;
+  margin: 0.5em 0px 0px 0px;
+}
+
+.x-component--playing-history-item {
+  color: [[text-color]];
+  width: 100%;
+  height: 90px;
+  margin: 10px;
+  box-shadow: 1px 1px 7px -1px black;
+  text-align: justify;
+}
+
+.x-component--playing-history-item article {
+  display: inline-flex;
+}
+
+.x-component--playing-history-item article figure {
+ margin: 0.5em;
+}
+
+.x-component--playing-history-item article img {
+  width: 100px;
+  height: 70px;
+}
+
+.x-component--playing-history-item .subtitle {
+  height: 100%;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.5em 1em 0.5em 0.5em;
+}

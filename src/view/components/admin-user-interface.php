@@ -41,7 +41,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
               'style' => [
                 'padding-left' => '10px',
               ],
-              'href' => $urlQuery->set('page', 'admin')->getUrlQuery(),
+              'href' => '?page=admin',
               'Quản trị',
             ]),
             HtmlElement::emmetBottom('#username-admin', [
@@ -54,10 +54,8 @@ class AdminUserInterface extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetTop('#profile-setting', [
               'hidden' => true,
-              HtmlElement::emmetBottom('#profile-admin', [
-                'Hồ sơ'
-              ]),
-              HtmlElement::emmetBottom('#setting-admin', [
+              HtmlElement::emmetBottom('#setting-admin>a', [
+                'href' => $urlQuery->set('subpage', 'change-admin-password')->getUrlQuery(),
                 'Cài đặt',
               ]),
               HtmlElement::emmetBottom('#logout-admin>a', [
@@ -139,12 +137,14 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminEditUser($data);
       case 'edit-genre':
         return new AdminEditGenre($data);
-      case 'delete-user':
-        return new AdminDeleteUser($data);
+      case 'edit-game':
+        return new AdminEditGame($data);
       case 'add-game':
         return new AdminAddGame($data);
       case 'add-genre':
         return new AdminAddGenre($data);
+      case 'delete-user':
+        return new AdminDeleteUser($data);
       case 'delete-genre':
         return new AdminDeleteGenre($data);
       case 'delete-game':
@@ -373,7 +373,7 @@ class AdminEditGenre extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form#edit-user-form', [
           'method' => 'GET',
-          'action' => '',
+          'action' => '.',
           HtmlElement::emmetTop('',[
             HtmlElement::emmetBottom('legend>h2', 'Cập nhật thể loại'),
             HtmlElement::emmetTop('#form-group', [
@@ -412,27 +412,68 @@ class AdminEditGenre extends RawDataContainer implements Component {
   }
 }
 
+
+class AdminEditGame extends RawDataContainer implements Component {
+  public function render(): Component {
+    $urlQuery = $this->get('url-query');
+    $id = $urlQuery->getDefault('game', '');
+    $info = $this->get('game-manager')->info($id);
+
+    if (!$id || !$info) {
+      throw new NotFoundException();
+    }
+
+    return HtmlElement::emmetTop('#edit-game-page', [
+      HtmlElement::emmetTop('.header-subpage', [
+        HtmlElement::create('h2','Sửa trò chơi'),
+      ]),
+      HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form.add', [
+        'method' => 'POST',
+        'action' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'edit-game',
+        ])->getUrlQuery(),
+        'enctype' => 'multipart/form-data',
+        HtmlElement::emmetTop('.input-container', [
+          PlainLabeledInput::text('id', 'ID', $id),
+          PlainLabeledInput::text('name', 'Tên trò chơi', $info['name']),
+          PlainLabeledInput::text('genre', 'Thể loại', implode(', ', array_keys($info['genre']))),
+          new UnescapedText(
+            '<textarea name="description" required>' .
+            htmlspecialchars($info['description']) .
+            '</textarea>'
+          ),
+          LabeledFileInput::text('swf', 'Tệp trò chơi (.swf)'),
+          LabeledFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
+        ]),
+        new AdminSubmitResetPair(),
+      ]),
+    ]);
+  }
+}
+
 class AdminAddGame extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
 
     return HtmlElement::emmetTop('#edit-game-page', [
       HtmlElement::emmetTop('.header-subpage', [
-        HtmlElement::create('h2','Thêm game'),
+        HtmlElement::create('h2','Thêm trò chơi'),
       ]),
-      HtmlElement::emmetBottom('.body-subpage-game>form#add-game-form.add', [
+      HtmlElement::emmetBottom('.body-subpage-game>form.add', [
         'method' => 'POST',
         'action' => $urlQuery->assign([
           'type' => 'action',
           'action' => 'add-game',
         ])->getUrlQuery(),
+        'enctype' => 'multipart/form-data',
         HtmlElement::emmetTop('.input-container', [
-          PlainLabeledInput::text('game-id', 'ID'),
-          PlainLabeledInput::text('game-name', 'Tên trò chơi'),
-          PlainLabeledInput::text('game-genre', 'Thể loại'),
-          LabeledTextArea::text('game-description', 'Mô tả'),
-          LabeledFileInput::text('game-swf', 'Tệp trò chơi'),
-          LabeledFileInput::text('game-image', 'Tệp hình ảnh'),
+          PlainLabeledInput::text('id', 'ID'),
+          PlainLabeledInput::text('name', 'Tên trò chơi'),
+          PlainLabeledInput::text('genre', 'Thể loại'),
+          RequiredTextArea::text('description', 'Mô tả'),
+          RequiredFileInput::text('swf', 'Tệp trò chơi (.swf)'),
+          RequiredFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
         ]),
         new AdminSubmitResetPair(),
       ]),
@@ -450,7 +491,7 @@ class AdminAddGenre extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetBottom('.body-subpage>form#add-genre-form.add', [
         'method' => 'GET',
-        'action' => '',
+        'action' => '.',
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('genre-id', 'ID'),
           PlainLabeledInput::text('game-genre', 'Tên thể loại'),
@@ -527,10 +568,13 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
       HtmlElement::create('h2', 'Reset và Khởi tạo'),
       HtmlElement::create('form', [
         'method' => 'GET',
+        'action' => '.',
         HtmlElement::emmetTop('.input-container', [
           LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
           LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
           LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
+          LabeledCheckbox::text('history', 'Lịch sử Truy cập Trò chơi'),
+          LabeledCheckbox::text('favorite', 'Danh sách Trò chơi được Yêu thích'),
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
@@ -582,7 +626,7 @@ class AdminChangePassword extends RawDataContainer implements Component {
       HtmlElement::emmetTop('#header-user-page.header-subpage', [
         HtmlElement::create('h1', 'Thay đổi mật khẩu'),
       ]),
-      HtmlElement::emmetBottom('.body-subpage>form', [
+      HtmlElement::emmetBottom('.body-subpage>form.change', [
         'method' => 'POST',
         'action' => $urlQuery->assign([
           'type' => 'action',
@@ -594,22 +638,7 @@ class AdminChangePassword extends RawDataContainer implements Component {
           SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
         ]),
         HtmlElement::emmetTop('.button-container', [
-          HtmlElement::create('button', [
-            'type' => 'submit',
-            'Lưu',
-          ]),
-          HtmlElement::create('button', [
-            'type' => 'reset',
-            'Nhập lại',
-          ]),
-          HtmlElement::emmetBottom('button>a.back', [
-            'href' => $urlQuery
-              ->without(['current-password', 'new-password', 're-password'])
-              ->set('subpage', 'advanced')
-              ->getUrlQuery()
-            ,
-            'Quay lại',
-          ]),
+          new AdminSubmitResetPair(),
         ]),
       ]),
     ]);
@@ -626,9 +655,9 @@ class AdminEditUser extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.header-subpage', [
       ]),
       HtmlElement::emmetTop('.body-subpage', [
-        HtmlElement::emmetBottom('form#edit-user-form', [
+        HtmlElement::emmetBottom('form#edit-user-form.update', [
           'method' => 'GET',
-          'action' => '',
+          'action' => '.',
           HtmlElement::create('div', [
             HtmlElement::emmetBottom('legend>h2', 'Cập nhật người dùng'),
             HtmlElement::emmetTop('#form-group', [
@@ -643,7 +672,7 @@ class AdminEditUser extends RawDataContainer implements Component {
                 'value' => $fullname,
               ]),
             ]),
-            HtmlElement::emmetBottom('#form-group>button', [
+            HtmlElement::emmetBottom('.button-container>button', [
               'type' => 'submit',
               'Lưu',
             ]),
