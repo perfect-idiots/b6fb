@@ -63,10 +63,10 @@ class GameManager extends GameGenreRelationshipManager {
 
   public function update(string $prevId, array $param): void {
     $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
     $id = $param['id'];
 
-    $this
-      ->get('db-query-set')
+    $dbQuerySet
       ->get('update-game')
       ->executeOnce([
         $param['id'],
@@ -79,6 +79,11 @@ class GameManager extends GameGenreRelationshipManager {
     if ($id !== $prevId) {
       parent::clearGenres($prevId, $param['genre']);
       parent::addGenres($id, $param['genre']);
+
+      $dbQuerySet
+        ->get('update-history-game-id')
+        ->executeOnce([$id, $prevId])
+      ;
     }
 
     $mv = $id === $prevId
