@@ -497,7 +497,7 @@ button:hover {
   margin: 1em;
   width: [[user-profile-setting-width]];
   height: 100%;
-  box-shadow: 2px 2px 6px #333;
+  box-shadow: 1px 1px 7px -1px black;
 }
 
 .x-component--user-profile-setting article h2 {
