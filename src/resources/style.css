@@ -494,7 +494,7 @@ button:hover {
 
 .x-component--user-profile-setting article {
   padding: 1em;
-  margin: 1em;
+  margin: 1em auto 1em auto;
   width: [[user-profile-setting-width]];
   height: 100%;
   box-shadow: 1px 1px 7px -1px black;
