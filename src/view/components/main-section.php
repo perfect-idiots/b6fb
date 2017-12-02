@@ -4,6 +4,7 @@ require_once __DIR__ . '/game-item.php';
 require_once __DIR__ . '/footer-section.php';
 require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/comment-section.php';
+require_once __DIR__ . '/labeled-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class MainSection extends RawDataContainer implements Component {
@@ -222,16 +223,7 @@ class UserProfileSetting extends RawDataContainer implements Component {
               HtmlElement::create('label', 'Tên đăng nhập: '),
               HtmlElement::emmetTop('output#username', $this->get('login')->username()),
             ]),
-            HtmlElement::create('div', [
-              HtmlElement::create('label', [
-                'for' => 'fullname',
-                'Họ và Tên',
-              ]),
-              HtmlElement::emmetTop('input#fullname', [
-                'name' => 'fullname',
-                'value' => '',
-              ]),
-            ]),
+            PlainLabeledInput::text('fullname', 'Họ và Tên'),
           ]),
           HtmlElement::emmetTop('.button-container', [
             HtmlElement::create('button', [
