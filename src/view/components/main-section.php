@@ -228,6 +228,7 @@ class UserProfileSetting extends RawDataContainer implements Component {
             PlainLabeledInput::text('fullname', 'Họ và Tên', $fullname),
           ]),
           HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('label'),
             HtmlElement::create('button', [
               'type' => 'submit',
               'Lưu',
@@ -249,6 +250,7 @@ class UserProfileSetting extends RawDataContainer implements Component {
             SecretInstructedInput::text('re-password', 'Nhập lại Mật khẩu mới', '', ''),
           ]),
           HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('label'),
             HtmlElement::create('button', [
               'type' => 'submit',
               'Lưu',
