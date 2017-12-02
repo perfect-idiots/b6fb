@@ -37,11 +37,11 @@ from (
     ) as by_id_name,
     (
       2 * (
-        if(`description` = `search`, 1, 0) +
-        if(`description` like concat('%', `search`, '%'), 1, 0) +
-        if(`description` like concat(`search`, ' %'), 1, 0) +
-        if(`description` like concat('% ', `search`), 1, 0) +
-        if(`description` like concat('% ', `search`, ' %'), 1, 0) +
+        if(binary `description` = `search`, 1, 0) +
+        if(binary `description` like concat('%', `search`, '%'), 1, 0) +
+        if(binary `description` like concat(`search`, ' %'), 1, 0) +
+        if(binary `description` like concat('% ', `search`), 1, 0) +
+        if(binary `description` like concat('% ', `search`, ' %'), 1, 0) +
         round(
           (
             length(`description`) -
