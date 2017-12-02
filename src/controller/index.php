@@ -439,6 +439,51 @@ function sendAction(DataContainer $param): string {
       ])->redirect();
       break;
 
+    case 'update-user-profile':
+      $fullname = $postData->getDefault('fullname', '');
+      $userprofile = $param->get('user-profile');
+
+      if (!$fullname) {
+        http_response_code(400);
+        die('
+          Field <code>fullname</code> is missing
+        ');
+      }
+
+      $userprofile->update(['fullname' => $fullname]);
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
+      break;
+
+    case 'update-user-password':
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+      $userProfile = $param->get('user-profile');
+
+      $userProfile->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+      $userProfile->updatePassword($newPassword);
+
+      $param
+        ->get('cookie')
+        ->set('password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
+      break;
+
     default:
       throw new NotFoundException();
   }
