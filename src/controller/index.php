@@ -9,6 +9,7 @@ require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/db-admin.php';
+require_once __DIR__ . '/db-history.php';
 require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
@@ -425,6 +426,10 @@ function sendAction(DataContainer $param): string {
         if ($check('admin')) {
           $param->get('admin-manager')->$subaction();
         }
+
+        if ($check('history')) {
+          $param->get('history-manager')->$subaction();
+        }
       }
 
       $urlQuery->except('action')->assign([
@@ -551,6 +556,7 @@ function main(): string {
   $genreManager = new GenreManager($securitySharedParam);
   $userManager = new UserManager($securitySharedParam);
   $adminManager = new AdminManager($securitySharedParam);
+  $historyManager = new HistoryManager($securitySharedParam);
   $userProfile = new UserProfile($securitySharedParam);
   $searchEngine = new SearchEngine($securitySharedParam);
 
@@ -580,6 +586,7 @@ function main(): string {
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
+    'history-manager' => $historyManager,
     'user-profile' => $userProfile,
     'search-engine' => $searchEngine,
     'signup' => $signup,

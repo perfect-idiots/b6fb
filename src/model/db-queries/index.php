@@ -26,6 +26,7 @@ return [
   'update-user-password' => 'ss',
   'update-game' => 'ssss',
   'update-genre' => 'ss',
+  'update-history-game-id' => 'ss',
   'remove-all-games-from-genre' => 's',
   'remove-all-genres-from-game' => 's',
   'count-games' => '',
