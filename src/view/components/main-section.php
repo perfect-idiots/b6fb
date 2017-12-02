@@ -5,6 +5,7 @@ require_once __DIR__ . '/footer-section.php';
 require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/comment-section.php';
 require_once __DIR__ . '/labeled-input.php';
+require_once __DIR__ . '/instructed-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class MainSection extends RawDataContainer implements Component {
@@ -242,9 +243,9 @@ class UserProfileSetting extends RawDataContainer implements Component {
             'action' => 'update-user-password',
           ])->getUrlQuery(),
           HtmlElement::emmetTop('.input-container', [
-            SecretLabeledInput::text('current-password', 'Mật khẩu hiện tại'),
-            SecretLabeledInput::text('new-password', 'Mật khẩu mới'),
-            SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
+            SecretInstructedInput::text('current-password', 'Mật khẩu hiện tại', '', ''),
+            SecretInstructedInput::text('new-password', 'Mật khẩu mới', '', ''),
+            SecretInstructedInput::text('re-password', 'Nhập lại Mật khẩu mới', '', ''),
           ]),
           HtmlElement::emmetTop('.button-container', [
             HtmlElement::create('button', [
