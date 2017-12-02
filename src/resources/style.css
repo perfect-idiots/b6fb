@@ -539,7 +539,7 @@ button:hover {
   padding: 6px;
   width: 200px;
   color: white;
-  margin: 1em 0px 0px 0.5em;
+  margin: 0.5em 0px 0px 0px;
 }
 
 .x-component--playing-history-item {
