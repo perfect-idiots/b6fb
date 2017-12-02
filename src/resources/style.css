@@ -518,12 +518,17 @@ button:hover {
   vertical-align: top;
 }
 
+.x-component--user-profile-setting output {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  display: inline-block;
+}
+
 .x-component--user-profile-setting input {
   width: 60%;
   height: 1.5em;
   margin: 0.5em 0px 0px 0px;
-  background-position: -200px 0;
-  background-size: 200px 100%;
   border: 1px solid [[text-color]];
 }
 
