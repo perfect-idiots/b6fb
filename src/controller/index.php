@@ -9,6 +9,7 @@ require_once __DIR__ . '/db-game.php';
 require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/db-admin.php';
+require_once __DIR__ . '/db-history.php';
 require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/../model/index.php';
@@ -425,6 +426,10 @@ function sendAction(DataContainer $param): string {
         if ($check('admin')) {
           $param->get('admin-manager')->$subaction();
         }
+
+        if ($check('history')) {
+          $param->get('history-manager')->$subaction();
+        }
       }
 
       $urlQuery->except('action')->assign([
@@ -432,6 +437,51 @@ function sendAction(DataContainer $param): string {
         'page' => 'admin',
         'subpage' => 'advanced',
       ])->redirect();
+      break;
+
+    case 'update-user-profile':
+      $fullname = $postData->getDefault('fullname', '');
+      $userprofile = $param->get('user-profile');
+
+      if (!$fullname) {
+        http_response_code(400);
+        die('
+          Field <code>fullname</code> is missing
+        ');
+      }
+
+      $userprofile->update(['fullname' => $fullname]);
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
+      break;
+
+    case 'update-user-password':
+      $currentPassword = $postData->getDefault('current-password', '');
+      $newPassword = $postData->getDefault('new-password', '');
+      $rePassword = $postData->getDefault('re-password', '');
+      $userProfile = $param->get('user-profile');
+
+      $userProfile->set(
+        'login',
+        $login->set('password', $currentPassword)
+      )->verify();
+
+      if ($newPassword !== $rePassword) throw SecurityException::permission();
+      $userProfile->updatePassword($newPassword);
+
+      $param
+        ->get('cookie')
+        ->set('password', $newPassword)
+        ->update()
+      ;
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'profile')->redirect();
       break;
 
     default:
@@ -506,6 +556,7 @@ function main(): string {
   $genreManager = new GenreManager($securitySharedParam);
   $userManager = new UserManager($securitySharedParam);
   $adminManager = new AdminManager($securitySharedParam);
+  $historyManager = new HistoryManager($securitySharedParam);
   $userProfile = new UserProfile($securitySharedParam);
   $searchEngine = new SearchEngine($securitySharedParam);
 
@@ -535,6 +586,7 @@ function main(): string {
     'genre-manager' => $genreManager,
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
+    'history-manager' => $historyManager,
     'user-profile' => $userProfile,
     'search-engine' => $searchEngine,
     'signup' => $signup,

@@ -514,6 +514,12 @@ button:hover {
   text-align: right;
   display: inline-block;
   font-weight: bold;
+<<<<<<< HEAD
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+=======
   margin-right: 10px;
   vertical-align: top;
 }
@@ -525,12 +531,18 @@ button:hover {
   display: inline-block;
 }
 
+>>>>>>> style
 .x-component--user-profile-setting input {
   width: 60%;
   height: 1.5em;
   margin: 0.5em 0px 0px 0px;
+<<<<<<< HEAD
+  background-position: -200px 0;
+  background-size: 200px 100%;
+=======
   padding-left: 5px;
   padding-right: 5px;
+>>>>>>> style
   border: 1px solid [[text-color]];
 }
 
@@ -541,7 +553,11 @@ button:hover {
   padding: 6px;
   width: 200px;
   color: white;
+<<<<<<< HEAD
+  margin: 1em 0px 0px 0.5em;
+=======
   margin: 0.5em 0px 0px 0px;
+>>>>>>> style
 }
 
 .x-component--playing-history-item {
@@ -549,10 +565,21 @@ button:hover {
   width: 100%;
   height: 90px;
   margin: 10px;
+<<<<<<< HEAD
+  box-shadow: 2px 2px 6px #333;
+  text-align: justify;
+}
+
+.x-component--playing-history-item:hover {
+  background: [[game-item-hover-background]];
+}
+
+=======
   box-shadow: 1px 1px 7px -1px black;
   text-align: justify;
 }
 
+>>>>>>> style
 .x-component--playing-history-item article {
   display: inline-flex;
 }
@@ -571,4 +598,8 @@ button:hover {
   font-size: 2em;
   font-weight: bold;
   margin: 0.5em 1em 0.5em 0.5em;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> style

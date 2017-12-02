@@ -8,6 +8,25 @@ class UserProfile extends LoginDoubleChecker {
     return $login->username() === $this->username() || $login->isAdmin();
   }
 
+  public function info(): array {
+    $this->verify();
+    $username = $this->get('login')->username();
+
+    [[$fullname]] = $this
+      ->get('db-query-set')
+      ->get('user-info')
+      ->executeOnce([$username], 2)
+      ->fetch()
+    ;
+
+    return [
+      $fullname,
+      $username,
+      'fullname' => $fullname,
+      'username' => $username,
+    ];
+  }
+
   public function update(array $param): DatabaseQuerySingleResult {
     $this->verify();
     $dbQuerySet = $this->get('db-query-set');
@@ -24,6 +43,18 @@ class UserProfile extends LoginDoubleChecker {
     ] = array_merge($profile, $param);
 
     return $query->executeOnce([$fullname, $username]);
+  }
+
+  public function updatePassword(string $password): void {
+    $this->verify();
+    $username = $this->username();
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    $this
+      ->get('db-query-set')
+      ->get('update-user-password')
+      ->executeOnce([$hash, $username])
+    ;
   }
 
   public function getHistory(): array {
