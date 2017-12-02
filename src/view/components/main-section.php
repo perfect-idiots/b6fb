@@ -209,6 +209,7 @@ class SearchResult extends RawDataContainer implements Component {
 class UserProfileSetting extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
+    [$fullname, $username] = $this->get('user-profile')->info();
 
     return HtmlElement::create('div', [
       HtmlElement::emmetTop('article', [
@@ -222,9 +223,9 @@ class UserProfileSetting extends RawDataContainer implements Component {
           HtmlElement::emmetTop('.input-container', [
             HtmlElement::create('div', [
               HtmlElement::create('label', 'Tên đăng nhập: '),
-              HtmlElement::emmetTop('output#username', $this->get('login')->username()),
+              HtmlElement::emmetTop('output#username', $username),
             ]),
-            PlainLabeledInput::text('fullname', 'Họ và Tên'),
+            PlainLabeledInput::text('fullname', 'Họ và Tên', $fullname),
           ]),
           HtmlElement::emmetTop('.button-container', [
             HtmlElement::create('button', [
