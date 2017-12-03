@@ -371,20 +371,19 @@ class AdminEditGenre extends RawDataContainer implements Component {
       HtmlElement::emmetTop('.header-subpage', []),
       HtmlElement::emmetTop('.body-subpage', [
         HtmlElement::emmetBottom('form.editing-form', [
-          'method' => 'GET',
-          'action' => '.',
-          HtmlElement::emmetTop('.input-container',[
-            HtmlElement::emmetBottom('legend>h2', 'Cập nhật thể loại'),
-            PlainLabeledInput::text('genre', 'ID', $genre),
-            PlainLabeledInput::text('genre-name', 'Tên thể loại', $genreName),
-          ]),
-          new AdminEditingSaveButton(),
-          HiddenInputSet::instance($urlQuery->assign([
+          'method' => 'POST',
+          'action' => $urlQuery->assign([
             'type' => 'action',
             'action' => 'edit-genre',
             'previous-page' => 'games',
             'id' => $genre,
-          ])->getData()),
+          ])->getUrlQuery(),
+          HtmlElement::emmetTop('.input-container',[
+            HtmlElement::emmetBottom('legend>h2', 'Cập nhật thể loại'),
+            PlainLabeledInput::text('id', 'ID', $genre),
+            PlainLabeledInput::text('name', 'Tên thể loại', $genreName),
+          ]),
+          new AdminEditingSaveButton(),
         ]),
       ]),
     ]);

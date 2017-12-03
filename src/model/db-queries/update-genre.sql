@@ -1,3 +1,3 @@
 update genres
-set name = ?
-where id = ?
+set `id` = ?, `name` = ?
+where `id`= ?

@@ -302,16 +302,35 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'edit-genre':
-      $genre = $urlQuery->getDefault('genre', '');
-      $genreName = $urlQuery->getDefault('genre-name', '');
-      $param->get('genre-manager')->update($genreName, $genre);
+      $prevId = $urlQuery->getDefault('genre', '');
+      $id = $postData->getDefault('id', '');
+      $name = $postData->getDefault('name', '');
+
+      if (!$prevId) {
+        throw new NotFoundException("Field 'genre' is missing from url");
+      }
+
+      $required = [
+        'id' => $id,
+        'name' => $name,
+      ];
+
+      foreach ($required as $key => $value) {
+        if (!$value) {
+          http_response_code(400);
+          die("
+            Field <code>$key</code> is missing
+          ");
+        }
+      }
+
+      $param->get('genre-manager')->update($prevId, $required);
 
       $urlQuery->without([
+        'type',
         'action',
         'genre',
-        'genreName',
       ])->assign([
-        'type' => 'html',
         'page' => 'admin',
         'subpage' => 'games',
       ])->redirect();
