@@ -303,7 +303,7 @@ function sendAction(DataContainer $param): string {
 
     case 'edit-genre':
       $genre = $urlQuery->getDefault('genre', '');
-      $genreName = $urlQuery->getDefault('genreName', '');
+      $genreName = $urlQuery->getDefault('genre-name', '');
       $param->get('genre-manager')->update($genreName, $genre);
 
       $urlQuery->without([
