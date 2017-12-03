@@ -505,6 +505,15 @@ function sendAction(DataContainer $param): string {
       ])->set('page', 'profile')->redirect();
       break;
 
+    case 'clear-user-history':
+      $param->get('user-profile')->clearHistory();
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'history')->redirect();
+      break;
+
     default:
       throw new NotFoundException();
   }

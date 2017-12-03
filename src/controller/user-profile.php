@@ -92,6 +92,17 @@ class UserProfile extends LoginDoubleChecker {
       ->executeOnce([$username, $game])
     ;
   }
+
+  public function clearHistory(): void {
+    $this->verify();
+    $username = $this->get('login')->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('clear-history-by-user')
+      ->executeOnce([$username])
+    ;
+  }
 }
 
 class UserInfo extends RawDataContainer {

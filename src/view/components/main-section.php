@@ -109,7 +109,7 @@ class GameMenuByHistory extends RawDataContainer implements Component {
       ->getHistory()
     ;
 
-    return HtmlElement::emmetTop('#game-menu', array_map(
+    $menu = HtmlElement::emmetTop('#game-menu', array_map(
       function (array $info) use($self) {
         $description = strftime('%H giờ %M phút %S — ngày %d tháng %m năm %Y', $info['date']);
 
@@ -122,6 +122,17 @@ class GameMenuByHistory extends RawDataContainer implements Component {
       },
       $gamelist
     ));
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetBottom('button#clear-history>a', [
+        'href' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'clear-user-history',
+        ])->getUrlQuery(),
+        'Làm trống Lịch sử',
+      ]),
+      $menu,
+    ]);
   }
 }
 
