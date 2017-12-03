@@ -28,11 +28,11 @@ from (
         if(lower(`id`) like concat('% ', lower(`search`), ' %'), 1, 0)
       ) +
       (
-        if(binary lower(`name`) = lower(`search`), 1, 0) +
-        if(binary lower(`name`) like concat('%', lower(`search`), '%'), 1, 0) +
-        if(binary lower(`name`) like concat(lower(`search`), ' %'), 1, 0) +
-        if(binary lower(`name`) like concat('% ', lower(`search`)), 1, 0) +
-        if(binary lower(`name`) like concat('% ', lower(`search`), ' %'), 1, 0)
+        if(lower(`name`) = lower(`search`), 1, 0) +
+        if(lower(`name`) like concat('%', lower(`search`), '%'), 1, 0) +
+        if(lower(`name`) like concat(lower(`search`), ' %'), 1, 0) +
+        if(lower(`name`) like concat('% ', lower(`search`)), 1, 0) +
+        if(lower(`name`) like concat('% ', lower(`search`), ' %'), 1, 0)
       )
     ) as by_id_name,
     (
