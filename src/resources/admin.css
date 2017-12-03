@@ -231,11 +231,11 @@ th {
   color: red;
 }
 
-#edit-user-page h2 {
+.editing-page h2 {
   font-weight: normal;
 }
 
-#edit-user-form {
+.editing-form {
   height: 300px;
   width: 100%;
   padding: 19px;
@@ -243,12 +243,13 @@ th {
   background-color: #f5f5f5;
 }
 
-#form-group {
+.editing-form .form-group,
+.editing-form .x-component--labeled-input {
   display: block;
   margin-bottom: 15px;
 }
 
-#form-group input, output {
+.editing-form input, .editing-form output {
   color: #1716de;
   font-size: 15px;
   font-weight: bold;
@@ -317,13 +318,13 @@ form.add input, output, textarea {
   color: #555;
 }
 
-form.change label, form.update label{
+form.change label, form.editing-form label{
   display: inline-block;
   text-align: right;
   width: 30%;
 }
 
-form.update .button-container {
+form.editing-form .button-container {
   text-align: right;
   width: 30%;
 }

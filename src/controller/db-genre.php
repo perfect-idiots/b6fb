@@ -32,13 +32,23 @@ class GenreManager extends GameGenreRelationshipManager {
     ;
   }
 
-  public function update(string $genre, string $genrename): void {
+  public function update(string $prevId, array $data): void {
     $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
 
-    $this
-      ->get('db-query-set')
+    [
+      'id' => $id,
+      'name' => $name,
+    ] = $data;
+
+    $dbQuerySet
       ->get('update-genre')
-      ->executeOnce([$genre, $genrename])
+      ->executeOnce([$id, $name, $prevId])
+    ;
+
+    $dbQuerySet
+      ->get('update-games-genres-genre-id')
+      ->executeOnce([$id, $prevId])
     ;
   }
 
