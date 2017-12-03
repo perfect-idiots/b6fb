@@ -67,7 +67,7 @@ function switchPage(array $data): Page {
   }
 }
 
-function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
+function createSubpageList(LoginInfo $login): array {
   $customized = $login->isLoggedIn()
     ? [
       'profile' => 'Tài khoản',
@@ -87,7 +87,7 @@ function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
   ]];
 
   foreach ($customized as $page => $title) {
-    $href = $urlQuery->set('page', $page)->getUrlQuery();
+    $href = UrlQuery::instance(['page' => $page])->getUrlQuery();
 
     array_push($result, [
       'page' => $page,
@@ -99,7 +99,7 @@ function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
   return $result;
 }
 
-function createAdminSubpageList(UrlQuery $urlQuery) {
+function createAdminSubpageList() {
   $namemap = [
     'games' => 'Trò chơi',
     'users' => 'Người dùng',
@@ -111,6 +111,8 @@ function createAdminSubpageList(UrlQuery $urlQuery) {
     'title' => 'Bảng điều khiển',
     'href' => UrlQuery::instance(['page' => 'admin'])->getUrlQuery(),
   ]];
+
+  $urlQuery = UrlQuery::instance(['page' => 'admin']);
 
   foreach ($namemap as $page => $title) {
     $href = $urlQuery->set('subpage', $page)->getUrlQuery();
@@ -595,9 +597,9 @@ function main(): string {
     'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
-    'subpages' => createSubpageList($urlQuery, $login),
+    'subpages' => createSubpageList($login),
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
-    'admin-subpages' => createAdminSubpageList($urlQuery),
+    'admin-subpages' => createAdminSubpageList(),
     'db-query-set' => $dbQuerySet,
     'login-double-checker' => $loginDoubleChecker,
     'game-genre-relationship-manager' => $gameGenreRelationshipManager,
