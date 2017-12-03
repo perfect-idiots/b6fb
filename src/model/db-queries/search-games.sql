@@ -58,7 +58,7 @@ from (
         round(
           (
             length(`description`) -
-            length(replace(`description`, lower(`search`), ''))
+            length(replace(lower(`description`), lower(`search`), ''))
           ) / length(lower(`search`))
         )
       )
