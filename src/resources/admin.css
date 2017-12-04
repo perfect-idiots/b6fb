@@ -3,6 +3,11 @@ body, h1 {
   font-family: 'Roboto', 'Cantarell', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
 }
 
+p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
 a {
   color: #0d0dcc;
   text-decoration: none;
@@ -11,7 +16,7 @@ a {
 button {
   background-color: #5cb85c;
   border: 0px;
-  padding: 10px 20px;
+  padding: 10px;
   color: white;
 }
 
@@ -213,10 +218,6 @@ th,td {
   width: auto;
 }
 
-table th:last-child {
-
-}
-
 table, th, td {
   border: 1px solid #ddd;
   padding: 3px 15px 3px 15px;
@@ -258,6 +259,10 @@ th {
   margin-left: 10px;
 }
 
+.editing-form button {
+  margin-left: 10px;
+}
+
 output {
   padding-left: 0px;
 }
@@ -291,7 +296,7 @@ textarea {
   height: 100px;
 }
 
-form.add *:not(button) {
+form.add label, form.add input, form.add output {
   display: block;
 }
 
@@ -318,13 +323,18 @@ form.add input, output, textarea {
   color: #555;
 }
 
-form.change label, form.editing-form label{
-  display: inline-block;
-  text-align: right;
-  width: 30%;
+form.add .x-component--genre-checkbox-set * {
+  display: inline;
 }
 
-form.editing-form .button-container {
+.x-component--genre-checkbox-set {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+form.change label, form.editing-form label,
+form.editing-form .button-container label {
+  display: inline-block;
   text-align: right;
   width: 30%;
 }
