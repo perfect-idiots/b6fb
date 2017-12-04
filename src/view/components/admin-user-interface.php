@@ -390,7 +390,6 @@ class AdminEditGenre extends RawDataContainer implements Component {
   }
 }
 
-
 class AdminEditGame extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
