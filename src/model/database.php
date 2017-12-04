@@ -31,7 +31,7 @@ class DatabaseInfo extends LazyLoadedDataContainer {
       ");
     }
 
-    $required = ['domain', 'username', 'password', 'dbname'];
+    $required = ['host', 'username', 'password', 'dbname'];
     foreach ($required as $key) {
       if (!array_key_exists($key, $result)) {
         die("
@@ -64,7 +64,7 @@ class DatabaseConnection extends DatabaseInfo {
 
   protected function load(): array {
     $info = parent::load();
-    $link = new mysqli($info['domain'], $info['username'], $info['password'], $info['dbname']);
+    $link = new mysqli($info['host'], $info['username'], $info['password'], $info['dbname']);
 
     if (mysqli_connect_errno()) {
       $error = mysqli_connect_error();
@@ -73,7 +73,7 @@ class DatabaseConnection extends DatabaseInfo {
         <h1>Connection Error</h1>
         <p>
           Failed to connect to
-          <code>{$info['dbname']}@{$info['domain']}</code>
+          <code>{$info['dbname']}@{$info['host']}</code>
           using account <code>{$info['username']}</code>.
         </p>
         <p><pre><code>$error</code></pre></p>
@@ -84,6 +84,7 @@ class DatabaseConnection extends DatabaseInfo {
     mb_language('uni');
     mb_internal_encoding('UTF-8');
     $link->query('set names "utf8"');
+    $link->set_charset('utf8mb4');
     $this->loaded = true;
     return array_merge($info, ['info' => $info, 'link' => $link]);
   }
@@ -196,6 +197,7 @@ class DatabaseQueryStatement extends RawDataContainer {
       ]);
     }
 
+    $param = dbEncodeParams($param);
     $refs = $this->arrOfRefs($param);
 
     $bindSuccess = call_user_func_array(
@@ -210,27 +212,6 @@ class DatabaseQueryStatement extends RawDataContainer {
       'statement' => $statement,
       'columns' => $columns,
     ]);
-  }
-
-  public function executeMultipleTimes(array $param): array {
-    $refs = $this->arrOfRefs($param);
-    $statement = $this->statement;
-    $success = [];
-
-    foreach ($param as $index => $subparam) {
-      $bindSuccess = call_user_func_array(
-        [$statement, 'bind_param'],
-        array_merge([$this->get('format')], $refs)
-      );
-
-      if (!$bindSuccess) throw new Exception("Cannot bind param[$index]");
-      $success[$index] = $statement->execute();
-    }
-
-    return [
-      'success' => $success,
-      'statement' => $statement,
-    ];
   }
 
   private function arrOfRefs(array &$array): array {
@@ -304,7 +285,7 @@ class DatabaseQuerySingleResult extends DatabaseQueryResult {
       foreach ($buffer as $key => $value) {
         $row[$key] = $value;
       }
-      array_push($result, $row);
+      array_push($result, dbDecodeParams($row));
     }
 
     return $result;

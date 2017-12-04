@@ -139,12 +139,12 @@ class AdminMainSection extends RawDataContainer implements Component {
         return new AdminEditGenre($data);
       case 'edit-game':
         return new AdminEditGame($data);
-      case 'delete-user':
-        return new AdminDeleteUser($data);
       case 'add-game':
         return new AdminAddGame($data);
       case 'add-genre':
         return new AdminAddGenre($data);
+      case 'delete-user':
+        return new AdminDeleteUser($data);
       case 'delete-genre':
         return new AdminDeleteGenre($data);
       case 'delete-game':
@@ -367,45 +367,23 @@ class AdminEditGenre extends RawDataContainer implements Component {
     $genre = $urlQuery->get('genre');
     $genreName = $this->get('genre-manager')->info($genre)['name'];
 
-    return HtmlElement::emmetBottom('#edit-user-page', [
-      HtmlElement::emmetTop('.header-subpage', [
-      ]),
+    return HtmlElement::emmetBottom('.editing-page', [
+      HtmlElement::emmetTop('.header-subpage', []),
       HtmlElement::emmetTop('.body-subpage', [
-        HtmlElement::emmetBottom('form#edit-user-form', [
-          'method' => 'GET',
-          'action' => '',
-          HtmlElement::emmetTop('',[
-            HtmlElement::emmetBottom('legend>h2', 'Cập nhật thể loại'),
-            HtmlElement::emmetTop('#form-group', [
-              HtmlElement::create('label', 'ID'),
-              HtmlElement::create('output', [
-                'type' => 'text',
-                'name' => 'genre',
-                 $genre
-              ]),
-            ]),
-            HtmlElement::emmetTop('#form-group', [
-              HtmlElement::create('label', 'Tên thể loại'),
-              HtmlElement::create('input', [
-                'type' => 'text',
-                'name' => 'genreName',
-                'value' => $genreName,
-              ]),
-            ]),
-            HtmlElement::emmetTop('#form-group', [
-              HtmlElement::create('label',['']),
-              HtmlElement::create('button', [
-                'type' => 'submit',
-                'Lưu',
-              ]),
-            ]),
-          ]),
-          HiddenInputSet::instance($urlQuery->assign([
+        HtmlElement::emmetBottom('form.editing-form', [
+          'method' => 'POST',
+          'action' => $urlQuery->assign([
             'type' => 'action',
             'action' => 'edit-genre',
             'previous-page' => 'games',
             'id' => $genre,
-          ])->getData()),
+          ])->getUrlQuery(),
+          HtmlElement::emmetTop('.input-container',[
+            HtmlElement::emmetBottom('legend>h2', 'Cập nhật thể loại'),
+            PlainLabeledInput::text('id', 'ID', $genre),
+            PlainLabeledInput::text('name', 'Tên thể loại', $genreName),
+          ]),
+          new AdminEditingSaveButton(),
         ]),
       ]),
     ]);
@@ -419,7 +397,7 @@ class AdminEditGame extends RawDataContainer implements Component {
     $id = $urlQuery->getDefault('game', '');
     $info = $this->get('game-manager')->info($id);
 
-    if (!$info) {
+    if (!$id || !$info) {
       throw new NotFoundException();
     }
 
@@ -491,7 +469,7 @@ class AdminAddGenre extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetBottom('.body-subpage>form#add-genre-form.add', [
         'method' => 'GET',
-        'action' => '',
+        'action' => '.',
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('genre-id', 'ID'),
           PlainLabeledInput::text('game-genre', 'Tên thể loại'),
@@ -568,6 +546,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
       HtmlElement::create('h2', 'Reset và Khởi tạo'),
       HtmlElement::create('form', [
         'method' => 'GET',
+        'action' => '.',
         HtmlElement::emmetTop('.input-container', [
           LabeledCheckbox::text('game', 'Dữ liệu Trò chơi'),
           LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
@@ -650,32 +629,21 @@ class AdminEditUser extends RawDataContainer implements Component {
     $username = $urlQuery->get('username');
     $fullname = $this->get('user-manager')->getUserFullname($username);
 
-    return HtmlElement::emmetBottom('#edit-user-page', [
-      HtmlElement::emmetTop('.header-subpage', [
-      ]),
+    return HtmlElement::emmetBottom('.editing-page', [
+      HtmlElement::emmetTop('.header-subpage', []),
       HtmlElement::emmetTop('.body-subpage', [
-        HtmlElement::emmetBottom('form#edit-user-form.update', [
+        HtmlElement::emmetBottom('form.editing-form', [
           'method' => 'GET',
-          'action' => '',
-          HtmlElement::create('div', [
+          'action' => '.',
+          HtmlElement::emmetTop('.input-container', [
             HtmlElement::emmetBottom('legend>h2', 'Cập nhật người dùng'),
-            HtmlElement::emmetTop('#form-group', [
+            HtmlElement::emmetTop('.form-group', [
               HtmlElement::create('label', 'Tên người dùng'),
               HtmlElement::create('output', $username),
             ]),
-            HtmlElement::emmetTop('#form-group', [
-              HtmlElement::create('label', 'Họ và Tên'),
-              HtmlElement::create('input', [
-                'type' => 'text',
-                'name' => 'fullname',
-                'value' => $fullname,
-              ]),
-            ]),
-            HtmlElement::emmetBottom('.button-container>button', [
-              'type' => 'submit',
-              'Lưu',
-            ]),
+            PlainLabeledInput::text('fullname', 'Họ và Tên', $fullname),
           ]),
+          new AdminEditingSaveButton(),
           HiddenInputSet::instance($urlQuery->assign([
             'type' => 'action',
             'action' => 'edit-user',
@@ -818,6 +786,18 @@ class AdminEditDeletePair implements Component {
         $this->urlQuery->set('subpage', $this->delete)->getUrlQuery(),
         ['Xóa']
       ),
+    ]);
+  }
+}
+
+class AdminEditingSaveButton implements Component {
+  public function render(): Component {
+    return HtmlElement::emmetTop('.button-container', [
+      HtmlElement::emmetTop('label.before-button', []),
+      HtmlElement::emmetTop('button', [
+        'type' => 'submit',
+        'Lưu',
+      ]),
     ]);
   }
 }

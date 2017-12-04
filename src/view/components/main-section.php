@@ -4,6 +4,8 @@ require_once __DIR__ . '/game-item.php';
 require_once __DIR__ . '/footer-section.php';
 require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/comment-section.php';
+require_once __DIR__ . '/labeled-input.php';
+require_once __DIR__ . '/instructed-input.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class MainSection extends RawDataContainer implements Component {
@@ -107,7 +109,11 @@ class GameMenuByHistory extends RawDataContainer implements Component {
       ->getHistory()
     ;
 
-    return HtmlElement::emmetTop('#game-menu', array_map(
+    if (!sizeof($gamelist)) {
+      return new EmptyMessage('Lịch sử trống');
+    }
+
+    $menu = HtmlElement::emmetTop('#game-menu', array_map(
       function (array $info) use($self) {
         $description = strftime('%H giờ %M phút %S — ngày %d tháng %m năm %Y', $info['date']);
 
@@ -120,6 +126,17 @@ class GameMenuByHistory extends RawDataContainer implements Component {
       },
       $gamelist
     ));
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetBottom('button#clear-history>a', [
+        'href' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'clear-user-history',
+        ])->getUrlQuery(),
+        'Làm trống Lịch sử',
+      ]),
+      $menu,
+    ]);
   }
 }
 
@@ -170,10 +187,10 @@ class SearchResult extends RawDataContainer implements Component {
     $count = sizeof($result);
 
     if (!$result) {
-      return HtmlElement::emmetTop('.error.message', [
+      return new EmptyMessage(HtmlElement::emmetTop('.error.message', [
         'Không tìm thấy trò chơi nào chứa từ khóa ',
         HtmlElement::emmetBottom('strong.search-word', $search),
-      ]);
+      ]));
     }
 
     $children = array_map(
@@ -207,6 +224,7 @@ class SearchResult extends RawDataContainer implements Component {
 class UserProfileSetting extends RawDataContainer implements Component {
   public function render(): Component {
     $urlQuery = $this->get('url-query');
+    [$fullname, $username] = $this->get('user-profile')->info();
 
     return HtmlElement::create('div', [
       HtmlElement::emmetTop('article', [
@@ -219,21 +237,13 @@ class UserProfileSetting extends RawDataContainer implements Component {
           ])->getUrlQuery(),
           HtmlElement::emmetTop('.input-container', [
             HtmlElement::create('div', [
-              HtmlElement::create('label', 'Tên đăng nhập: '),
-              HtmlElement::emmetTop('output#username', $this->get('login')->username()),
+              HtmlElement::create('label', 'Tên đăng nhập'),
+              HtmlElement::emmetTop('output#username', $username),
             ]),
-            HtmlElement::create('div', [
-              HtmlElement::create('label', [
-                'for' => 'fullname',
-                'Họ và Tên',
-              ]),
-              HtmlElement::emmetTop('input#fullname', [
-                'name' => 'fullname',
-                'value' => '',
-              ]),
-            ]),
+            PlainLabeledInput::text('fullname', 'Họ và Tên', $fullname),
           ]),
           HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('label'),
             HtmlElement::create('button', [
               'type' => 'submit',
               'Lưu',
@@ -250,11 +260,12 @@ class UserProfileSetting extends RawDataContainer implements Component {
             'action' => 'update-user-password',
           ])->getUrlQuery(),
           HtmlElement::emmetTop('.input-container', [
-            SecretLabeledInput::text('current-password', 'Mật khẩu hiện tại'),
-            SecretLabeledInput::text('new-password', 'Mật khẩu mới'),
-            SecretLabeledInput::text('re-password', 'Nhập lại Mật khẩu mới'),
+            SecretInstructedInput::text('current-password', 'Mật khẩu hiện tại', '', ''),
+            SecretInstructedInput::text('new-password', 'Mật khẩu mới', '', ''),
+            SecretInstructedInput::text('re-password', 'Nhập lại Mật khẩu mới', '', ''),
           ]),
           HtmlElement::emmetTop('.button-container', [
+            HtmlElement::create('label'),
             HtmlElement::create('button', [
               'type' => 'submit',
               'Lưu',
@@ -275,6 +286,18 @@ class PlayingHistoryItem extends RawDataContainer implements Component {
 class SearchResultItem extends RawDataContainer implements Component {
   public function render(): Component {
     return new GameItem($this->getData());
+  }
+}
+
+class EmptyMessage implements Component {
+  private $message;
+
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function render(): Component {
+    return HtmlElement::create('article', $this->message);
   }
 }
 ?>
