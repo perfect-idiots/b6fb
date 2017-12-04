@@ -141,7 +141,7 @@ class GameManager extends GameGenreRelationshipManager {
       );
 
       copy(
-        __DIR__ . "/../media/images/$id/0",
+        __DIR__ . "/../media/images/$id",
         self::imgPath($id)
       );
     }
