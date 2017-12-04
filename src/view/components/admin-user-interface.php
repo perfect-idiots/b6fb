@@ -414,7 +414,11 @@ class AdminEditGame extends RawDataContainer implements Component {
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('id', 'ID', $id),
           PlainLabeledInput::text('name', 'Tên trò chơi', $info['name']),
-          PlainLabeledInput::text('genre', 'Thể loại', implode(', ', array_keys($info['genre']))),
+          new GenreCheckboxSet(
+            $this
+              ->set('checked', array_keys($info['genre']))
+              ->getData()
+          ),
           new UnescapedText(
             '<textarea name="description" required>' .
             htmlspecialchars($info['description']) .
@@ -447,7 +451,7 @@ class AdminAddGame extends RawDataContainer implements Component {
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('id', 'ID'),
           PlainLabeledInput::text('name', 'Tên trò chơi'),
-          PlainLabeledInput::text('genre', 'Thể loại'),
+          new GenreCheckboxSet($this->getData()),
           RequiredTextArea::text('description', 'Mô tả'),
           RequiredFileInput::text('swf', 'Tệp trò chơi (.swf)'),
           RequiredFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
@@ -717,6 +721,44 @@ class AdminResetDatabase extends RawDataContainer implements Component {
         ),
       ]),
     ]);
+  }
+}
+
+class GenreCheckboxSet extends RawDataContainer implements Component {
+  static protected function requiredFieldSchema(): array {
+    return array_merge(parent::requiredFieldSchema(), [
+      'genre-manager' => 'GenreManager',
+    ]);
+  }
+
+  public function render(): Component {
+    $all = $this->get('genre-manager')->list();
+    $checked = $this->getDefault('checked', null);
+
+    $isChecked = $checked
+      ? function (string $id) use($checked) {
+        return in_array($id, $checked);
+      }
+      : function () {
+        return false;
+      }
+    ;
+
+    return HtmlElement::create('fieldset', array_map(
+      function (array $item) use($isChecked) {
+        [
+          'id' => $id,
+          'name' => $name,
+        ] = $item;
+
+        return LabeledCheckbox::text(
+          "genre-$id",
+          $name,
+          $isChecked($id)
+        );
+      },
+      $all
+    ));
   }
 }
 

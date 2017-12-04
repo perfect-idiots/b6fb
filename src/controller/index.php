@@ -188,6 +188,25 @@ function sendAction(DataContainer $param): string {
     exit();
   };
 
+  $getGenreList = function (DataContainer $query) {
+    $prfx = 'genre-';
+    $prfxlen = strlen($prfx);
+
+    return array_map(
+      function (string $key) use($prfxlen) {
+        return substr($key, $prfxlen);
+      },
+
+      array_keys(array_filter(
+        $query->getData(),
+        function (string $value, string $key) use($prfx) {
+          return $value === 'on' && preg_match("/^$prfx/", $key);
+        },
+        ARRAY_FILTER_USE_BOTH
+      ))
+    );
+  };
+
   switch ($action) {
     case 'check-admin-auth':
       $param->get('login-double-checker')->verify();
@@ -199,7 +218,6 @@ function sendAction(DataContainer $param): string {
       $adminRedirect();
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
-      $genre = $postData->getDefault('genre', '');
       $description = $postData->getDefault('description', '');
       $swf = $files->getFileNullable('swf', null);
       $img = $files->getFileNullable('img', null);
@@ -207,7 +225,6 @@ function sendAction(DataContainer $param): string {
       $required = [
         'id' => $id,
         'name' => $name,
-        'genre' => $genre,
         'description' => $description,
         'swf' => $swf,
         'img' => $img,
@@ -223,7 +240,7 @@ function sendAction(DataContainer $param): string {
       }
 
       $param->get('game-manager')->add(array_merge($required, [
-        'genre' => preg_split('/\s*,\s*/', $genre),
+        'genre' => $getGenreList($postData),
       ]));
 
       $urlQuery->without([
@@ -283,7 +300,6 @@ function sendAction(DataContainer $param): string {
       $required = [
         'id' => $id,
         'name' => $name,
-        'genre' => $genre,
         'description' => $description,
       ];
 
@@ -297,7 +313,7 @@ function sendAction(DataContainer $param): string {
       }
 
       $param->get('game-manager')->update($prevId, array_merge($required, [
-        'genre' => preg_split('/\s*,\s*/', $genre),
+        'genre' => $getGenreList($postData),
         'swf' => $swf,
         'img' => $img,
       ]));
