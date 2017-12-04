@@ -182,6 +182,12 @@ function sendAction(DataContainer $param): string {
   $action = $urlQuery->getDefault('action', '');
   $dbQuerySet = DatabaseQuerySet::instance();
 
+  $adminRedirect = function () use($urlQuery) {
+    if ($urlQuery->getDefault('page', 'index') === 'admin') return;
+    $urlQuery->set('page', 'admin')->redirect();
+    exit();
+  };
+
   switch ($action) {
     case 'check-admin-auth':
       $param->get('login-double-checker')->verify();
@@ -190,6 +196,7 @@ function sendAction(DataContainer $param): string {
       ';
 
     case 'add-game':
+      $adminRedirect();
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
       $genre = $postData->getDefault('genre', '');
@@ -230,6 +237,7 @@ function sendAction(DataContainer $param): string {
       break;
 
       case 'add-genre':
+        $adminRedirect();
         $genreId = $urlQuery->getDefault('genre-id', '');
         $genreName = $urlQuery->getDefault('game-genre', '');
         $param->get('genre-manager')->add($genreId, $genreName);
@@ -246,6 +254,7 @@ function sendAction(DataContainer $param): string {
         break;
 
     case 'edit-user':
+      $adminRedirect();
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
@@ -262,6 +271,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'edit-game':
+      $adminRedirect();
       $prevId = $urlQuery->getDefault('game', '');
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
@@ -304,6 +314,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'edit-genre':
+      $adminRedirect();
       $prevId = $urlQuery->getDefault('genre', '');
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
@@ -339,6 +350,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'delete-user':
+      $adminRedirect();
       $username = $urlQuery->getDefault('username', '');
       $param->get('user-manager')->delete($username);
 
@@ -353,6 +365,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'delete-game':
+      $adminRedirect();
       $game = $urlQuery->getDefault('game', '');
       $param->get('game-manager')->delete($game);
 
@@ -367,6 +380,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'delete-genre':
+      $adminRedirect();
       $genre = $urlQuery->getDefault('genre', '');
       $param->get('genre-manager')->delete($genre);
 
@@ -381,6 +395,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'update-admin-password':
+      $adminRedirect();
       $currentPassword = $postData->getDefault('current-password', '');
       $newPassword = $postData->getDefault('new-password', '');
       $rePassword = $postData->getDefault('re-password', '');
@@ -413,6 +428,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'reset-database':
+      $adminRedirect();
       $urlQuery = $param->get('url-query');
       $password = $postData->getDefault('password', '');
 
