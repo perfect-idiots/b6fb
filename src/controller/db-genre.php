@@ -52,13 +52,13 @@ class GenreManager extends GameGenreRelationshipManager {
     ;
   }
 
-  public function add(string $genre, string $genrename): void {
+  public function add(string $id, string $name): void {
     $this->verify();
 
     $this
       ->get('db-query-set')
       ->get('add-genre')
-      ->executeOnce([$genre, $genrename])
+      ->executeOnce([$id, $name])
     ;
   }
 
