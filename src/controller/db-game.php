@@ -76,10 +76,10 @@ class GameManager extends GameGenreRelationshipManager {
       ])
     ;
 
-    if ($id !== $prevId) {
-      parent::clearGenres($prevId, $param['genre']);
-      parent::addGenres($id, $param['genre']);
+    parent::clearGenres($prevId, $param['genre']);
+    parent::addGenres($id, $param['genre']);
 
+    if ($id !== $prevId) {
       $dbQuerySet
         ->get('update-history-game-id')
         ->executeOnce([$id, $prevId])
