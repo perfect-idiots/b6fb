@@ -171,6 +171,70 @@ function sendFile(UrlQuery $urlQuery): string {
   exit;
 }
 
+function ajaxArray(DataContainer $param): array {
+  $urlQuery = $param->get('url-query');
+
+  $success = function (array $data) {
+    return array_merge($data, [
+      'success' => true,
+    ]);
+  };
+
+  $failure = function () {
+    return [
+      'success' => false,
+    ];
+  };
+
+  switch ($urlQuery->getDefault('api', null)) {
+    case 'all-games':
+      return array_map(
+        function (array $row) {
+          [
+            'id' => $id,
+            'name' => $name,
+            'genre' => $genre,
+            'description' => $description,
+          ] = $row;
+
+          return [
+            'id' => $id,
+            'name' => $name,
+            'genre' => array_values($genre),
+            'description' => $description,
+          ];
+        },
+        $param->get('game-manager')->list()
+      );
+    default:
+      return $failure();
+  }
+}
+
+function sendAjax(DataContainer $param): string {
+  $urlQuery = $param->get('url-query');
+  $prettyPrint = $urlQuery->getDefault('pretty-print', 'off') === 'on';
+  $fields = preg_split('/\s*,\s*/', $urlQuery->getDefault('fields', ''));
+
+  header('Content-Type: application/json');
+
+  return json_encode(
+    array_map(
+      function (array $row) use($fields) {
+        return array_filter(
+          $row,
+          function (string $key) use($fields) {
+            return in_array($key, $fields);
+          },
+          ARRAY_FILTER_USE_KEY
+        );
+      },
+      ajaxArray($param)
+    ),
+    $prettyPrint ? JSON_PRETTY_PRINT : 0
+  );
+}
+
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
   $postData = $param->get('post-data');
@@ -188,6 +252,25 @@ function sendAction(DataContainer $param): string {
     exit();
   };
 
+  $getGenreList = function (DataContainer $query) {
+    $prfx = 'genre-';
+    $prfxlen = strlen($prfx);
+
+    return array_map(
+      function (string $key) use($prfxlen) {
+        return substr($key, $prfxlen);
+      },
+
+      array_keys(array_filter(
+        $query->getData(),
+        function (string $value, string $key) use($prfx) {
+          return $value === 'on' && preg_match("/^$prfx/", $key);
+        },
+        ARRAY_FILTER_USE_BOTH
+      ))
+    );
+  };
+
   switch ($action) {
     case 'check-admin-auth':
       $param->get('login-double-checker')->verify();
@@ -199,7 +282,6 @@ function sendAction(DataContainer $param): string {
       $adminRedirect();
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
-      $genre = $postData->getDefault('genre', '');
       $description = $postData->getDefault('description', '');
       $swf = $files->getFileNullable('swf', null);
       $img = $files->getFileNullable('img', null);
@@ -207,7 +289,6 @@ function sendAction(DataContainer $param): string {
       $required = [
         'id' => $id,
         'name' => $name,
-        'genre' => $genre,
         'description' => $description,
         'swf' => $swf,
         'img' => $img,
@@ -223,7 +304,7 @@ function sendAction(DataContainer $param): string {
       }
 
       $param->get('game-manager')->add(array_merge($required, [
-        'genre' => preg_split('/\s*,\s*/', $genre),
+        'genre' => $getGenreList($postData),
       ]));
 
       $urlQuery->without([
@@ -283,7 +364,6 @@ function sendAction(DataContainer $param): string {
       $required = [
         'id' => $id,
         'name' => $name,
-        'genre' => $genre,
         'description' => $description,
       ];
 
@@ -297,7 +377,7 @@ function sendAction(DataContainer $param): string {
       }
 
       $param->get('game-manager')->update($prevId, array_merge($required, [
-        'genre' => preg_split('/\s*,\s*/', $genre),
+        'genre' => $getGenreList($postData),
         'swf' => $swf,
         'img' => $img,
       ]));
@@ -648,6 +728,8 @@ function main(): string {
         return sendHtml($param);
       case 'file':
         return sendFile($urlQuery);
+      case 'ajax':
+        return sendAjax($param);
       case 'action':
         return sendAction($param);
       default:
