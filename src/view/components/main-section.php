@@ -128,7 +128,7 @@ class GameMenuByHistory extends RawDataContainer implements Component {
     ));
 
     return HtmlElement::create('div', [
-      HtmlElement::emmetBottom('button#clear-history>a', [
+      HtmlElement::emmetBottom('.flex.wrapper.right-aligned>button#clear-history>a', [
         'href' => $urlQuery->assign([
           'type' => 'action',
           'action' => 'clear-user-history',

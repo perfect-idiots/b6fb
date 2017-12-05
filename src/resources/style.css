@@ -598,7 +598,33 @@ button:hover {
 }
 
 @media screen and (max-width: [[hidden-login]]) {
-  .flex-box {
+  .segment.right-corner {
     visibility: hidden;
-  }  
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex.right-aligned {
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
+#clear-history a {
+  text-transform: uppercase;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#clear-history {
+  border: 0px;
+  padding: 6px;
+  color: [[text-color]];
+  background-color: transparent;
+}
+
+.theme-light #clear-history a {
+  color: blue;
 }
