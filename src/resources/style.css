@@ -572,3 +572,33 @@ button:hover {
   font-weight: bold;
   margin: 0.5em 1em 0.5em 0.5em;
 }
+
+.x-component--empty-message {
+  text-align: center;
+}
+
+@media screen and (max-width: [[hidden-search]]) {
+  .x-component--search-box {
+    visibility: hidden;
+  } 
+}
+
+@media screen and (max-width: [[hidden-navigator]]) {
+  nav {
+    right: 101%;
+  }
+
+  .main.outer {
+    left: 0px;
+  }
+
+  #nav-hiding-button {
+    visibility: hidden;
+  }
+}
+
+@media screen and (max-width: [[hidden-login]]) {
+  .flex-box {
+    visibility: hidden;
+  }  
+}
