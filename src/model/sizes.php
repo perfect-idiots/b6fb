@@ -60,6 +60,12 @@ class SizeSet extends LazyLoadedDataContainer {
     $gameItemFigureMargin = ($gameItemWidth - $gameItemImageWidth) / 2;
     $gameItemFigcaptionHeight = $unitSize / 2;
     $footerHeight = 2 * $unitSize;
+    $userprofileSettingWidth = 10 *$unitSize;
+    $hidingSearchBoxWidth = 4 * 3 * $unitSize;
+    $hidingNavigatorWidth = 4 * 3 * $unitSize;
+    $hidingRightSegmentWidth = 2 * 3 * $unitSize;
+    $hiddingDateWidth = 7 * 3 * $unitSize;
+    $mainSectionMinWidth = 2 * 3 * $unitSize;
 
     $begin = Tree::instance([
       'unit' => [
@@ -101,6 +107,9 @@ class SizeSet extends LazyLoadedDataContainer {
         ],
         'identity' => BlockSize::xy($profileSettingIdentityWidth, $profileSettingAvatarSize),
       ],
+      'user-profile-setting' => [
+        'width' => $userprofileSettingWidth,
+      ],
       'navigation' => [
         'entry-height' => $navigationEntryHeight,
         'entry-line-height' => $navigationEntryHeight,
@@ -127,6 +136,15 @@ class SizeSet extends LazyLoadedDataContainer {
       'footer' => [
         'height' => $footerHeight,
         'margin' => $unitSize,
+      ],
+      'hiding' => [
+        'search-box-width' => $hidingSearchBoxWidth,
+        'navigator-width' => $hidingNavigatorWidth,
+        'right-segment-width' => $hidingRightSegmentWidth,
+        'date-width' => $hiddingDateWidth,
+      ],
+      'main-section' => [
+        'min-width' => $mainSectionMinWidth,
       ],
     ])->flat('-', '');
 

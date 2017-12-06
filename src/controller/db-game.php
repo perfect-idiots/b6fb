@@ -6,7 +6,25 @@ require_once __DIR__ . '/../lib/utils.php';
 require_once __DIR__ . '/db-game-genre.php';
 
 class GameManager extends GameGenreRelationshipManager {
-  const GENRE_SEPARATOR = ',';
+  public function info(string $id): ?array {
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('game-info')
+      ->executeOnce([$id], 3 + 2)
+      ->fetch()
+    ;
+
+    if (!sizeof($dbResult)) return null;
+
+    [$row] = $dbResult;
+
+    return array_merge($row, [
+      'name' => $row[0],
+      'genre' => splitAndCombine($row[2], $row[1]),
+      'description' => $row[3],
+      'id' => $id,
+    ]);
+  }
 
   public function add(array $param): void {
     $this->verify();
@@ -28,14 +46,6 @@ class GameManager extends GameGenreRelationshipManager {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
-    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
-      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
-    }
-
-    if ($img->mimetype() !== 'image/jpeg') {
-      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg'");
-    }
-
     if (gettype($genre) !== 'array') {
       throw new TypeError("Field 'genre' must be an array of string");
     }
@@ -51,14 +61,71 @@ class GameManager extends GameGenreRelationshipManager {
     $img->move(self::imgPath($id));
   }
 
+  public function update(string $prevId, array $param): void {
+    $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
+    $id = $param['id'];
+
+    $dbQuerySet
+      ->get('update-game')
+      ->executeOnce([
+        $param['id'],
+        $param['name'],
+        $param['description'],
+        $prevId,
+      ])
+    ;
+
+    $dbQuerySet
+      ->get('update-favourite-game-id')
+      ->executeOnce([
+        $param['id'],
+        $prevId,
+      ])
+    ;
+
+    parent::clearGenres($prevId, $param['genre']);
+    parent::addGenres($id, $param['genre']);
+
+    if ($id !== $prevId) {
+      $dbQuerySet
+        ->get('update-history-game-id')
+        ->executeOnce([$id, $prevId])
+      ;
+    }
+
+    $mv = $id === $prevId
+      ? function () {}
+      : 'rename'
+    ;
+
+    foreach (['swf', 'img'] as $key) {
+      $file = $param[$key];
+      $pathmtd = $key . 'Path';
+
+      if ($file) {
+        unlink(self::$pathmtd($prevId));
+        $file->move(self::$pathmtd($id));
+      } else {
+        $mv(self::$pathmtd($prevId), self::$pathmtd($id));
+      }
+    }
+  }
+
   public function delete(string $id): void {
     $this->verify();
     if (!$this->exists($id)) return;
 
-    $this
-      ->get('db-query-set')
+    $dbQuerySet = $this->get('db-query-set');
+
+    $dbQuerySet
       ->get('delete-game')
-      ->executeOnce([])
+      ->executeOnce([$id])
+    ;
+
+    $dbQuerySet
+      ->get('clear-favourites-by-games')
+      ->executeOnce([$id])
     ;
 
     parent::clearGenres($id);
@@ -88,7 +155,7 @@ class GameManager extends GameGenreRelationshipManager {
       );
 
       copy(
-        __DIR__ . "/../media/images/$id/0",
+        __DIR__ . "/../media/images/$id",
         self::imgPath($id)
       );
     }
@@ -96,15 +163,20 @@ class GameManager extends GameGenreRelationshipManager {
 
   public function clear(): void {
     $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
 
     foreach ($this->list() as [$name]) {
       unlink(self::swfPath($name));
       unlink(self::imgPath($name));
     }
 
-    $this
-      ->get('db-query-set')
+    $dbQuerySet
       ->get('clear-games')
+      ->executeOnce([])
+    ;
+
+    $dbQuerySet
+      ->get('clear-favourites')
       ->executeOnce([])
     ;
 

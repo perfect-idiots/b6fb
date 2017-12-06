@@ -8,6 +8,25 @@ class UserProfile extends LoginDoubleChecker {
     return $login->username() === $this->username() || $login->isAdmin();
   }
 
+  public function info(): array {
+    $this->verify();
+    $username = $this->get('login')->username();
+
+    [[$fullname]] = $this
+      ->get('db-query-set')
+      ->get('user-info')
+      ->executeOnce([$username], 2)
+      ->fetch()
+    ;
+
+    return [
+      $fullname,
+      $username,
+      'fullname' => $fullname,
+      'username' => $username,
+    ];
+  }
+
   public function update(array $param): DatabaseQuerySingleResult {
     $this->verify();
     $dbQuerySet = $this->get('db-query-set');
@@ -24,6 +43,18 @@ class UserProfile extends LoginDoubleChecker {
     ] = array_merge($profile, $param);
 
     return $query->executeOnce([$fullname, $username]);
+  }
+
+  public function updatePassword(string $password): void {
+    $this->verify();
+    $username = $this->username();
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    $this
+      ->get('db-query-set')
+      ->get('update-user-password')
+      ->executeOnce([$hash, $username])
+    ;
   }
 
   public function getHistory(): array {
@@ -59,6 +90,53 @@ class UserProfile extends LoginDoubleChecker {
       ->get('db-query-set')
       ->get('add-user-playing-history')
       ->executeOnce([$username, $game])
+    ;
+  }
+
+  public function clearHistory(): void {
+    $this->verify();
+    $username = $this->get('login')->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('clear-history-by-user')
+      ->executeOnce([$username])
+    ;
+  }
+
+  public function checkFavourite(string $id): bool {
+    $this->verify();
+    $username = $this->username();
+
+    [[$count]] = $this
+      ->get('db-query-set')
+      ->get('user-favourite-existence')
+      ->executeOnce([$username, $id], 1)
+      ->fetch()
+    ;
+
+    return (bool) $count;
+  }
+
+  public function addFavourite(string $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-favourite')
+      ->executeOnce([$username, $id])
+    ;
+  }
+
+  public function deleteFavourite(string $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('delete-favourite')
+      ->executeOnce([$username, $id])
     ;
   }
 }

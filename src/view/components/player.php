@@ -10,17 +10,24 @@ class Player extends RawDataContainer implements Component {
     $id = $this->get('game-id');
     $name = $this->get('game-name');
     $description = $this->get('game-description');
+    $login = $this->get('login');
+    $userProfile = $this->get('user-profile');
+    $isFavourite = $login->isLoggedIn() && $userProfile->checkFavourite($id);
 
     return HtmlElement::create('article', [
       'dataset' => [
         'game-id' => $id,
         'game-name' => $name,
       ],
+      'classes' => [
+        $isFavourite ? 'favourite' : '',
+      ],
       HtmlElement::emmetTop('.embed-container', [
         SwfEmbed::id($urlQuery, $id),
       ]),
       HtmlElement::emmetTop('.info', [
         HtmlElement::emmetTop('h2.subtitle.game-name', $name),
+        HtmlElement::emmetTop('.control', []),
         HtmlElement::emmetTop('.description', MarkdownView::instance($description)),
       ]),
     ]);
