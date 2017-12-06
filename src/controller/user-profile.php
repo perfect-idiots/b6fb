@@ -122,7 +122,7 @@ class UserProfile extends LoginDoubleChecker {
     $this->verify();
     $username = $this->username();
 
-    [[$count]] = $this
+    $this
       ->get('db-query-set')
       ->get('add-favourite')
       ->executeOnce([$username, $id])
@@ -133,7 +133,7 @@ class UserProfile extends LoginDoubleChecker {
     $this->verify();
     $username = $this->username();
 
-    [[$count]] = $this
+    $this
       ->get('db-query-set')
       ->get('delete-favourite')
       ->executeOnce([$username, $id])
