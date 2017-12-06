@@ -33,6 +33,39 @@ function renderTemplate(template, data = {}, clone = false) {
   return result
 }
 
+Object.assign(renderTemplate, {
+  transform: (fn = (k, v) => [k, v], template, data = {}, clone = false) => {
+    const newData = {}
+
+    for (const key in data) {
+      const [newKey, newValue] = fn(key, data[key], data)
+      newData[newKey] = newValue
+    }
+
+    return renderTemplate(template, newData, clone)
+  },
+
+  transformKey: (fn = x => x, ...args) =>
+    renderTemplate.transform((k, v) => [fn(k), v], ...args),
+
+  transformValue: (fn = x => x, ...args) =>
+    renderTemplate.transform((k, v) => [k, fn(v)], ...args),
+
+  prefix: (prefix = '', ...args) =>
+    renderTemplate.transformKey(x => prefix + x, ...args),
+
+  suffix: (suffix = '', ...args) =>
+    renderTemplate.transformKey(x => x + suffix, ...args),
+
+  byClass: (...args) =>
+    renderTemplate.prefix('.', ...args),
+
+  byId: (...args) =>
+    renderTemplate.prefix('#', ...args),
+
+  __proto__: null
+})
+
 function createDOMNode (content) {
   if (content instanceof Node) return content
 
