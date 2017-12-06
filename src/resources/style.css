@@ -552,6 +552,7 @@ button.toggle-favourite {
   background-size: contain;
   width: 2em;
   height: 2em;
+  transition-duration: 0.05s;
 }
 
 .theme-light .x-component--player:not(.favourite) button.toggle-favourite {
