@@ -11,6 +11,28 @@ function ajax (query) {
   })
 }
 
+function renderTemplate(template, data = {}, clone = false) {
+  if (typeof template === 'string') {
+    return renderTemplate(document.querySelector(template), data)
+  }
+
+  const result = template.content.cloneNode(true)
+
+  const getNode = clone
+    ? node => node.cloneNode(true)
+    : x => x
+
+  for (const selector in data) {
+    const node = getNode(data[selector])
+
+    Array
+      .from(result.querySelectorAll(selector))
+      .forEach(container => container.appendChild(node))
+  }
+
+  return result
+}
+
 ; (function ({document}) {
   const profileButton = document.getElementById('profile-button')
   const profileSetting = document.getElementById('profile-setting')
