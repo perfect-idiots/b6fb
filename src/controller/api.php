@@ -70,7 +70,7 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           'payload' => $payload,
           'error' => $error,
         ]);
-      }
+      },
     ];
   }
 
