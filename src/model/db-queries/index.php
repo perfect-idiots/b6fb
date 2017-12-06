@@ -6,6 +6,7 @@ return [
   'user-account-existence' => 's',
   'game-existence' => 's',
   'game-genre-pair-existence' => 'ss',
+  'user-favourite-existence' => 'ss',
   'list-games' => '',
   'list-users' => '',
   'list-genres' => '',
@@ -14,6 +15,7 @@ return [
   'add-genre' => 'ss',
   'add-game-genre-pair' => 'ss',
   'add-user-playing-history' => 'ss',
+  'add-favourite' => 'ss',
   'user-info' => 's',
   'game-info' => 's',
   'genre-info' => 's',
@@ -44,6 +46,7 @@ return [
   'delete-game' => 's',
   'delete-genre' => 's',
   'delete-game-genre-pair' => 'ss',
+  'delete-favourite' => 'ss',
   'search-games' => 's',
 ];
 ?>
