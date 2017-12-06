@@ -7,6 +7,7 @@ require_once __DIR__ . '/navigator-section.php';
 require_once __DIR__ . '/main-section.php';
 require_once __DIR__ . '/script-embed.php';
 require_once __DIR__ . '/footer-section.php';
+require_once __DIR__ . '/main-template-set.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 class App extends RawDataContainer implements Component {
@@ -34,12 +35,14 @@ class App extends RawDataContainer implements Component {
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
         JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
         JsonDataEmbed::dump($data['images'], JSON_PRETTY_PRINT, ['id' => 'data-images']),
+        new MainTemplateSet($this->getData()),
       ]),
       HtmlElement::create('body', [
         new HeaderSection($data),
         new NavigatorSection($data),
         new MainSection($data),
       ]),
+      JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
       JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
     ]);
   }

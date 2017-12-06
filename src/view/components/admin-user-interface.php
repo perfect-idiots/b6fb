@@ -68,6 +68,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             new AdminNavigatorSection($this->getData()),
             new AdminMainSection($this->getData()),
           ]),
+          JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
           JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
         ])
         : HtmlElement::emmetBottom('body#login-page>#page.aligner', [
@@ -557,7 +558,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
           LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
           LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
           LabeledCheckbox::text('history', 'Lịch sử Truy cập Trò chơi'),
-          LabeledCheckbox::text('favorite', 'Danh sách Trò chơi được Yêu thích'),
+          LabeledCheckbox::text('favourite', 'Danh sách Trò chơi được Yêu thích'),
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
