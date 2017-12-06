@@ -136,7 +136,7 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
     return ApiResponse::success($payload, $error);
   }
 
-  static private function invalidType($path, $expected, $received, array $rest = []): ApiFailureResponse {
+  static private function invalidType($path, $expected, $received, array $rest = []): ApiResponse {
     return ApiResponse::failure(array_merge($rest, [
       'reason' => 'Invalid Type',
       'path' => $path,
