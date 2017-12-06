@@ -21,6 +21,7 @@ class Player extends RawDataContainer implements Component {
       ]),
       HtmlElement::emmetTop('.info', [
         HtmlElement::emmetTop('h2.subtitle.game-name', $name),
+        HtmlElement::emmetTop('.control', []),
         HtmlElement::emmetTop('.description', MarkdownView::instance($description)),
       ]),
     ]);
