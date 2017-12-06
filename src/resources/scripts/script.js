@@ -36,7 +36,7 @@ function ajax (query) {
   })
 
   ; (function (container) {
-    if (!container) return;
+    if (!container) return
 
     if (isLoggedIn) {
       const toggleFavButton = document.createElement('button')
