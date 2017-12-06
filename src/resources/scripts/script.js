@@ -28,4 +28,12 @@ function ajax (query) {
       classList.add('nav-hidden')
     }
   })
+
+  ; (function (container) {
+    if (!container) return;
+
+    const toggleFavButton = document.createElement('button')
+    toggleFavButton.classList.add('toggle-favourite')
+    container.appendChild(toggleFavButton)
+  })(document.querySelector('.x-component--player .control'))
 })(window)
