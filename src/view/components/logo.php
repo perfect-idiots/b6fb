@@ -8,6 +8,10 @@ class Logo extends RawDataContainer implements Component {
     return HtmlElement::create('h1', [
       'id' => 'main-logo',
       'classes' => ['logo'],
+      $this->getDefault('hidable-nav', false)
+        ? HtmlElement::emmetTop('button#nav-hiding-button', [])
+        : ''
+      ,
       Anchor::withoutAttributes('.', $this->get('title')),
     ]);
   }

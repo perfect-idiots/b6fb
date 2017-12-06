@@ -14,6 +14,23 @@ class UserManager extends LoginDoubleChecker {
     ;
   }
 
+  public function clear(): void {
+    $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
+
+    $exec = function (string $query) use($dbQuerySet) {
+      $dbQuerySet->get($query)->executeOnce();
+    };
+
+    $exec('clear-users');
+    $exec('clear-history');
+  }
+
+  public function reset(): void {
+    $this->verify();
+    $this->clear();
+  }
+
   public function update(string $username, string $fullname): void {
     $this->verify();
 
@@ -26,12 +43,14 @@ class UserManager extends LoginDoubleChecker {
 
   public function delete(string $username): void {
     $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
 
-    $this
-      ->get('db-query-set')
-      ->get('delete-user')
-      ->executeOnce([$username])
-    ;
+    $exec = function (string $query) use($dbQuerySet, $username) {
+      $dbQuerySet->get($query)->executeOnce([$username]);
+    };
+
+    $exec('delete-user');
+    $exec('clear-history-by-user');
   }
 
   public function getUserInfo(string $username): ?array {

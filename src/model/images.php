@@ -49,6 +49,38 @@ class NightModeIcon extends SvgImage {
   }
 }
 
+class MenuIcon extends SvgImage {
+  protected function name(): string {
+    return 'menu.svg';
+  }
+}
+
+abstract class StarIcon extends SvgImage {
+  abstract protected function suffix(): string;
+
+  protected function name(): string {
+    return 'star-' . $this->suffix() . '.svg';
+  }
+}
+
+class StarFillIcon extends StarIcon {
+  protected function suffix(): string {
+    return 'fill';
+  }
+}
+
+class StarStrokeWhiteIcon extends StarIcon {
+  protected function suffix(): string {
+    return 'stroke-white';
+  }
+}
+
+class StarStrokeBlackIcon extends StarIcon {
+  protected function suffix(): string {
+    return 'stroke-black';
+  }
+}
+
 class DefaultAvatarImage extends SvgImage {
   protected function name(): string {
     return 'default-avatar.svg';
@@ -74,9 +106,13 @@ class ImageSet extends LazyLoadedDataContainer {
     $classes = [
       'SearchIcon',
       'NightModeIcon',
+      'MenuIcon',
       'DefaultAvatarImage',
       'GamepadImage',
       'MultiUsersImage',
+      'StarFillIcon',
+      'StarStrokeWhiteIcon',
+      'StarStrokeBlackIcon',
     ];
 
     $result = [];
