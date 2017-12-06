@@ -118,3 +118,7 @@ button:hover {
   display: block;
   text-align: center;
 }
+
+#clear-history {
+  background: red;
+}
