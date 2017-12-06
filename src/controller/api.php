@@ -35,6 +35,42 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           $filterKeys($param->get('game-manager')->list(), $fields)
         );
       },
+
+      'searchGames' => function ($queries) use($param, $filterKeys) {
+        $type = gettype($queries);
+        if ($type !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        [$payload, $error] = [[], []];
+        $searchEngine = $param->get('search-engine');
+
+        foreach ($queries as $search => $fields) {
+          $type = gettype($fields);
+          if ($type !== 'array') {
+            array_push($error, [
+              'path' => [$search],
+              'expected' => ['type' => 'array'],
+              'received' => ['type' => $type],
+            ]);
+
+            $payload[$search] = null;
+
+            continue;
+          }
+
+          $payload[$search] = $filterKeys($searchEngine->searchGames($search), $fields);
+        }
+
+        return ApiResponse::instance([
+          'payload' => $payload,
+          'error' => $error,
+        ]);
+      }
     ];
   }
 
