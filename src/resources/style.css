@@ -544,7 +544,7 @@ button:hover {
   margin: 0.5em 0px 0px 0px;
 }
 
-.x-component--player button.toggle-favourite {
+button.toggle-favourite {
   border: none;
   background-color: transparent;
   background-origin: padding-box;
