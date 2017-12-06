@@ -73,6 +73,8 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           'inputString' => $inputString,
         ]);
 
+        $payload[$fname] = null;
+
         continue;
       }
 
