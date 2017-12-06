@@ -1,5 +1,16 @@
 'use strict'
 
+function ajax (query) {
+  const xhr = new XMLHttpRequest()
+  xhr.open('POST', '?type=api')
+
+  return new Promise((resolve, reject) => {
+    xhr.addEventListener('loadend', () => resolve(JSON.parse(xhr.response)))
+    xhr.addEventListener('error', error => reject(error))
+    xhr.send(JSON.stringify(query))
+  })
+}
+
 ; (function ({document}) {
   const profileButton = document.getElementById('profile-button')
   const profileSetting = document.getElementById('profile-setting')
