@@ -10,7 +10,9 @@ class Player extends RawDataContainer implements Component {
     $id = $this->get('game-id');
     $name = $this->get('game-name');
     $description = $this->get('game-description');
-    $isFavourite = $this->get('user-profile')->checkFavourite($id);
+    $login = $this->get('login');
+    $userProfile = $this->get('user-profile');
+    $isFavourite = $login->isLoggedIn() && $userProfile->checkFavourite($id);
 
     return HtmlElement::create('article', [
       'dataset' => [
