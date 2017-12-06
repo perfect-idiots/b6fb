@@ -45,7 +45,7 @@ class SwfEmbedChild implements Component {
       ### Thông tin thêm
 
       **Trình duyệt:**
-        * _User Agent:_ {$_SERVER['HTTP_USER_AGENT']}
+        * _User Agent:_ <code>{$_SERVER['HTTP_USER_AGENT']}</code>
     ");
   }
 }
