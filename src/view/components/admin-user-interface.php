@@ -68,6 +68,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             new AdminNavigatorSection($this->getData()),
             new AdminMainSection($this->getData()),
           ]),
+          JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
           JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
         ])
         : HtmlElement::emmetBottom('body#login-page>#page.aligner', [
