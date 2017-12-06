@@ -23,7 +23,7 @@ function renderTemplate(template, data = {}, clone = false) {
     : x => x
 
   for (const selector in data) {
-    const node = getNode(data[selector])
+    const node = getNode(createDOMNode(data[selector]))
 
     Array
       .from(result.querySelectorAll(selector))
@@ -31,6 +31,22 @@ function renderTemplate(template, data = {}, clone = false) {
   }
 
   return result
+}
+
+function createDOMNode (content) {
+  if (content instanceof Node) return content
+
+  if (['string', 'number'].includes(typeof content)) {
+    return document.createTextNode(String(content))
+  }
+
+  if (content instanceof Array) {
+    const result = document.createDocumentFragment()
+    Array.from(content).map(createDOMNode).forEach(child => result.appendChild(child))
+    return result
+  }
+
+  throw new TypeError(`Invalid type of content: ${content}`)
 }
 
 ; (function ({document}) {
