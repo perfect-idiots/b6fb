@@ -10,6 +10,7 @@ require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/db-admin.php';
 require_once __DIR__ . '/db-history.php';
+require_once __DIR__ . '/db-favourite.php';
 require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
 require_once __DIR__ . '/api.php';
@@ -490,6 +491,10 @@ function sendAction(DataContainer $param): string {
         if ($check('history')) {
           $param->get('history-manager')->$subaction();
         }
+
+        if ($check('favourite')) {
+          $param->get('favourite-manager')->$subaction();
+        }
       }
 
       $urlQuery->except('action')->assign([
@@ -626,6 +631,7 @@ function main(): string {
   $userManager = new UserManager($securitySharedParam);
   $adminManager = new AdminManager($securitySharedParam);
   $historyManager = new HistoryManager($securitySharedParam);
+  $favouriteManager = new FavouriteManager($securitySharedParam);
   $userProfile = new UserProfile($securitySharedParam);
   $searchEngine = new SearchEngine($securitySharedParam);
 
@@ -656,6 +662,7 @@ function main(): string {
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
     'history-manager' => $historyManager,
+    'favourite-manager' => $favouriteManager,
     'user-profile' => $userProfile,
     'search-engine' => $searchEngine,
     'signup' => $signup,

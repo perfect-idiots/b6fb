@@ -34,6 +34,8 @@ class MainContent extends RawDataContainer implements Component {
         return new GameMenu($this->getData());
       case 'genre':
         return new GameMenuByGenre($this->getData());
+      case 'favourite':
+        return new GameMenuByFavourite($this->getData());
       case 'history':
         return new GameMenuByHistory($this->getData());
       case 'play':
@@ -83,6 +85,29 @@ class GameMenuByGenre extends RawDataContainer implements Component {
       ->get('game-genre-relationship-manager')
       ->getGames($genre)
     ;
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        [$id, $name] = $info;
+
+        return new GameItem($self->assign([
+          'game-id' => $id,
+          'game-name' => $name,
+        ])->getData());
+      },
+      $gamelist
+    ));
+  }
+}
+
+class GameMenuByFavourite extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $gamelist = $this->get('user-profile')->listFavourite();
+
+    if (!sizeof($gamelist)) {
+      return new EmptyMessage('Danh sách trống');
+    }
 
     return HtmlElement::emmetTop('#game-menu', array_map(
       function (array $info) use($self) {
