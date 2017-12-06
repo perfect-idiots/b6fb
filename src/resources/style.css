@@ -544,6 +544,29 @@ button:hover {
   margin: 0.5em 0px 0px 0px;
 }
 
+button.toggle-favourite {
+  border: none;
+  background-color: transparent;
+  background-origin: padding-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 2em;
+  height: 2em;
+  transition-duration: 0.05s;
+}
+
+.theme-light .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-black-icon]]);
+}
+
+.theme-dark .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-white-icon]]);
+}
+
+.x-component--player.favourite button.toggle-favourite {
+  background-image: url([[star-fill-icon]]);
+}
+
 .x-component--playing-history-item {
   color: [[text-color]];
   width: 100%;
@@ -571,4 +594,30 @@ button:hover {
   font-size: 2em;
   font-weight: bold;
   margin: 0.5em 1em 0.5em 0.5em;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex.right-aligned {
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
+#clear-history a {
+  text-transform: uppercase;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#clear-history {
+  border: 0px;
+  padding: 10px;
+  color: [[text-color]];
+  background-color: [[primary-button-background-color]];
+}
+
+.theme-light #clear-history a {
+  color: [[primary-button-text-color]];
 }
