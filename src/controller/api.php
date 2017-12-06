@@ -20,6 +20,15 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
       );
     };
 
+    $parseException = function (Throwable $throwable, array $path = []) {
+      return ApiResponse::failure([
+        'path' => $path,
+        'reason' => 'Exception Encountered',
+        'exceptionName' => get_class($throwable),
+        'exceptionMessage' => $throwable->getMessage(),
+      ]);
+    };
+
     return [
       'allGames' => function ($fields) use($param, $filterKeys) {
         $type = gettype($fields);
@@ -70,7 +79,47 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           'payload' => $payload,
           'error' => $error,
         ]);
-      }
+      },
+
+      'userAddFavourite' => function ($id) use($param, $parseException) {
+        $type = gettype($id);
+        if ($type !== 'string') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'string'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        try {
+          $userProfile = $param->get('user-profile');
+          $userProfile->addFavourite($id);
+          $response = $userProfile->checkFavourite($id);
+          return ApiResponse::success($response);
+        } catch (Exception $exception) {
+          return $parseException($exception);
+        }
+      },
+
+      'userDeleteFavourite' => function ($id) use($param, $parseException) {
+        $type = gettype($id);
+        if ($type !== 'string') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'string'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        try {
+          $userProfile = $param->get('user-profile');
+          $userProfile->deleteFavourite($id);
+          $response = $userProfile->checkFavourite($id);
+          return ApiResponse::success($response);
+        } catch (Exception $exception) {
+          return $parseException($exception);
+        }
+      },
     ];
   }
 

@@ -103,6 +103,42 @@ class UserProfile extends LoginDoubleChecker {
       ->executeOnce([$username])
     ;
   }
+
+  public function checkFavourite(string $id): bool {
+    $this->verify();
+    $username = $this->username();
+
+    [[$count]] = $this
+      ->get('db-query-set')
+      ->get('user-favourite-existence')
+      ->executeOnce([$username, $id], 1)
+      ->fetch()
+    ;
+
+    return (bool) $count;
+  }
+
+  public function addFavourite(string $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-favourite')
+      ->executeOnce([$username, $id])
+    ;
+  }
+
+  public function deleteFavourite(string $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('delete-favourite')
+      ->executeOnce([$username, $id])
+    ;
+  }
 }
 
 class UserInfo extends RawDataContainer {
