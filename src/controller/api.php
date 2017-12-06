@@ -25,7 +25,7 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
         $type = gettype($fields);
         if ($type !== 'array') {
           return ApiResponse::failure([
-            'path' => ['all-games'],
+            'path' => [],
             'expected' => ['type' => 'array'],
             'received' => ['type' => $type],
           ]);
