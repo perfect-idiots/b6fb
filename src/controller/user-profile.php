@@ -92,6 +92,77 @@ class UserProfile extends LoginDoubleChecker {
       ->executeOnce([$username, $game])
     ;
   }
+
+  public function clearHistory(): void {
+    $this->verify();
+    $username = $this->get('login')->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('clear-history-by-user')
+      ->executeOnce([$username])
+    ;
+  }
+
+  public function checkFavourite(string $id): bool {
+    $this->verify();
+    $username = $this->username();
+
+    [[$count]] = $this
+      ->get('db-query-set')
+      ->get('user-favourite-existence')
+      ->executeOnce([$username, $id], 1)
+      ->fetch()
+    ;
+
+    return (bool) $count;
+  }
+
+  public function addFavourite(string $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-favourite')
+      ->executeOnce([$username, $id])
+    ;
+  }
+
+  public function deleteFavourite(string $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('delete-favourite')
+      ->executeOnce([$username, $id])
+    ;
+  }
+
+
+  public function listFavourite(): array {
+    $username = $this->username();
+
+    $list = $this
+      ->get('db-query-set')
+      ->get('list-favourite-games')
+      ->executeOnce([$username], 3 + 2)
+      ->fetch()
+    ;
+
+    return array_map(
+      function (array $row) {
+        return array_merge($row, [
+          'id' => $row[0],
+          'name' => $row[1],
+          'genre' => splitAndCombine($row[2], $row[3]),
+          'description' => $row[4],
+        ]);
+      },
+      $list
+    );
+  }
 }
 
 class UserInfo extends RawDataContainer {

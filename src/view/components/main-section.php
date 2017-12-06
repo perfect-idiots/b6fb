@@ -34,6 +34,8 @@ class MainContent extends RawDataContainer implements Component {
         return new GameMenu($this->getData());
       case 'genre':
         return new GameMenuByGenre($this->getData());
+      case 'favourite':
+        return new GameMenuByFavourite($this->getData());
       case 'history':
         return new GameMenuByHistory($this->getData());
       case 'play':
@@ -98,6 +100,29 @@ class GameMenuByGenre extends RawDataContainer implements Component {
   }
 }
 
+class GameMenuByFavourite extends RawDataContainer implements Component {
+  public function render(): Component {
+    $self = $this;
+    $gamelist = $this->get('user-profile')->listFavourite();
+
+    if (!sizeof($gamelist)) {
+      return new EmptyMessage('Danh sách trống');
+    }
+
+    return HtmlElement::emmetTop('#game-menu', array_map(
+      function (array $info) use($self) {
+        [$id, $name] = $info;
+
+        return new GameItem($self->assign([
+          'game-id' => $id,
+          'game-name' => $name,
+        ])->getData());
+      },
+      $gamelist
+    ));
+  }
+}
+
 class GameMenuByHistory extends RawDataContainer implements Component {
   public function render(): Component {
     $self = $this;
@@ -109,7 +134,11 @@ class GameMenuByHistory extends RawDataContainer implements Component {
       ->getHistory()
     ;
 
-    return HtmlElement::emmetTop('#game-menu', array_map(
+    if (!sizeof($gamelist)) {
+      return new EmptyMessage('Lịch sử trống');
+    }
+
+    $menu = HtmlElement::emmetTop('#game-menu', array_map(
       function (array $info) use($self) {
         $description = strftime('%H giờ %M phút %S — ngày %d tháng %m năm %Y', $info['date']);
 
@@ -122,6 +151,17 @@ class GameMenuByHistory extends RawDataContainer implements Component {
       },
       $gamelist
     ));
+
+    return HtmlElement::create('div', [
+      HtmlElement::emmetBottom('.flex.wrapper.right-aligned>button#clear-history>a', [
+        'href' => $urlQuery->assign([
+          'type' => 'action',
+          'action' => 'clear-user-history',
+        ])->getUrlQuery(),
+        'Làm trống Lịch sử',
+      ]),
+      $menu,
+    ]);
   }
 }
 
@@ -172,10 +212,10 @@ class SearchResult extends RawDataContainer implements Component {
     $count = sizeof($result);
 
     if (!$result) {
-      return HtmlElement::emmetTop('.error.message', [
+      return new EmptyMessage(HtmlElement::emmetTop('.error.message', [
         'Không tìm thấy trò chơi nào chứa từ khóa ',
         HtmlElement::emmetBottom('strong.search-word', $search),
-      ]);
+      ]));
     }
 
     $children = array_map(
@@ -271,6 +311,18 @@ class PlayingHistoryItem extends RawDataContainer implements Component {
 class SearchResultItem extends RawDataContainer implements Component {
   public function render(): Component {
     return new GameItem($this->getData());
+  }
+}
+
+class EmptyMessage implements Component {
+  private $message;
+
+  public function __construct($message) {
+    $this->message = $message;
+  }
+
+  public function render(): Component {
+    return HtmlElement::create('article', $this->message);
   }
 }
 ?>

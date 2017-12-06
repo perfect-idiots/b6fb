@@ -10,8 +10,10 @@ require_once __DIR__ . '/db-genre.php';
 require_once __DIR__ . '/db-user.php';
 require_once __DIR__ . '/db-admin.php';
 require_once __DIR__ . '/db-history.php';
+require_once __DIR__ . '/db-favourite.php';
 require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
+require_once __DIR__ . '/api.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -67,7 +69,7 @@ function switchPage(array $data): Page {
   }
 }
 
-function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
+function createSubpageList(LoginInfo $login): array {
   $customized = $login->isLoggedIn()
     ? [
       'profile' => 'Tài khoản',
@@ -87,7 +89,7 @@ function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
   ]];
 
   foreach ($customized as $page => $title) {
-    $href = $urlQuery->set('page', $page)->getUrlQuery();
+    $href = UrlQuery::instance(['page' => $page])->getUrlQuery();
 
     array_push($result, [
       'page' => $page,
@@ -99,7 +101,7 @@ function createSubpageList(UrlQuery $urlQuery, LoginInfo $login): array {
   return $result;
 }
 
-function createAdminSubpageList(UrlQuery $urlQuery) {
+function createAdminSubpageList() {
   $namemap = [
     'games' => 'Trò chơi',
     'users' => 'Người dùng',
@@ -111,6 +113,8 @@ function createAdminSubpageList(UrlQuery $urlQuery) {
     'title' => 'Bảng điều khiển',
     'href' => UrlQuery::instance(['page' => 'admin'])->getUrlQuery(),
   ]];
+
+  $urlQuery = UrlQuery::instance(['page' => 'admin']);
 
   foreach ($namemap as $page => $title) {
     $href = $urlQuery->set('subpage', $page)->getUrlQuery();
@@ -169,6 +173,12 @@ function sendFile(UrlQuery $urlQuery): string {
   exit;
 }
 
+function sendAjax(ApplicationProgrammingInterface $api): string {
+  $response = $api->getResponseString();
+  header('Content-Type: application/json');
+  return $response;
+}
+
 function sendAction(DataContainer $param): string {
   $urlQuery = $param->get('url-query');
   $postData = $param->get('post-data');
@@ -180,6 +190,31 @@ function sendAction(DataContainer $param): string {
   $action = $urlQuery->getDefault('action', '');
   $dbQuerySet = DatabaseQuerySet::instance();
 
+  $adminRedirect = function () use($urlQuery) {
+    if ($urlQuery->getDefault('page', 'index') === 'admin') return;
+    $urlQuery->set('page', 'admin')->redirect();
+    exit();
+  };
+
+  $getGenreList = function (DataContainer $query) {
+    $prfx = 'genre-';
+    $prfxlen = strlen($prfx);
+
+    return array_map(
+      function (string $key) use($prfxlen) {
+        return substr($key, $prfxlen);
+      },
+
+      array_keys(array_filter(
+        $query->getData(),
+        function (string $value, string $key) use($prfx) {
+          return $value === 'on' && preg_match("/^$prfx/", $key);
+        },
+        ARRAY_FILTER_USE_BOTH
+      ))
+    );
+  };
+
   switch ($action) {
     case 'check-admin-auth':
       $param->get('login-double-checker')->verify();
@@ -188,9 +223,9 @@ function sendAction(DataContainer $param): string {
       ';
 
     case 'add-game':
+      $adminRedirect();
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
-      $genre = $postData->getDefault('genre', '');
       $description = $postData->getDefault('description', '');
       $swf = $files->getFileNullable('swf', null);
       $img = $files->getFileNullable('img', null);
@@ -198,7 +233,6 @@ function sendAction(DataContainer $param): string {
       $required = [
         'id' => $id,
         'name' => $name,
-        'genre' => $genre,
         'description' => $description,
         'swf' => $swf,
         'img' => $img,
@@ -214,7 +248,7 @@ function sendAction(DataContainer $param): string {
       }
 
       $param->get('game-manager')->add(array_merge($required, [
-        'genre' => preg_split('/\s*,\s*/', $genre),
+        'genre' => $getGenreList($postData),
       ]));
 
       $urlQuery->without([
@@ -228,6 +262,7 @@ function sendAction(DataContainer $param): string {
       break;
 
       case 'add-genre':
+        $adminRedirect();
         $genreId = $urlQuery->getDefault('genre-id', '');
         $genreName = $urlQuery->getDefault('game-genre', '');
         $param->get('genre-manager')->add($genreId, $genreName);
@@ -244,6 +279,7 @@ function sendAction(DataContainer $param): string {
         break;
 
     case 'edit-user':
+      $adminRedirect();
       $username = $urlQuery->getDefault('username', '');
       $fullname = $urlQuery->getDefault('fullname', '');
       if (!$username || !$fullname) return ErrorPage::status(400)->render();
@@ -260,6 +296,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'edit-game':
+      $adminRedirect();
       $prevId = $urlQuery->getDefault('game', '');
       $id = $postData->getDefault('id', '');
       $name = $postData->getDefault('name', '');
@@ -271,7 +308,6 @@ function sendAction(DataContainer $param): string {
       $required = [
         'id' => $id,
         'name' => $name,
-        'genre' => $genre,
         'description' => $description,
       ];
 
@@ -285,7 +321,7 @@ function sendAction(DataContainer $param): string {
       }
 
       $param->get('game-manager')->update($prevId, array_merge($required, [
-        'genre' => preg_split('/\s*,\s*/', $genre),
+        'genre' => $getGenreList($postData),
         'swf' => $swf,
         'img' => $img,
       ]));
@@ -302,22 +338,43 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'edit-genre':
-      $genre = $urlQuery->getDefault('genre', '');
-      $genreName = $urlQuery->getDefault('genreName', '');
-      $param->get('genre-manager')->update($genreName, $genre);
+      $adminRedirect();
+      $prevId = $urlQuery->getDefault('genre', '');
+      $id = $postData->getDefault('id', '');
+      $name = $postData->getDefault('name', '');
+
+      if (!$prevId) {
+        throw new NotFoundException("Field 'genre' is missing from url");
+      }
+
+      $required = [
+        'id' => $id,
+        'name' => $name,
+      ];
+
+      foreach ($required as $key => $value) {
+        if (!$value) {
+          http_response_code(400);
+          die("
+            Field <code>$key</code> is missing
+          ");
+        }
+      }
+
+      $param->get('genre-manager')->update($prevId, $required);
 
       $urlQuery->without([
+        'type',
         'action',
         'genre',
-        'genreName',
       ])->assign([
-        'type' => 'html',
         'page' => 'admin',
         'subpage' => 'games',
       ])->redirect();
       break;
 
     case 'delete-user':
+      $adminRedirect();
       $username = $urlQuery->getDefault('username', '');
       $param->get('user-manager')->delete($username);
 
@@ -332,6 +389,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'delete-game':
+      $adminRedirect();
       $game = $urlQuery->getDefault('game', '');
       $param->get('game-manager')->delete($game);
 
@@ -346,6 +404,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'delete-genre':
+      $adminRedirect();
       $genre = $urlQuery->getDefault('genre', '');
       $param->get('genre-manager')->delete($genre);
 
@@ -360,6 +419,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'update-admin-password':
+      $adminRedirect();
       $currentPassword = $postData->getDefault('current-password', '');
       $newPassword = $postData->getDefault('new-password', '');
       $rePassword = $postData->getDefault('re-password', '');
@@ -392,6 +452,7 @@ function sendAction(DataContainer $param): string {
       break;
 
     case 'reset-database':
+      $adminRedirect();
       $urlQuery = $param->get('url-query');
       $password = $postData->getDefault('password', '');
 
@@ -429,6 +490,10 @@ function sendAction(DataContainer $param): string {
 
         if ($check('history')) {
           $param->get('history-manager')->$subaction();
+        }
+
+        if ($check('favourite')) {
+          $param->get('favourite-manager')->$subaction();
         }
       }
 
@@ -482,6 +547,15 @@ function sendAction(DataContainer $param): string {
         'type',
         'action',
       ])->set('page', 'profile')->redirect();
+      break;
+
+    case 'clear-user-history':
+      $param->get('user-profile')->clearHistory();
+
+      $urlQuery->without([
+        'type',
+        'action',
+      ])->set('page', 'history')->redirect();
       break;
 
     default:
@@ -557,6 +631,7 @@ function main(): string {
   $userManager = new UserManager($securitySharedParam);
   $adminManager = new AdminManager($securitySharedParam);
   $historyManager = new HistoryManager($securitySharedParam);
+  $favouriteManager = new FavouriteManager($securitySharedParam);
   $userProfile = new UserProfile($securitySharedParam);
   $searchEngine = new SearchEngine($securitySharedParam);
 
@@ -576,9 +651,9 @@ function main(): string {
     'page' => $page,
     'session' => $session,
     'cookie' => $cookie,
-    'subpages' => createSubpageList($urlQuery, $login),
+    'subpages' => createSubpageList($login),
     'admin-page' => $urlQuery->getDefault('subpage', 'dashboard'),
-    'admin-subpages' => createAdminSubpageList($urlQuery),
+    'admin-subpages' => createAdminSubpageList(),
     'db-query-set' => $dbQuerySet,
     'login-double-checker' => $loginDoubleChecker,
     'game-genre-relationship-manager' => $gameGenreRelationshipManager,
@@ -587,6 +662,7 @@ function main(): string {
     'user-manager' => $userManager,
     'admin-manager' => $adminManager,
     'history-manager' => $historyManager,
+    'favourite-manager' => $favouriteManager,
     'user-profile' => $userProfile,
     'search-engine' => $searchEngine,
     'signup' => $signup,
@@ -602,6 +678,9 @@ function main(): string {
         return sendHtml($param);
       case 'file':
         return sendFile($urlQuery);
+      case 'api':
+        $api = ApplicationProgrammingInterface::instance($param);
+        return sendAjax($api);
       case 'action':
         return sendAction($param);
       default:
