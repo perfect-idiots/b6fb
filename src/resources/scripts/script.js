@@ -82,6 +82,18 @@ function createDOMNode (content) {
   throw new TypeError(`Invalid type of content: ${content}`)
 }
 
+function isFlashSupported () {
+  let result
+
+  try {
+    result = new ActiveXObject('ShockwaveFlash.ShockwaveFlash')
+  } catch (_) {
+    result = navigator.plugins['Shockwave Flash']
+  }
+
+  return Boolean(result)
+}
+
 ; (function ({document}) {
   const profileButton = document.getElementById('profile-button')
   const profileSetting = document.getElementById('profile-setting')
