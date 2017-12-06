@@ -557,6 +557,16 @@ button.toggle-favourite {
   transition-duration: 0.05s;
 }
 
+.info button:hover {
+  box-shadow: none;
+}
+
+.info .control, .info h2 {
+  vertical-align: middle;
+  margin-right: 5px;
+  display: inline-block;
+}
+
 .theme-light .x-component--player:not(.favourite) button.toggle-favourite {
   background-image: url([[star-stroke-black-icon]]);
 }
@@ -658,7 +668,7 @@ button.toggle-favourite {
 }
 
 @media screen and (max-width: [[hiding-date-width]]){
-  .x-component--playing-history-item .description {  
+  .x-component--playing-history-item .description {
     display: none;
   }
 
