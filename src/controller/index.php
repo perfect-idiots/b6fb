@@ -12,6 +12,7 @@ require_once __DIR__ . '/db-admin.php';
 require_once __DIR__ . '/db-history.php';
 require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
+require_once __DIR__ . '/api.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -169,6 +170,12 @@ function sendFile(UrlQuery $urlQuery): string {
   header('Content-Disposition: inline');
   readfile($filename);
   exit;
+}
+
+function sendAjax(ApplicationProgrammingInterface $api): string {
+  $response = $api->getResponseString();
+  header('Content-Type: application/json');
+  return $response;
 }
 
 function sendAction(DataContainer $param): string {
@@ -664,6 +671,9 @@ function main(): string {
         return sendHtml($param);
       case 'file':
         return sendFile($urlQuery);
+      case 'api':
+        $api = ApplicationProgrammingInterface::instance($param);
+        return sendAjax($api);
       case 'action':
         return sendAction($param);
       default:

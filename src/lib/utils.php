@@ -30,6 +30,31 @@ function dbDecodeParams(array $list): array {
   );
 }
 
+function mapArrayKeyValue(array $array, callable $callback): array {
+  return array_map(
+    function ($key, $value) use ($callback) {
+      $result = $callback($value, $key, [
+        'key' => $key,
+        'value' => $value,
+      ]);
+
+      return [
+        $result,
+        [
+          $key,
+          $value,
+        ],
+
+        'key' => $key,
+        'value' => $value,
+        'result' => $result,
+      ];
+    },
+    array_keys($array),
+    array_values($array)
+  );
+}
+
 class ClassChecker {
   private $parents, $implements;
 

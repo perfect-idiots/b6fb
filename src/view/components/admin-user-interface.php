@@ -414,6 +414,7 @@ class AdminEditGame extends RawDataContainer implements Component {
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('id', 'ID', $id),
           PlainLabeledInput::text('name', 'Tên trò chơi', $info['name']),
+          HtmlElement::create('p', 'Thể loại'),
           new GenreCheckboxSet(
             $this
               ->set('checked', array_keys($info['genre']))
@@ -451,6 +452,7 @@ class AdminAddGame extends RawDataContainer implements Component {
         HtmlElement::emmetTop('.input-container', [
           PlainLabeledInput::text('id', 'ID'),
           PlainLabeledInput::text('name', 'Tên trò chơi'),
+          HtmlElement::create('p', 'Thể loại'),
           new GenreCheckboxSet($this->getData()),
           RequiredTextArea::text('description', 'Mô tả'),
           RequiredFileInput::text('swf', 'Tệp trò chơi (.swf)'),
@@ -744,7 +746,7 @@ class GenreCheckboxSet extends RawDataContainer implements Component {
       }
     ;
 
-    return HtmlElement::create('fieldset', array_map(
+    return HtmlElement::create('div', array_map(
       function (array $item) use($isChecked) {
         [
           'id' => $id,
