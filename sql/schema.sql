@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 06, 2017 at 04:26 AM
+-- Generation Time: Dec 06, 2017 at 04:28 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `user_accounts` (
 
 CREATE TABLE IF NOT EXISTS `user_favourite_games` (
   `username` varchar(32) COLLATE utf8mb4_bin NOT NULL,
-  `game_id` int(11) NOT NULL,
+  `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   PRIMARY KEY (`username`,`game_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `user_playing_history` (
   `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
