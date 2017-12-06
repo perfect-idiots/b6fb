@@ -31,7 +31,6 @@ class App extends RawDataContainer implements Component {
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', $data['title']),
         CssView::fromFile(__DIR__ . '/../../resources/style.css', $cssVars),
-        JsonDataEmbed::dump($data['cookie']->getData(), JSON_PRETTY_PRINT, ['id' => 'data-cookie']),
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
         JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
         JsonDataEmbed::dump($data['images'], JSON_PRETTY_PRINT, ['id' => 'data-images']),
