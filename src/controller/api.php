@@ -21,7 +21,7 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
     };
 
     return [
-      'all-games' => function ($fields) use($param, $filterKeys) {
+      'allGames' => function ($fields) use($param, $filterKeys) {
         $type = gettype($fields);
         if ($type !== 'array') {
           return ApiResponse::failure([
