@@ -9,12 +9,23 @@ class SearchEngine extends RawDataContainer {
   }
 
   public function searchGames(string $search): array {
-    return $this
+    $dbResponse = $this
       ->get('db-query-set')
       ->get('search-games')
       ->executeOnce([$search], 3)
       ->fetch()
     ;
+
+    return array_map(
+      function (array $row) {
+        return array_merge($row, [
+          'id' => $row[0],
+          'name' => $row[1],
+          'description' => $row[2],
+        ]);
+      },
+      $dbResponse
+    );
   }
 }
 ?>
