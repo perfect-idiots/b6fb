@@ -43,6 +43,7 @@ function ajax (query) {
 
     toggleFavButton.addEventListener('click', async function ajaxFav () {
       const key = isFavourite() ? 'userDeleteFavourite' : 'userAddFavourite'
+      isFavourite() ? removeFavourite() : addFavourite()
       const response = await ajax({[key]: player.dataset.gameId})
       response.payload[key] ? addFavourite() : removeFavourite()
     }, false)
