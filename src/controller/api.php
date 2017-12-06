@@ -20,12 +20,21 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
       );
     };
 
+    $parseException = function (Throwable $throwable, array $path = []) {
+      return ApiResponse::failure([
+        'path' => $path,
+        'reason' => 'Exception Encountered',
+        'exceptionName' => get_class($throwable),
+        'exceptionMessage' => $throwable->getMessage(),
+      ]);
+    };
+
     return [
-      'all-games' => function ($fields) use($param, $filterKeys) {
+      'allGames' => function ($fields) use($param, $filterKeys) {
         $type = gettype($fields);
         if ($type !== 'array') {
           return ApiResponse::failure([
-            'path' => ['all-games'],
+            'path' => [],
             'expected' => ['type' => 'array'],
             'received' => ['type' => $type],
           ]);
@@ -34,6 +43,82 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
         return ApiResponse::success(
           $filterKeys($param->get('game-manager')->list(), $fields)
         );
+      },
+
+      'searchGames' => function ($queries) use($param, $filterKeys) {
+        $type = gettype($queries);
+        if ($type !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        [$payload, $error] = [[], []];
+        $searchEngine = $param->get('search-engine');
+
+        foreach ($queries as $search => $fields) {
+          $type = gettype($fields);
+          if ($type !== 'array') {
+            array_push($error, [
+              'path' => [$search],
+              'expected' => ['type' => 'array'],
+              'received' => ['type' => $type],
+            ]);
+
+            $payload[$search] = null;
+
+            continue;
+          }
+
+          $payload[$search] = $filterKeys($searchEngine->searchGames($search), $fields);
+        }
+
+        return ApiResponse::instance([
+          'payload' => $payload,
+          'error' => $error,
+        ]);
+      },
+
+      'userAddFavourite' => function ($id) use($param, $parseException) {
+        $type = gettype($id);
+        if ($type !== 'string') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'string'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        try {
+          $userProfile = $param->get('user-profile');
+          $userProfile->addFavourite($id);
+          $response = $userProfile->checkFavourite($id);
+          return ApiResponse::success($response);
+        } catch (Exception $exception) {
+          return $parseException($exception);
+        }
+      },
+
+      'userDeleteFavourite' => function ($id) use($param, $parseException) {
+        $type = gettype($id);
+        if ($type !== 'string') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'string'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        try {
+          $userProfile = $param->get('user-profile');
+          $userProfile->deleteFavourite($id);
+          $response = $userProfile->checkFavourite($id);
+          return ApiResponse::success($response);
+        } catch (Exception $exception) {
+          return $parseException($exception);
+        }
       },
     ];
   }
@@ -73,6 +158,8 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           'inputString' => $inputString,
         ]);
 
+        $payload[$fname] = null;
+
         continue;
       }
 
@@ -98,7 +185,7 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
     return ApiResponse::success($payload, $error);
   }
 
-  static private function invalidType($path, $expected, $received, array $rest = []): ApiFailureResponse {
+  static private function invalidType($path, $expected, $received, array $rest = []): ApiResponse {
     return ApiResponse::failure(array_merge($rest, [
       'reason' => 'Invalid Type',
       'path' => $path,
@@ -117,6 +204,13 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
 }
 
 class ApiResponse extends RawDataContainer {
+  static protected function requiredFieldSchema(): array {
+    return [
+      'payload' => '',
+      'error' => 'array',
+    ];
+  }
+
   public function encode(int $flags = 0): string {
     return json_encode($this->getData(), $flags);
   }

@@ -544,6 +544,28 @@ button:hover {
   margin: 0.5em 0px 0px 0px;
 }
 
+.x-component--player button.toggle-favourite {
+  border: none;
+  background-color: transparent;
+  background-origin: padding-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 2em;
+  height: 2em;
+}
+
+.theme-light .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-black-icon]]);
+}
+
+.theme-dark .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-white-icon]]);
+}
+
+.x-component--player.favourite button.toggle-favourite {
+  background-image: url([[star-fill-icon]]);
+}
+
 .x-component--playing-history-item {
   color: [[text-color]];
   width: 100%;
