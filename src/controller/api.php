@@ -155,6 +155,13 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
 }
 
 class ApiResponse extends RawDataContainer {
+  static protected function requiredFieldSchema(): array {
+    return [
+      'payload' => '',
+      'error' => 'array',
+    ];
+  }
+
   public function encode(int $flags = 0): string {
     return json_encode($this->getData(), $flags);
   }
