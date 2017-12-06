@@ -558,7 +558,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
           LabeledCheckbox::text('user', 'Dữ liệu Người dùng'),
           LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
           LabeledCheckbox::text('history', 'Lịch sử Truy cập Trò chơi'),
-          LabeledCheckbox::text('favorite', 'Danh sách Trò chơi được Yêu thích'),
+          LabeledCheckbox::text('favourite', 'Danh sách Trò chơi được Yêu thích'),
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
