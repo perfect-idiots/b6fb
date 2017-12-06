@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 20, 2017 at 08:20 AM
+-- Generation Time: Dec 06, 2017 at 04:28 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `b6fb`
 --
+CREATE DATABASE IF NOT EXISTS `b6fb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+USE `b6fb`;
 
 -- --------------------------------------------------------
 
@@ -26,10 +28,11 @@ SET time_zone = "+00:00";
 -- Table structure for table `admin_accounts`
 --
 
-CREATE TABLE `admin_accounts` (
-  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `password_hash` varchar(60) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE IF NOT EXISTS `admin_accounts` (
+  `username` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `password_hash` varchar(60) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -37,12 +40,24 @@ CREATE TABLE `admin_accounts` (
 -- Table structure for table `games`
 --
 
-CREATE TABLE `games` (
-  `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `name` varchar(160) COLLATE utf8_unicode_ci NOT NULL,
-  `genre` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
-  `description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE IF NOT EXISTS `games` (
+  `id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `name` varchar(160) COLLATE utf8mb4_bin NOT NULL,
+  `description` varchar(1024) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `games_to_genres`
+--
+
+CREATE TABLE IF NOT EXISTS `games_to_genres` (
+  `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `genre_id` varchar(16) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`game_id`,`genre_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -50,10 +65,11 @@ CREATE TABLE `games` (
 -- Table structure for table `genres`
 --
 
-CREATE TABLE `genres` (
-  `id` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
-  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE IF NOT EXISTS `genres` (
+  `id` varchar(16) COLLATE utf8mb4_bin NOT NULL,
+  `name` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -61,40 +77,38 @@ CREATE TABLE `genres` (
 -- Table structure for table `user_accounts`
 --
 
-CREATE TABLE `user_accounts` (
-  `username` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `password_hash` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `fullname` varchar(24) COLLATE utf8_unicode_ci NOT NULL,
-  `favourite_games` varchar(512) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE IF NOT EXISTS `user_accounts` (
+  `username` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `password_hash` varchar(60) COLLATE utf8mb4_bin NOT NULL,
+  `fullname` varchar(24) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
 
 --
--- Indexes for dumped tables
+-- Table structure for table `user_favourite_games`
 --
 
---
--- Indexes for table `admin_accounts`
---
-ALTER TABLE `admin_accounts`
-  ADD PRIMARY KEY (`username`);
+CREATE TABLE IF NOT EXISTS `user_favourite_games` (
+  `username` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`username`,`game_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
 
 --
--- Indexes for table `games`
+-- Table structure for table `user_playing_history`
 --
-ALTER TABLE `games`
-  ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `genres`
---
-ALTER TABLE `genres`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `user_accounts`
---
-ALTER TABLE `user_accounts`
-  ADD PRIMARY KEY (`username`);
+CREATE TABLE IF NOT EXISTS `user_playing_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -3,7 +3,7 @@ interface Component {
   public function render(): Component;
 }
 
-class PrimaryComponent implements Component {
+abstract class PrimaryComponent implements Component {
   public function render(): Component {
     throw new TypeError('Cannot render a primary component.');
   }
@@ -167,7 +167,7 @@ class TextNode extends TextBase {
   }
 
   public function getText(): string {
-    return htmlspecialchars($this->text);
+    return htmlentities($this->text);
   }
 }
 

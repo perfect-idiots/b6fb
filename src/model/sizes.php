@@ -44,6 +44,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $headerSquareButtonSize = $unitSize / 2;
     $headerSquareButton = BlockSize::sqr($headerSquareButtonSize);
     $headerVerticalPadding = ($unitSize - $headerSquareButtonSize) / 2;
+    $cornerSegmentSize = $unitSquare->times(3, 1);
     $navigationEntryHeight = 2 * $unitSize / 3;
     $profileSettingWidth = 4 * $unitSize;
     $profileSettingAvatarSize = $profileSettingWidth / 4;
@@ -51,6 +52,20 @@ class SizeSet extends LazyLoadedDataContainer {
     $textButtonWidth = 2 * $unitSize;
     $textButtonHeight = $headerSquareButtonSize;
     $textButton = BlockSize::xy($textButtonWidth, $textButtonHeight);
+    $gameItemWidth = 4 * $unitSize;
+    $gameItemHeight = 3 * $unitSize;
+    $gameItemImageWidth = 3 * $unitSize;
+    $gameItemImageHeight = 2 * $unitSize;
+    $gameItemImageMargin = 0;
+    $gameItemFigureMargin = ($gameItemWidth - $gameItemImageWidth) / 2;
+    $gameItemFigcaptionHeight = $unitSize / 2;
+    $footerHeight = 2 * $unitSize;
+    $userprofileSettingWidth = 10 *$unitSize;
+    $hidingSearchBoxWidth = 4 * 3 * $unitSize;
+    $hidingNavigatorWidth = 4 * 3 * $unitSize;
+    $hidingRightSegmentWidth = 2 * 3 * $unitSize;
+    $hiddingDateWidth = 7 * 3 * $unitSize;
+    $mainSectionMinWidth = 2 * 3 * $unitSize;
 
     $begin = Tree::instance([
       'unit' => [
@@ -61,6 +76,9 @@ class SizeSet extends LazyLoadedDataContainer {
         'vertical-padding' => $headerVerticalPadding,
         'child-height' => $headerSquareButtonSize,
         'square-button' => $headerSquareButton,
+      ],
+      'corner-segment' => [
+        '' => $cornerSegmentSize,
       ],
       'middle-segment' => [
         'padding' => $unitSize * 4,
@@ -89,12 +107,44 @@ class SizeSet extends LazyLoadedDataContainer {
         ],
         'identity' => BlockSize::xy($profileSettingIdentityWidth, $profileSettingAvatarSize),
       ],
+      'user-profile-setting' => [
+        'width' => $userprofileSettingWidth,
+      ],
       'navigation' => [
         'entry-height' => $navigationEntryHeight,
         'entry-line-height' => $navigationEntryHeight,
       ],
       'text-button' => [
         '' => $textButton,
+      ],
+      'game-item' => [
+        '' => BlockSize::xy($gameItemWidth, $gameItemHeight),
+        'image' => [
+          '' => BlockSize::xy($gameItemImageWidth, $gameItemImageHeight),
+          'margin' => $gameItemImageMargin,
+        ],
+        'figure' => [
+          'margin' => $gameItemFigureMargin,
+        ],
+        'figcaptionheight' => $gameItemFigcaptionHeight,
+      ],
+      'search-result' => [
+        'item' => [
+          'height' => 3 * $unitSize,
+        ],
+      ],
+      'footer' => [
+        'height' => $footerHeight,
+        'margin' => $unitSize,
+      ],
+      'hiding' => [
+        'search-box-width' => $hidingSearchBoxWidth,
+        'navigator-width' => $hidingNavigatorWidth,
+        'right-segment-width' => $hidingRightSegmentWidth,
+        'date-width' => $hiddingDateWidth,
+      ],
+      'main-section' => [
+        'min-width' => $mainSectionMinWidth,
       ],
     ])->flat('-', '');
 
