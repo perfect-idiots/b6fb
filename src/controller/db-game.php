@@ -76,6 +76,14 @@ class GameManager extends GameGenreRelationshipManager {
       ])
     ;
 
+    $dbQuerySet
+      ->get('update-favourite-game-id')
+      ->executeOnce([
+        $param['id'],
+        $prevId,
+      ])
+    ;
+
     parent::clearGenres($prevId, $param['genre']);
     parent::addGenres($id, $param['genre']);
 
@@ -108,10 +116,16 @@ class GameManager extends GameGenreRelationshipManager {
     $this->verify();
     if (!$this->exists($id)) return;
 
-    $this
-      ->get('db-query-set')
+    $dbQuerySet = $this->get('db-query-set');
+
+    $dbQuerySet
       ->get('delete-game')
-      ->executeOnce([])
+      ->executeOnce([$id])
+    ;
+
+    $dbQuerySet
+      ->get('clear-favourites-by-games')
+      ->executeOnce([$id])
     ;
 
     parent::clearGenres($id);
@@ -149,15 +163,20 @@ class GameManager extends GameGenreRelationshipManager {
 
   public function clear(): void {
     $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
 
     foreach ($this->list() as [$name]) {
       unlink(self::swfPath($name));
       unlink(self::imgPath($name));
     }
 
-    $this
-      ->get('db-query-set')
+    $dbQuerySet
       ->get('clear-games')
+      ->executeOnce([])
+    ;
+
+    $dbQuerySet
+      ->get('clear-favourites')
       ->executeOnce([])
     ;
 

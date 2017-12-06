@@ -24,6 +24,7 @@ class UserManager extends LoginDoubleChecker {
 
     $exec('clear-users');
     $exec('clear-history');
+    $exec('clear-favourites');
   }
 
   public function reset(): void {
@@ -51,6 +52,7 @@ class UserManager extends LoginDoubleChecker {
 
     $exec('delete-user');
     $exec('clear-history-by-user');
+    $exec('clear-favourites-by-user');
   }
 
   public function getUserInfo(string $username): ?array {
