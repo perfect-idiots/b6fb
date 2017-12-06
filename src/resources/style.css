@@ -590,11 +590,11 @@ button:hover {
 
 #clear-history {
   border: 0px;
-  padding: 6px;
+  padding: 10px;
   color: [[text-color]];
-  background-color: transparent;
+  background-color: [[primary-button-background-color]];
 }
 
 .theme-light #clear-history a {
-  color: blue;
+  color: [[primary-button-text-color]];
 }
