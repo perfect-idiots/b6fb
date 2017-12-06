@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/game-item.php';
+require_once __DIR__ . '/warning-bar.php';
 require_once __DIR__ . '/footer-section.php';
 require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/comment-section.php';
@@ -17,6 +18,7 @@ class MainSection extends RawDataContainer implements Component {
     return HtmlElement::emmetBottom('.main.outer>.main.inner', [
       'id' => 'main-section',
       HtmlElement::create('main', [
+        new WarningBarContainer(),
         new MainContent($this->getData()),
       ]),
       new FooterSection(),
