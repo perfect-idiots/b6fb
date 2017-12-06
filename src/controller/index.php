@@ -12,6 +12,7 @@ require_once __DIR__ . '/db-admin.php';
 require_once __DIR__ . '/db-history.php';
 require_once __DIR__ . '/search-engine.php';
 require_once __DIR__ . '/user-profile.php';
+require_once __DIR__ . '/api.php';
 require_once __DIR__ . '/../model/index.php';
 require_once __DIR__ . '/../view/index.php';
 require_once __DIR__ . '/../lib/constants.php';
@@ -171,68 +172,10 @@ function sendFile(UrlQuery $urlQuery): string {
   exit;
 }
 
-function ajaxArray(DataContainer $param): array {
-  $urlQuery = $param->get('url-query');
-
-  $success = function (array $data) {
-    return array_merge($data, [
-      'success' => true,
-    ]);
-  };
-
-  $failure = function () {
-    return [
-      'success' => false,
-    ];
-  };
-
-  switch ($urlQuery->getDefault('api', null)) {
-    case 'all-games':
-      return array_map(
-        function (array $row) {
-          [
-            'id' => $id,
-            'name' => $name,
-            'genre' => $genre,
-            'description' => $description,
-          ] = $row;
-
-          return [
-            'id' => $id,
-            'name' => $name,
-            'genre' => array_values($genre),
-            'description' => $description,
-          ];
-        },
-        $param->get('game-manager')->list()
-      );
-    default:
-      return $failure();
-  }
-}
-
-function sendAjax(DataContainer $param): string {
-  $urlQuery = $param->get('url-query');
-  $prettyPrint = $urlQuery->getDefault('pretty-print', 'off') === 'on';
-  $fields = preg_split('/\s*,\s*/', $urlQuery->getDefault('fields', ''));
-
+function sendAjax(ApplicationProgrammingInterface $api): string {
+  $response = $api->getResponseString();
   header('Content-Type: application/json');
-
-  return json_encode(
-    array_map(
-      function (array $row) use($fields) {
-        return array_filter(
-          $row,
-          function (string $key) use($fields) {
-            return in_array($key, $fields);
-          },
-          ARRAY_FILTER_USE_KEY
-        );
-      },
-      ajaxArray($param)
-    ),
-    $prettyPrint ? JSON_PRETTY_PRINT : 0
-  );
+  return $response;
 }
 
 function sendAction(DataContainer $param): string {
@@ -728,8 +671,9 @@ function main(): string {
         return sendHtml($param);
       case 'file':
         return sendFile($urlQuery);
-      case 'ajax':
-        return sendAjax($param);
+      case 'api':
+        $api = ApplicationProgrammingInterface::instance($param);
+        return sendAjax($api);
       case 'action':
         return sendAction($param);
       default:
