@@ -23,16 +23,50 @@ function renderTemplate(template, data = {}, clone = false, target = null) {
     : x => x
 
   for (const selector in data) {
-    const node = getNode(createDOMNode(data[selector]))
+    const append = renderTemplate.createAppendFunction(data[selector])
 
     Array
       .from(fragment.querySelectorAll(selector))
-      .forEach(container => container.appendChild(node))
+      .forEach(append)
   }
 
   const result = fragment.querySelector('*')
   target instanceof Node && target.appendChild(result)
   return result
+}
+
+renderTemplate.createAppendFunction = prototype => {
+  try {
+    const node = createDOMNode(prototype)
+    return container => container.appendChild(node)
+  } catch (_) {
+    return container => {
+      for (const key in prototype) {
+        const value = prototype[key]
+        const append = renderTemplate.createAppendFunction.attributes[key]
+        append ? append(container, value) : container.setAttribute(key, value)
+      }
+    }
+  }
+}
+
+renderTemplate.createAppendFunction.attributes = {
+  '': (container, child) =>
+    container.appendChild(createDOMNode(child)),
+
+  classList: (container, classes) =>
+    container.classList.add(...classes),
+
+  children: (container, children) => Array
+    .from(children)
+    .map(createDOMNode)
+    .forEach(child => container.appendChild(child)),
+
+  textContent: (container, text) => {
+    container.textContent = text
+  },
+
+  __proto__: null
 }
 
 renderTemplate.transform = (fn = (k, v) => [k, v], template, data = {}, ...args) => {
