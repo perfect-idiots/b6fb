@@ -1,4 +1,4 @@
 insert into games
-  (`id`, `name`, `genre`, `description`)
+  (`id`, `name`, `description`)
 values
-  (?, ?, ?, ?)
+  (?, ?, ?)

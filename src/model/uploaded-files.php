@@ -9,6 +9,11 @@ class UploadedFileSet extends LazyLoadedDataContainer {
   public function getFile(string $name): UploadedFile {
     return new UploadedFile($this->get($name));
   }
+
+  public function getFileNullable(string $name): ?UploadedFile {
+    $existence = (bool) $this->getDefault($name, ['name' => ''])['name'];
+    return $existence ? $this->getFile($name) : null;
+  }
 }
 
 class UploadedFile extends RawDataContainer {
@@ -24,8 +29,12 @@ class UploadedFile extends RawDataContainer {
     return $this->getDefault('type', '');
   }
 
+  public function tmpName(): string {
+    return $this->get('tmp_name');
+  }
+
   public function move(string $destination): bool {
-    return move_uploaded_file($this->clientPath(), $destination);
+    return move_uploaded_file($this->tmpName(), $destination);
   }
 }
 ?>

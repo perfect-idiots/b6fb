@@ -11,14 +11,14 @@ class NavigatorSection extends RawDataContainer implements Component {
     $subpagetmpls = $this->get('subpages');
 
     $genretmpls = array_map(
-      function (array $info) use($self) {
+      function (array $info) {
         [$id, $name] = $info;
 
         return [
-          'href' => $self
-            ->get('url-query')
-            ->assign(['page' => 'genre', 'genre' => $id])
-            ->getUrlQuery(),
+          'href' => UrlQuery::instance([
+            'page' => 'genre',
+            'genre' => $id,
+          ])->getUrlQuery(),
 
           'page' => 'genre',
           'genre' => $id,
