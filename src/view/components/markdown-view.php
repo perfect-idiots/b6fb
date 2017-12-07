@@ -17,9 +17,9 @@ class MarkdownView implements Component {
     return static::instance(implode($separator, $array));
   }
 
-  public static function indented(string $markdown, string $separator = "\n"): self {
+  public static function indented(string $markdown): self {
     $leastIndent = INF;
-    $lines = explode($separator, $markdown);
+    $lines = preg_split('/\n|\r|\n\r|\r\n/', $markdown);
 
     foreach ($lines as $line) {
       if (!$line) continue;
@@ -34,7 +34,7 @@ class MarkdownView implements Component {
         },
         $lines
       ),
-      $separator
+      "\n"
     );
   }
 

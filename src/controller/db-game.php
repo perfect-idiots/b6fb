@@ -2,12 +2,31 @@
 require_once __DIR__ . '/../model/database.php';
 require_once __DIR__ . '/../model/uploaded-files.php';
 require_once __DIR__ . '/../model/predefined.php';
-require_once __DIR__ . '/security.php';
+require_once __DIR__ . '/../lib/utils.php';
+require_once __DIR__ . '/db-game-genre.php';
 
-class GameManager extends LoginDoubleChecker {
-  const GENRE_SEPARATOR = ',';
+class GameManager extends GameGenreRelationshipManager {
+  public function info(string $id): ?array {
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('game-info')
+      ->executeOnce([$id], 3 + 2)
+      ->fetch()
+    ;
 
-  public function add(array $param): array {
+    if (!sizeof($dbResult)) return null;
+
+    [$row] = $dbResult;
+
+    return array_merge($row, [
+      'name' => $row[0],
+      'genre' => splitAndCombine($row[2], $row[1]),
+      'description' => $row[3],
+      'id' => $id,
+    ]);
+  }
+
+  public function add(array $param): void {
     $this->verify();
 
     [
@@ -27,51 +46,91 @@ class GameManager extends LoginDoubleChecker {
       throw new GameDuplicatedException("Game '$id' already exist");
     }
 
-    if ($swf->mimetype() !== 'application/x-shockwave-flash') {
-      throw new GameInvalidMimeException("Game's mime type is not 'application/x-shockwave-flash'");
+    if (gettype($genre) !== 'array') {
+      throw new TypeError("Field 'genre' must be an array of string");
     }
 
-    if ($img->mimetype() !== 'image/jpeg') {
-      throw new GameInvalidMimeException("Image's mime type is not 'image/jpeg");
-    }
-
-    $args = [
-      $id,
-      $name,
-      self::serializeGenres($genres),
-      $description,
-    ];
-
-    $addingQuery = $this->get('db-query-set')->get('adding-query');
-    $dbResult = $addingQuery->executeOnce($args);
-    $swfResult = $swf->move(self::swfPath($id));
-    $imgResult = $img->move(self::imgPath($id));
-
-    return [
-      'db' => $dbResult,
-      'swf' => $swfResult,
-      'img' => $imgResult,
-    ];
-  }
-
-  public function delete(string $id): ?array {
-    $this->verify();
-    if (!$this->exists($id)) return null;
-
-    $dbResult = $this
+    $this
       ->get('db-query-set')
-      ->get('delete-game')
-      ->executeOnce([])
+      ->get('add-game')
+      ->executeOnce([$id, $name, $description])
     ;
 
-    $swfResult = unlink(self::swfPath($id));
-    $imgResult = unlink(self::imgPath($id));
+    parent::addGenres($id, $genre);
+    $swf->move(self::swfPath($id));
+    $img->move(self::imgPath($id));
+  }
 
-    return [
-      'db' => $dbResult,
-      'swf' => $swfResult,
-      'img' => $imgResult,
-    ];
+  public function update(string $prevId, array $param): void {
+    $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
+    $id = $param['id'];
+
+    $dbQuerySet
+      ->get('update-game')
+      ->executeOnce([
+        $param['id'],
+        $param['name'],
+        $param['description'],
+        $prevId,
+      ])
+    ;
+
+    $dbQuerySet
+      ->get('update-favourite-game-id')
+      ->executeOnce([
+        $param['id'],
+        $prevId,
+      ])
+    ;
+
+    parent::clearGenres($prevId, $param['genre']);
+    parent::addGenres($id, $param['genre']);
+
+    if ($id !== $prevId) {
+      $dbQuerySet
+        ->get('update-history-game-id')
+        ->executeOnce([$id, $prevId])
+      ;
+    }
+
+    $mv = $id === $prevId
+      ? function () {}
+      : 'rename'
+    ;
+
+    foreach (['swf', 'img'] as $key) {
+      $file = $param[$key];
+      $pathmtd = $key . 'Path';
+
+      if ($file) {
+        unlink(self::$pathmtd($prevId));
+        $file->move(self::$pathmtd($id));
+      } else {
+        $mv(self::$pathmtd($prevId), self::$pathmtd($id));
+      }
+    }
+  }
+
+  public function delete(string $id): void {
+    $this->verify();
+    if (!$this->exists($id)) return;
+
+    $dbQuerySet = $this->get('db-query-set');
+
+    $dbQuerySet
+      ->get('delete-game')
+      ->executeOnce([$id])
+    ;
+
+    $dbQuerySet
+      ->get('clear-favourites-by-games')
+      ->executeOnce([$id])
+    ;
+
+    parent::clearGenres($id);
+    unlink(self::swfPath($id));
+    unlink(self::imgPath($id));
   }
 
   public function reset(): void {
@@ -85,9 +144,10 @@ class GameManager extends LoginDoubleChecker {
       $addingGameQuery->executeOnce([
         $id,
         $info['name'],
-        self::serializeGenres($info['genre']),
         $info['description'],
       ]);
+
+      parent::addGenres($id, $info['genre']);
 
       copy(
         __DIR__ . "/../media/games/$id",
@@ -95,7 +155,7 @@ class GameManager extends LoginDoubleChecker {
       );
 
       copy(
-        __DIR__ . "/../media/images/$id/0",
+        __DIR__ . "/../media/images/$id",
         self::imgPath($id)
       );
     }
@@ -103,40 +163,76 @@ class GameManager extends LoginDoubleChecker {
 
   public function clear(): void {
     $this->verify();
+    $dbQuerySet = $this->get('db-query-set');
 
     foreach ($this->list() as [$name]) {
       unlink(self::swfPath($name));
       unlink(self::imgPath($name));
     }
 
-    $this
-      ->get('db-query-set')
+    $dbQuerySet
       ->get('clear-games')
       ->executeOnce([])
     ;
+
+    $dbQuerySet
+      ->get('clear-favourites')
+      ->executeOnce([])
+    ;
+
+    parent::clear();
   }
 
   public function exists(string $id): bool {
-    [[$existence]] = $this->checkingQuery->executeOnce([$id], 1);
+    [[$existence]] = $this
+      ->get('db-query-set')
+      ->get('game-existence')
+      ->executeOnce([$id], 1)
+      ->fetch()
+    ;
+
     return $existence > 0;
   }
 
   public function list(): array {
-    return $this
+    $list = $this
       ->get('db-query-set')
       ->get('list-games')
-      ->executeOnce([], 4)
+      ->executeOnce([], 3 + 2)
       ->fetch()
     ;
+
+    return array_map(
+      function (array $row) {
+        return array_merge($row, [
+          'id' => $row[0],
+          'name' => $row[1],
+          'genre' => splitAndCombine($row[2], $row[3]),
+          'description' => $row[4],
+        ]);
+      },
+      $list
+    );
   }
 
-  public function getItemInfo(string $id): array {
-    return $this
+  public function getItemInfo(string $id): ?array {
+    $dbResult = $this
       ->get('db-query-set')
       ->get('game-info')
-      ->executeOnce([$id], 4)
+      ->executeOnce([$id], 3 + 2)
       ->fetch()
     ;
+
+    if (!sizeof($dbResult)) return null;
+
+    [$row] = $dbResult;
+
+    return array_merge($row, [
+      'name' => $row[0],
+      'genre' => splitAndCombine($row[1], $row[2]),
+      'description' => $row[3],
+      'id' => $id,
+    ]);
   }
 
   public function count(): int {
@@ -156,14 +252,6 @@ class GameManager extends LoginDoubleChecker {
 
   static private function imgPath(string $name): string {
     return __DIR__ . '/../storage/game-imgs/' . $name;
-  }
-
-  static private function serializeGenres(array $genres): string {
-    return implode(static::GENRE_SEPARATOR, $genres);
-  }
-
-  static private function unserializeGenres(string $genres): array {
-    return explode(static::GENRE_SEPARATOR, $genres);
   }
 }
 

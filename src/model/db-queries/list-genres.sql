@@ -3,3 +3,5 @@ select
   `name`
 from
   genres
+order by
+  `name` asc

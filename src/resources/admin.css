@@ -1,10 +1,37 @@
-body , h1 {
+body, h1 {
   margin: 0px;
   font-family: 'Roboto', 'Cantarell', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
 }
 
+p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
 a {
+  color: #0d0dcc;
   text-decoration: none;
+}
+
+button {
+  background-color: #5cb85c;
+  border: 0px;
+  padding: 10px;
+  color: white;
+}
+
+button:hover {
+  background-color: #1A7F1A;
+}
+
+button a {
+  color: white;
+  padding: 10px;
+}
+
+input {
+  color: #555;
+  padding: 5px;
 }
 
 header {
@@ -40,6 +67,7 @@ header {
 }
 
 #profile-button {
+  padding: 3px;
   width: 30px;
   height: 30px;
   background-color: transparent;
@@ -58,11 +86,9 @@ header {
 
 }
 #profile-setting a {
+  display: block;
+  padding: 10px 30px;
   color: black;
-}
-
-#profile-setting div {
-  padding: 8px 15px 8px 8px;
 }
 
 #profile-setting div:hover {
@@ -92,23 +118,23 @@ nav > ul > ul > li.current-page a[href] {
   color: black;
 }
 
-ul {
+nav ul {
   list-style-type: none;
   background: #f8f8f8;
   padding: 0px;
 }
 
-ul li {
+nav ul li {
+  padding-left: 15px;
   border-bottom: 1px solid #e7e7e7;
-  padding: 10px;
 }
 
-nav>ul>li{
-  padding: 0px;
-}
 
-ul li a {
-  padding: 10px 15px;
+nav ul li a {
+  padding: 10px 0px;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
 nav ul:nth-child(2) li:hover {
@@ -123,34 +149,21 @@ nav ul:nth-child(2) li:hover {
   padding: 15px;
 }
 
-#user-account {
-  margin-top: 0px;
-}
-
 .header-subpage {
   padding-bottom: 9px;
   border-bottom: 1px solid #eee;
   padding-top: 20px;
+}
 
+.header-subpage * {
+  display: inline;
 }
 
 button.btn-add {
-  position: absolute;
-  right: 150px;
-  top: 100px;
-  background-color: #5cb85c;
-  border: 0px;
-  padding: 10px;
+  display: inline;
+  float: right;
+  margin-right: 10px;
 }
-
-button.btn-add:hover {
-  background-color: #1A7F1A;
-}
-
-.btn-add a {
-  color: white;
-}
-
 .body-subpage {
   margin-top: 30px;
   margin-left: 20px;
@@ -160,16 +173,22 @@ button.btn-add:hover {
   display: inline-block;
   border-radius: 3px;
   color: white;
-  background-color: #337ab7;
-  border: none;
   width: 200px;
   padding: 10px 15px;
   height: 100px;
+  border: none;
 }
 
-.x-component--dashboard-panel#dashboard-user {
+#dashboard-games {
+  background-color: #337ab7;
+}
+
+#dashboard-users {
   background-color: #FD2F2F;
-  border: none;
+}
+
+.x-component--dashboard-panel:hover {
+  box-shadow: 0px 0px 7px -1px black;
 }
 
 .x-component--dashboard-panel .image-container {
@@ -190,14 +209,18 @@ button.btn-add:hover {
   font-size: 40px;
 }
 
-table#tb-games {
-  position: absolute;
+ table {
   border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th,td {
+  width: auto;
 }
 
 table, th, td {
   border: 1px solid #ddd;
-  padding: 5px 100px 0px 10px;
+  padding: 3px 15px 3px 15px;
 }
 
 th {
@@ -205,11 +228,15 @@ th {
   background-color: #eee;
 }
 
-#edit-user-page h2 {
+.controller a:hover {
+  color: red;
+}
+
+.editing-page h2 {
   font-weight: normal;
 }
 
-#edit-user-form {
+.editing-form {
   height: 300px;
   width: 100%;
   padding: 19px;
@@ -217,24 +244,23 @@ th {
   background-color: #f5f5f5;
 }
 
-#form-group {
+.editing-form .form-group,
+.editing-form .x-component--labeled-input {
   display: block;
   margin-bottom: 15px;
 }
 
-#form-group label, #edit-user-form button {
-  position: absolute;
-  left: 400px;
-  font-weight: bold;
-}
-
-#form-group input, output {
+.editing-form input, .editing-form output {
   color: #1716de;
   font-size: 15px;
   font-weight: bold;
   padding: 5px;
   position: relative;
-  margin-left: 300px;
+  margin-left: 10px;
+}
+
+.editing-form button {
+  margin-left: 10px;
 }
 
 output {
@@ -247,71 +273,151 @@ legend {
   margin-bottom: 20px;
 }
 
-#edit-user-form button:hover {
-  background-color: #1A7F1A;
-}
-
-a.edit-user, a.delete-user {
-  margin-left: 15px;
-}
-
-.edit a:hover {
-  color: red;
-}
-
-#add-game-form {
-  height: 570px;
+form.add {
   width: 100%;
-  border: 1px solid #e3e3e3;
-  background-color: #f5f5f5;
+  border: 0px;
 }
 
-#add-game-form h2 {
+form.add h2 {
   display: inline-block;
 }
 
-#add-game-form fieldset {
-  top: 80px;
+form.add {
+  width: auto;
+  border: 1px solid #C8C8C8;
+  padding: 50px 30px;
+  background-color: aliceblue;
   font-size: 17px;
   position: absolute;
-  left: 500px;
 }
 
-#add-game-form fieldset textarea {
+textarea {
   width: 400px;
   height: 100px;
 }
 
-#add-game-form fieldset *:not(button) {
+form.add label, form.add input, form.add output {
   display: block;
 }
 
-#add-game-form legend {
+form.add a {
+  padding: 0px;
+}
+
+form.add legend {
   height: 60px;
   text-align: center;
 }
 
-#add-game-form input, textarea {
+form.add input, textarea {
   margin-bottom: 15px;
 }
 
-fieldset {
-  border: 0px;
-}
-
-fieldset button {
+form.add button {
   margin-top: 20px;
-  background-color: #5cb85c;
-  border: 0px;
   padding: 10px 20px;
-  color: white;
+  width:48%;
 }
 
-#add-game-form input, output, textarea {
+form.add input, output, textarea {
   color: #555;
-  padding: 5px;
 }
 
-.header-subpage-game {
-  padding-top: 20px;
+form.add .x-component--genre-checkbox-set * {
+  display: inline;
+}
+
+.x-component--genre-checkbox-set {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+form.change label, form.editing-form label,
+form.editing-form .button-container label {
+  display: inline-block;
+  text-align: right;
+  width: 30%;
+}
+
+form.change input {
+  margin: 5px 10px;
+  width: 40%;
+}
+
+form.change  {
+  padding: 30px 0px;
+  width: 600px;
+  border: 1px solid #C8C8C8;
+  background-color: aliceblue;
+  font-size: 17px;
+}
+
+form.change .button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+form.change button {
+  width: 100px;
+}
+
+.x-component--admin-advanced-reset-database-section form * {
+  padding-bottom: 10px;
+}
+
+input[type='checkbox'] {
+  transform: scale(1.5);
+}
+
+reset-db button:hover {
+  background-color: rgb(175, 10, 10);
+}
+
+.answer input {
+  padding: 3px;
+}
+
+.answer form >* {
+  padding-bottom: 30px;
+}
+
+button.dangerous {
+  background-color: #ce0000;
+}
+
+button.dangerous:hover {
+  background-color: darkred;
+}
+
+button.safe {
+  background-color: blue;
+}
+
+button.safe:hover {
+  background-color: darkblue;
+}
+
+.warning {
+  color: #D8000C;
+  padding-left: 10px;
+  border: 1px solid red;
+  background-color: #FFBABA;
+}
+
+.x-component--admin-advanced-admin-management-section ul {
+  list-style-type: circle;
+  color:red;
+}
+
+.x-component--admin-advanced-admin-management-section ul li {
+  margin-bottom: 10px;
+}
+
+.x-component--admin-advanced-admin-management-section a {
+  font-weight: bold;
+  color:blue;
+}
+
+.x-component--admin-advanced-admin-management-section a:hover {
+  text-decoration: underline;
 }

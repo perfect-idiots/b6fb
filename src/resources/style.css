@@ -1,3 +1,9 @@
+* {
+  transition-timing-function: ease;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
 html, body {
   margin: 0;
   border: 0;
@@ -91,6 +97,7 @@ body {
 }
 
 #nav-hiding-button {
+  zoom: 0.7;
   border: none;
   background-color: transparent;
   background-size: contain;
@@ -239,8 +246,8 @@ nav {
   text-transform: uppercase;
   position: fixed;
   width: [[logo-width]];
-  height: 100%;
-  top: 0px;
+  top: [[unit-size]];
+  bottom: 0px;
   z-index: 500;
   overflow-x: hidden;
   overflow-y: scrollbar;
@@ -249,11 +256,7 @@ nav {
 }
 
 nav::-webkit-scrollbar {
-  width: 0.75em;
-}
-
-nav > :first-child {
-  margin-top: [[unit-size]];
+  width: 0.4em;
 }
 
 nav .subpage.title {
@@ -264,6 +267,7 @@ nav .subpage.title {
 nav ul, nav li {
   list-style: none;
   padding: 0px;
+  margin: 0px;
 }
 
 nav li {
@@ -455,4 +459,257 @@ button:hover {
 
 .about a {
   color: [[text-color]];
+}
+
+.x-component--game-item.x-component--search-result-item {
+  width: 100%;
+  height: 170px;
+  display: flex;
+  margin: 10px;
+  box-shadow: 1px 1px 7px -1px black;
+  text-align: justify;
+}
+
+.x-component--game-item.x-component--search-result-item article {
+  display: inline-flex;
+  margin: 10px;
+  color: [[text-color]];
+}
+
+.x-component--game-item.x-component--search-result-item * {
+  text-align: justify;
+}
+
+.x-component--game-item.x-component--search-result-item figure {
+  position: relative;
+}
+
+.x-component--game-item.x-component--search-result-item .text {
+  padding: 15px 15px 0px 0px;
+}
+
+.x-component--game-item.x-component--search-result-item .subtitle {
+  font-weight: bold;
+  font-size: 1.5em;
+  display: block;
+}
+
+.x-component--user-profile-setting article {
+  padding: 1em;
+  margin: 1em auto 1em auto;
+  width: [[user-profile-setting-width]];
+  height: 100%;
+  box-shadow: 1px 1px 7px -1px black;
+}
+
+.x-component--user-profile-setting article h2 {
+  font-size: 2.1em;
+  font-weight: normal;
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+.x-component--user-profile-setting label {
+  width: 30%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  text-align: right;
+  display: inline-block;
+  font-weight: bold;
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.x-component--user-profile-setting output {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  display: inline-block;
+}
+
+.x-component--user-profile-setting input {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid [[text-color]];
+}
+
+.x-component--user-profile-setting button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 200px;
+  color: white;
+  margin: 0.5em 0px 0px 0px;
+}
+
+button.toggle-favourite {
+  border: none;
+  background-color: transparent;
+  background-origin: padding-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 2em;
+  height: 2em;
+  transition-duration: 0.05s;
+}
+
+.info button:hover {
+  box-shadow: none;
+}
+
+.info .control, .info h2 {
+  vertical-align: middle;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.theme-light .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-black-icon]]);
+}
+
+.theme-dark .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-white-icon]]);
+}
+
+.x-component--player.favourite button.toggle-favourite {
+  background-image: url([[star-fill-icon]]);
+}
+
+.x-component--playing-history-item {
+  color: [[text-color]];
+  width: 100%;
+  height: 90px;
+  margin: 10px;
+  box-shadow: 1px 1px 7px -1px black;
+  text-align: justify;
+}
+
+.x-component--playing-history-item article {
+  display: inline-flex;
+}
+
+.x-component--playing-history-item article figure {
+ margin: 0.5em;
+}
+
+.x-component--playing-history-item article img {
+  width: 100px;
+  height: 70px;
+}
+
+.x-component--playing-history-item .subtitle {
+  height: 100%;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.5em 1em 0.5em 0.5em;
+}
+
+.x-component--empty-message {
+  text-align: center;
+}
+
+@media screen and (max-width: [[hiding-search-box-width]]) {
+  .x-component--search-box {
+    display: none;
+  }
+
+  .x-component--search-result-item .description {
+    display: none;
+  }
+
+  .x-component--game-item.x-component--search-result-item .subtitle {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .x-component--playing-history-item .subtitle {
+    font-size: 20px;
+  }
+
+  .x-component--game-item.x-component--search-result-item {
+    color: [[text-color]];
+    width: 100%;
+    height: 90px;
+    margin: 10px;
+    box-shadow: 1px 1px 7px -1px black;
+    text-align: justify;
+  }
+
+  .x-component--game-item.x-component--search-result-item article {
+   margin: 0px;
+  }
+
+  .x-component--game-item.x-component--search-result-item article figure {
+  margin: 0.5em;
+  }
+
+  .x-component--game-item.x-component--search-result-item article img {
+    width: 100px;
+    height: 70px;
+  }
+}
+
+@media screen and (max-width: [[hiding-navigator-width]]) {
+  nav {
+    right: 101%;
+  }
+
+  .main.outer {
+    left: 0px;
+  }
+
+  #nav-hiding-button {
+    display: none;
+  }
+}
+
+@media screen and (max-width: [[hiding-date-width]]){
+  .x-component--playing-history-item .description {
+    display: none;
+  }
+
+  .x-component--search-result-item article {
+    overflow: hidden;
+  }
+}
+
+@media screen and (max-width: [[hiding-right-segment-width]]) {
+  .segment.right-corner {
+    display: none;
+  }
+
+  main {
+   width: [[main-section-min-width]];
+   overflow-x: auto;
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex.right-aligned {
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
+#clear-history a {
+  text-transform: uppercase;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#clear-history {
+  border: 0px;
+  padding: 10px;
+  color: [[text-color]];
+  background-color: [[primary-button-background-color]];
+}
+
+.theme-light #clear-history a {
+  color: [[primary-button-text-color]];
 }
