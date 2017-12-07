@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 06, 2017 at 04:28 AM
+-- Generation Time: Dec 07, 2017 at 04:59 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -87,6 +87,22 @@ CREATE TABLE IF NOT EXISTS `user_accounts` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_comments`
+--
+
+CREATE TABLE IF NOT EXISTS `user_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `parent_comment_id` int(11) DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `hidden` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_favourite_games`
 --
 
@@ -108,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `user_playing_history` (
   `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
