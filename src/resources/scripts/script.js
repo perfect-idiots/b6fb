@@ -11,9 +11,9 @@
       profileSetting.hidden = !profileSetting.hidden
     }, false)
 
-    eventElsewhere(button, 'click', () => {
+    eventElsewhere('click', () => {
       profileSetting.hidden = true
-    })
+    }, button, profileSetting)
   })
 
   callIfExists.querySelector('#nav-hiding-button', button => {

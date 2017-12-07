@@ -141,13 +141,9 @@ function makeClassToggler (toggler, target, name) {
   }
 }
 
-function eventElsewhere (here, type = 'click', fn = () => {}) {
-  if (typeof here === 'string') {
-    here = document.querySelector(here)
-  }
-
+function eventElsewhere (type = 'click', fn = () => {}, ...here) {
   document.addEventListener(type, event => {
     const {target} = event
-    target === here || here.contains(target) || fn(event)
+    here.some(x => x.contains(target)) || fn()
   }, false)
 }
