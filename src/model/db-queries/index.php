@@ -11,7 +11,7 @@ return [
   'list-users' => '',
   'list-genres' => '',
   'list-game-genre-pairs' => '',
-  'list-favourite-games' => 's',
+  'get-all-favourite-games-by-user' => 's',
   'list-comments' => '',
   'add-game' => 'sss',
   'add-genre' => 'ss',

@@ -146,7 +146,7 @@ class UserProfile extends LoginDoubleChecker {
 
     $list = $this
       ->get('db-query-set')
-      ->get('list-favourite-games')
+      ->get('get-all-favourite-games-by-user')
       ->executeOnce([$username], 3 + 2)
       ->fetch()
     ;
