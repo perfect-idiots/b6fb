@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 07, 2017 at 04:59 PM
+-- Generation Time: Dec 07, 2017 at 05:32 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `user_accounts` (
 
 CREATE TABLE IF NOT EXISTS `user_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `author_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `game_id` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `parent_comment_id` int(11) DEFAULT NULL,
   `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
