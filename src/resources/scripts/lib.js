@@ -93,3 +93,10 @@ function isFlashSupported () {
 
   return Boolean(result)
 }
+
+function callIfExists (subject, ontrue = x => x, onfalse = x => x) {
+  return (subject ? ontrue : onfalse)(subject, ontrue, onfalse)
+}
+
+callIfExists.querySelector = (x = 'html', ...args) =>
+  callIfExists(document.querySelector(x), ...args)

@@ -1,23 +1,27 @@
 'use strict'
 
 ; (function ({document, location}) {
-  const profileButton = document.getElementById('profile-button')
-  const profileSetting = document.getElementById('profile-setting')
-  const navHidingButton = document.getElementById('nav-hiding-button')
   const isLoggedIn = document.documentElement.classList.contains('logged-in')
   const isAdminPage = /\?page=admin/.test(location.href)
 
-  profileButton && profileButton.addEventListener('click', () => {
-    profileSetting.hidden = !profileSetting.hidden
-  }, false)
+  callIfExists.querySelector('#profile-button', button => {
+    const profileSetting = document.getElementById('profile-setting')
 
-  navHidingButton && navHidingButton.addEventListener('click', () => {
+    button.addEventListener('click', () => {
+      profileSetting.hidden = !profileSetting.hidden
+    }, false)
+  })
+
+  callIfExists.querySelector('#nav-hiding-button', button => {
     const {classList} = document.documentElement
-    if (classList.contains('nav-hidden')) {
-      classList.remove('nav-hidden')
-    } else {
-      classList.add('nav-hidden')
-    }
+
+    button.addEventListener('click', () => {
+      if (classList.contains('nav-hidden')) {
+        classList.remove('nav-hidden')
+      } else {
+        classList.add('nav-hidden')
+      }
+    })
   })
 
   if (!isAdminPage) {
@@ -26,21 +30,17 @@
     const addFavourite = () => player.classList.add('favourite')
     const removeFavourite = () => player.classList.remove('favourite')
 
-    ; (function (container) {
-      if (!container) return
+    callIfExists.querySelector('.x-component--player .control', container => {
+      const toggleFavButton = document.createElement('button')
+      toggleFavButton.classList.add('toggle-favourite')
+      container.appendChild(toggleFavButton)
 
-      if (isLoggedIn) {
-        const toggleFavButton = document.createElement('button')
-        toggleFavButton.classList.add('toggle-favourite')
-        container.appendChild(toggleFavButton)
-
-        toggleFavButton.addEventListener('click', async function ajaxFav () {
-          const key = isFavourite() ? 'userDeleteFavourite' : 'userAddFavourite'
-          isFavourite() ? removeFavourite() : addFavourite()
-          const response = await ajax({[key]: player.dataset.gameId})
-          response.payload[key] ? addFavourite() : removeFavourite()
-        }, false)
-      }
-    })(document.querySelector('.x-component--player .control'))
+      toggleFavButton.addEventListener('click', async function ajaxFav () {
+        const key = isFavourite() ? 'userDeleteFavourite' : 'userAddFavourite'
+        isFavourite() ? removeFavourite() : addFavourite()
+        const response = await ajax({[key]: player.dataset.gameId})
+        response.payload[key] ? addFavourite() : removeFavourite()
+      }, false)
+    })
   }
 })(window)
