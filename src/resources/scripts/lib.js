@@ -11,12 +11,12 @@ function ajax (query) {
   })
 }
 
-function renderTemplate(template, data = {}, clone = false) {
+function renderTemplate(template, data = {}, clone = false, target = null) {
   if (typeof template === 'string') {
-    return renderTemplate(document.querySelector(template), data)
+    return renderTemplate(document.querySelector(template), data, clone, target)
   }
 
-  const result = template.content.cloneNode(true)
+  const fragment = template.content.cloneNode(true)
 
   const getNode = clone
     ? node => node.cloneNode(true)
@@ -26,15 +26,17 @@ function renderTemplate(template, data = {}, clone = false) {
     const node = getNode(createDOMNode(data[selector]))
 
     Array
-      .from(result.querySelectorAll(selector))
+      .from(fragment.querySelectorAll(selector))
       .forEach(container => container.appendChild(node))
   }
 
+  const result = fragment.querySelector('*')
+  target instanceof Node && target.appendChild(result)
   return result
 }
 
 Object.assign(renderTemplate, {
-  transform: (fn = (k, v) => [k, v], template, data = {}, clone = false) => {
+  transform: (fn = (k, v) => [k, v], template, data = {}, ...args) => {
     const newData = {}
 
     for (const key in data) {
@@ -42,7 +44,7 @@ Object.assign(renderTemplate, {
       newData[newKey] = newValue
     }
 
-    return renderTemplate(template, newData, clone)
+    return renderTemplate(template, newData, ...args)
   },
 
   transformKey: (fn = x => x, ...args) =>
@@ -92,4 +94,56 @@ function isFlashSupported () {
   }
 
   return Boolean(result)
+}
+
+function callIfExists (subject, ontrue = x => x, onfalse = x => x) {
+  return (subject ? ontrue : onfalse)(subject, ontrue, onfalse)
+}
+
+callIfExists.querySelector = (x = 'html', ...args) =>
+  callIfExists(document.querySelector(x), ...args)
+
+function makeClassToggler (toggler, target, name) {
+  if (typeof toggler === 'string') {
+    toggler = document.querySelector(toggler)
+  }
+
+  if (typeof target === 'string') {
+    target = document.querySelector(target)
+  }
+
+  const {classList} = target
+  const check = () => classList.contains(name)
+  const add = () => classList.add(name)
+  const remove = () => classList.remove(name)
+  const onClick = event => check() ? remove() : add()
+
+  toggler.addEventListener('click', onClick, false)
+
+  return {
+    fn: {
+      check,
+      add,
+      remove,
+      onClick,
+      __proto__: null
+    },
+    node: {
+      toggler,
+      target,
+      __proto__: null
+    },
+    class: {
+      name,
+      __proto__: null
+    },
+    __proto__: null
+  }
+}
+
+function eventElsewhere (type = 'click', fn = () => {}, ...here) {
+  document.addEventListener(type, event => {
+    const {target} = event
+    here.some(x => x.contains(target)) || fn()
+  }, false)
 }
