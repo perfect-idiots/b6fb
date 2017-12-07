@@ -32,7 +32,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', 'Quản trị'),
-        CssView::fromFile(__DIR__ . "/../../resources/$cssFileName.css"),
+        CssView::fromFile(__DIR__ . "/../../resources/styles/$cssFileName.css"),
       ]),
       $isLoggedIn
         ? HtmlElement::create('body', [
@@ -68,6 +68,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             new AdminNavigatorSection($this->getData()),
             new AdminMainSection($this->getData()),
           ]),
+          JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
           JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
         ])
         : HtmlElement::emmetBottom('body#login-page>#page.aligner', [
