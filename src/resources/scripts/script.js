@@ -10,6 +10,10 @@
     button.addEventListener('click', () => {
       profileSetting.hidden = !profileSetting.hidden
     }, false)
+
+    eventElsewhere('click', () => {
+      profileSetting.hidden = true
+    }, button, profileSetting)
   })
 
   callIfExists.querySelector('#nav-hiding-button', button => {

@@ -116,19 +116,9 @@ function makeClassToggler (toggler, target, name) {
   const check = () => classList.contains(name)
   const add = () => classList.add(name)
   const remove = () => classList.remove(name)
+  const onClick = event => check() ? remove() : add()
 
-  const onClick = event => {
-    const {target} = event
-    event.stopPropagation()
-
-    if (target === toggler || toggler.contains(target)) {
-      check() ? remove() : add()
-    } else {
-      remove()
-    }
-  }
-
-  document.addEventListener('click', onClick, false)
+  toggler.addEventListener('click', onClick, false)
 
   return {
     fn: {
@@ -141,7 +131,6 @@ function makeClassToggler (toggler, target, name) {
     node: {
       toggler,
       target,
-      document,
       __proto__: null
     },
     class: {
@@ -150,4 +139,11 @@ function makeClassToggler (toggler, target, name) {
     },
     __proto__: null
   }
+}
+
+function eventElsewhere (type = 'click', fn = () => {}, ...here) {
+  document.addEventListener(type, event => {
+    const {target} = event
+    here.some(x => x.contains(target)) || fn()
+  }, false)
 }
