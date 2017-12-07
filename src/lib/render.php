@@ -30,7 +30,7 @@ class Renderer {
   }
 
   private function renderElement(Element $element, int $level, array $compClassNames): string {
-    $tag = $element->tag;
+    $tag = $element->tag ? $element->tag : 'x-component-element';
     $classmap = Renderer::makeComponentClassMap($compClassNames);
 
     $attributes = $this->renderAttributes(array_merge(

@@ -1,43 +1,43 @@
 'use strict'
 
-; (function ({document}) {
-  const profileButton = document.getElementById('profile-button')
-  const profileSetting = document.getElementById('profile-setting')
-  const navHidingButton = document.getElementById('nav-hiding-button')
-  const player = document.querySelector('.x-component--player')
+; (function ({document, location}) {
   const isLoggedIn = document.documentElement.classList.contains('logged-in')
+  const isAdminPage = /\?page=admin/.test(location.href)
 
-  const isFavourite = () => player.classList.contains('favourite')
-  const addFavourite = () => player.classList.add('favourite')
-  const removeFavourite = () => player.classList.remove('favourite')
+  callIfExists.querySelector('#profile-button', button => {
+    const profileSetting = document.getElementById('profile-setting')
 
-  profileButton && profileButton.addEventListener('click', () => {
-    profileSetting.hidden = !profileSetting.hidden
-  }, false)
+    button.addEventListener('click', () => {
+      profileSetting.hidden = !profileSetting.hidden
+    }, false)
 
-  navHidingButton && navHidingButton.addEventListener('click', () => {
-    const {classList} = document.documentElement
-    if (classList.contains('nav-hidden')) {
-      classList.remove('nav-hidden')
-    } else {
-      classList.add('nav-hidden')
-    }
+    eventElsewhere('click', () => {
+      profileSetting.hidden = true
+    }, button, profileSetting)
   })
 
-  ; (function (container) {
-    if (!container) return
+  callIfExists.querySelector('#nav-hiding-button', button => {
+    makeClassToggler(button, document.documentElement, 'nav-hidden')
+  })
 
-    if (isLoggedIn) {
-      const toggleFavButton = document.createElement('button')
-      toggleFavButton.classList.add('toggle-favourite')
-      container.appendChild(toggleFavButton)
+  if (!isAdminPage) {
+    const player = document.querySelector('.x-component--player')
+    const isFavourite = () => player.classList.contains('favourite')
+    const addFavourite = () => player.classList.add('favourite')
+    const removeFavourite = () => player.classList.remove('favourite')
 
-      toggleFavButton.addEventListener('click', async function ajaxFav () {
+    callIfExists.querySelector('.x-component--player .control', container => {
+      renderTemplate(
+        '#toggle-favourite-button',
+        {},
+        false,
+        container
+      ).addEventListener('click', async function ajaxFav () {
         const key = isFavourite() ? 'userDeleteFavourite' : 'userAddFavourite'
         isFavourite() ? removeFavourite() : addFavourite()
         const response = await ajax({[key]: player.dataset.gameId})
         response.payload[key] ? addFavourite() : removeFavourite()
       }, false)
-    }
-  })(document.querySelector('.x-component--player .control'))
+    })
+  }
 })(window)

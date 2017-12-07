@@ -16,4 +16,24 @@ class WarningBar implements Component {
     ]);
   }
 }
+
+class WarningBarContainer implements Component {
+  private $children;
+
+  public function __construct(array $children = []) {
+    $this->children = array_map(
+      function ($child) {
+        return $child instanceof WarningBar
+          ? $child
+          : new WarningBar($child)
+        ;
+      },
+      $children
+    );
+  }
+
+  public function render(): Component {
+    return HtmlElement::create('warning-bar-container', $this->children);
+  }
+}
 ?>

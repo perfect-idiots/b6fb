@@ -30,20 +30,19 @@ class App extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', $data['title']),
-        CssView::fromFile(__DIR__ . '/../../resources/style.css', $cssVars),
-        JsonDataEmbed::dump($data['cookie']->getData(), JSON_PRETTY_PRINT, ['id' => 'data-cookie']),
+        CssView::fromFile(__DIR__ . '/../../resources/styles/style.css', $cssVars),
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
         JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
         JsonDataEmbed::dump($data['images'], JSON_PRETTY_PRINT, ['id' => 'data-images']),
-        new MainTemplateSet($this->getData()),
       ]),
       HtmlElement::create('body', [
         new HeaderSection($data),
         new NavigatorSection($data),
         new MainSection($data),
+        new MainTemplateSet($this->getData()),
+        JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
+        JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
       ]),
-      JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
-      JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
     ]);
   }
 }
