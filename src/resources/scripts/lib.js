@@ -102,3 +102,52 @@ function callIfExists (subject, ontrue = x => x, onfalse = x => x) {
 
 callIfExists.querySelector = (x = 'html', ...args) =>
   callIfExists(document.querySelector(x), ...args)
+
+function makeClassToggler (toggler, target, name) {
+  if (typeof toggler === 'string') {
+    toggler = document.querySelector(toggler)
+  }
+
+  if (typeof target === 'string') {
+    target = document.querySelector(target)
+  }
+
+  const {classList} = target
+  const check = () => classList.contains(name)
+  const add = () => classList.add(name)
+  const remove = () => classList.remove(name)
+
+  const onClick = event => {
+    const {target} = event
+    event.stopPropagation()
+
+    if (target === toggler || toggler.contains(target)) {
+      check() ? remove() : add()
+    } else {
+      remove()
+    }
+  }
+
+  document.addEventListener('click', onClick, false)
+
+  return {
+    fn: {
+      check,
+      add,
+      remove,
+      onClick,
+      __proto__: null
+    },
+    node: {
+      toggler,
+      target,
+      document,
+      __proto__: null
+    },
+    class: {
+      name,
+      __proto__: null
+    },
+    __proto__: null
+  }
+}

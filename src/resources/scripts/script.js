@@ -13,15 +13,7 @@
   })
 
   callIfExists.querySelector('#nav-hiding-button', button => {
-    const {classList} = document.documentElement
-
-    button.addEventListener('click', () => {
-      if (classList.contains('nav-hidden')) {
-        classList.remove('nav-hidden')
-      } else {
-        classList.add('nav-hidden')
-      }
-    })
+    makeClassToggler(button, document.documentElement, 'nav-hidden')
   })
 
   if (!isAdminPage) {
