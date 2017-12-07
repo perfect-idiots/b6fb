@@ -32,7 +32,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', 'Quản trị'),
-        CssView::fromFile(__DIR__ . "/../../resources/$cssFileName.css"),
+        CssView::fromFile(__DIR__ . "/../../resources/styles/$cssFileName.css"),
       ]),
       $isLoggedIn
         ? HtmlElement::create('body', [

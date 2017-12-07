@@ -14,7 +14,7 @@ class LoginUserInterface extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', 'Đăng nhập'),
-        CssView::fromFile(__DIR__ . '/../../resources/login.css'),
+        CssView::fromFile(__DIR__ . '/../../resources/styles/login.css'),
       ]),
       HtmlElement::emmetBottom('body#login-page>#page.aligner', [
         HtmlElement::emmetTop('.top-aligned.aligned-item', []),
