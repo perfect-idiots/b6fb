@@ -44,4 +44,55 @@ class CommentEditor extends Comment {
     ]);
   }
 }
+
+abstract class CommentThread extends RawDataContainer implements Component {
+  abstract protected function commentComponentName(): string;
+
+  public function render(): Component {
+    $self = $this;
+    $component = $this->commentComponentName();
+    $surface = $this->getDefault('surface', []);
+    $group = $this->getDefault('group', []);
+    $surfaceId = RawDataContainer::instance($surface)->getDefault('id', -1);
+
+    return HtmlElement::create('article', [
+      HtmlElement::create('surface-comment-container', [
+        new $component($this->createCommentParams($surface)),
+      ]),
+      HtmlElement::create('replying-comment-container', array_map(
+        function (array $response) use($self, $surfaceId) {
+          return new CommentViewer(
+            $self
+              ->set('comment-parent', $surfaceId)
+              ->createCommentParams($response)
+          );
+        },
+        $group
+      )),
+    ]);
+  }
+
+  private function createCommentParams(array $data): array {
+    $wrapper = new RawDataContainer($data);
+
+    return $this->assign([
+      'author-fullname' => $wrapper->getDefault('author-fullname', ''),
+      'author-username' => $wrapper->getDefault('author-username', ''),
+      'comment-content' => $wrapper->getDefault('content', ''),
+      'comment-parent' => $wrapper->getDefault('parent-comment-id', -1),
+    ])->getData();
+  }
+}
+
+class CommentThreadViewer extends CommentThread {
+  protected function commentComponentName(): string {
+    return 'CommentViewer';
+  }
+}
+
+class CommentThreadEditor extends CommentThread {
+  protected function commentComponentName(): string {
+    return 'CommentEditor';
+  }
+}
 ?>

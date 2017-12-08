@@ -15,6 +15,8 @@ class MainTemplateSet extends RawDataContainer implements Component {
       'toggle-favourite-button' => new ToggleFavouriteButton(),
       'comment-viewer' => new CommentViewer($this->getData()),
       'comment-editor' => new CommentEditor(),
+      'comment-thread-viewer' => new CommentThreadViewer($this->getData()),
+      'comment-thread-editor' => new CommentThreadEditor($this->getData()),
     ]);
   }
 }
