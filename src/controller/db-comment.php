@@ -111,7 +111,7 @@ class CommentManager extends LoginDoubleChecker {
   }
 
   private function group(array $list): array {
-    $surface = array_filter($list, function (array $row) {
+    $surface = filterArrayConcrete($list, function (array $row) {
       return $row['parent-comment-id'] === null;
     });
 
@@ -120,7 +120,7 @@ class CommentManager extends LoginDoubleChecker {
       'surface' => $surface,
       'groups' => array_map(
         function (array $top) use($list) {
-          $replies = array_filter($list, function (array $reply) use($top) {
+          $replies = filterArrayConcrete($list, function (array $reply) use($top) {
             return $reply['parent-comment-id'] === $top['id'];
           });
 
