@@ -1,5 +1,54 @@
 'use strict'
 
+const hello = 'world'
+
+window.convertCase = (function () {
+  const REGEX = {
+    WORD_DELIM: /[_\- \t\n\r]+/,
+    NEWLINE: /\r?\n\r?/
+  }
+
+  const convertCase = {
+    toCamelCase: (string = '') => {
+      const [first, ...rest] = String(string).split(REGEX.WORD_DELIM)
+
+      return [
+        first.toLowerCase(),
+        ...rest.map(convertCase.capitalize)
+      ].join('')
+    },
+
+    toPascalCase: (string = '') =>
+      String(string).split(REGEX.WORD_DELIM).map(convertCase.capitalize).join(''),
+
+    toKebabCase: (string = '') =>
+      convertCase.seperaterize(string, convertCase.lowerize, '-'),
+
+    toUpperKebabCase: (string = '') =>
+      convertCase.seperaterize(string, convertCase.upperize, '-'),
+
+    toSnakeCase: (string = '') =>
+      convertCase.seperaterize(string, convertCase.lowerize, '_'),
+
+    toUpperSnakeCase: (string = '') =>
+      convertCase.seperaterize(string, convertCase.upperize, '_'),
+
+    seperaterize: (string = '', convertCase, delim) =>
+      String(string).split(REGEX.WORD_DELIM).map(convertCase).join(delim),
+
+    lowerize: (string = '') => String(string).toLowerCase(),
+
+    upperize: (string = '') => String(string).toUpperCase(),
+
+    capitalize: ([first, ...rest] = '') => [
+      String(first).toUpperCase(),
+      ...rest.map(x => String(x).toLowerCase())
+    ].join('')
+  }
+
+  return convertCase
+})()
+
 function ajax (query) {
   const xhr = new XMLHttpRequest()
   xhr.open('POST', '?type=api')
@@ -176,4 +225,30 @@ function eventElsewhere (type = 'click', fn = () => {}, ...here) {
     const {target} = event
     here.some(x => x.contains(target)) || fn()
   }, false)
+}
+
+function createJsonEmbedLoader () {
+  const loaded = Object.create(null)
+
+  return id => {
+    if (id in loaded) return loaded[id]
+    const selector = `script#data-${id}.x-component--json-data-embed`
+    const element = document.querySelector(selector)
+
+    const transform = x => {
+      if (!x || typeof x !== 'object') return x
+      if (x instanceof Array) return x.map(transform)
+
+      const result = {}
+      for (const key in x) {
+        result[convertCase.toCamelCase(key)] = transform(x[key])
+      }
+
+      return result
+    }
+
+    const value = transform(JSON.parse(element.text))
+    loaded[id] = value
+    return value
+  }
 }
