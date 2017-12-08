@@ -2,7 +2,7 @@ select
   user_comments.id,
   user_comments.author_id,
   user_comments.parent_comment_id,
-  user_comments.date,
+  unix_timestamp(user_comments.date) as `date`,
   user_comments.hidden,
   user_comments.content,
   user_accounts.fullname as author_fullname,
