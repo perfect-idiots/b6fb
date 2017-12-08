@@ -140,7 +140,6 @@ class UserProfile extends LoginDoubleChecker {
     ;
   }
 
-
   public function listFavourite(): array {
     $username = $this->username();
 
