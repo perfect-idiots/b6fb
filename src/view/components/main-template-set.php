@@ -13,10 +13,10 @@ class MainTemplateSet extends RawDataContainer implements Component {
     return new TemplateSet([
       'warning-bar' => new WarningBar(),
       'toggle-favourite-button' => new ToggleFavouriteButton(),
-      'comment-viewer' => new CommentViewer($this->getData()),
-      'comment-editor' => new CommentEditor(),
-      'comment-thread-viewer' => new CommentThreadViewer($this->getData()),
-      'comment-thread-editor' => new CommentThreadEditor($this->getData()),
+      'comment-viewer' => new CommentViewer($data),
+      'comment-editor' => new CommentEditor($data),
+      'comment-thread-viewer' => new CommentThreadViewer($data),
+      'comment-thread-editor' => new CommentThreadEditor($data),
     ]);
   }
 }
