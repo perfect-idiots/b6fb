@@ -61,7 +61,7 @@ class CommentManager extends LoginDoubleChecker {
     $dbResult = $this
       ->get('db-query-set')
       ->get('get-all-comments-by-user')
-      ->executeOnce([$id, (int) $filter, (int) $hidden], 6)
+      ->executeOnce([$id, (int) $filter, (int) $hidden], 8)
       ->fetch()
     ;
 
@@ -86,7 +86,7 @@ class CommentManager extends LoginDoubleChecker {
     $dbResult = $this
       ->get('db-query-set')
       ->get('get-all-comments-by-game')
-      ->executeOnce([$id, (int) $filter, (int) $hidden], 6)
+      ->executeOnce([$id, (int) $filter, (int) $hidden], 8)
       ->fetch()
     ;
 
