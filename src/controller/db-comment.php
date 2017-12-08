@@ -36,11 +36,11 @@ class CommentManager extends LoginDoubleChecker {
     $dbResult = $this
       ->get('db-query-set')
       ->get('list-comments')
-      ->executeOnce([], 6)
+      ->executeOnce([], 9)
       ->fetch()
     ;
 
-    return array_map(
+    return $this->group(array_map(
       function (array $row) {
         return array_merge($row, [
           'id' => $row[0],
@@ -49,23 +49,24 @@ class CommentManager extends LoginDoubleChecker {
           'parent-comment-id' => $row[3],
           'date' => $row[4],
           'hidden' => (bool) $row[5],
-          'author-fullname' => $row[6],
-          'game-name' => $row[7],
+          'content' => $row[6],
+          'author-fullname' => $row[7],
+          'game-name' => $row[8],
         ]);
       },
       $dbResult
-    );
+    ));
   }
 
   public function listByUser(string $id, bool $filter, bool $hidden = false): array {
     $dbResult = $this
       ->get('db-query-set')
       ->get('get-all-comments-by-user')
-      ->executeOnce([$id, (int) $filter, (int) $hidden], 8)
+      ->executeOnce([$id, (int) $filter, (int) $hidden], 9)
       ->fetch()
     ;
 
-    return array_map(
+    return $this->group(array_map(
       function (array $row) {
         return array_merge($row, [
           'id' => $row[0],
@@ -73,24 +74,25 @@ class CommentManager extends LoginDoubleChecker {
           'parent-comment-id' => $row[2],
           'date' => $row[3],
           'hidden' => (bool) $row[4],
-          'author-fullname' => $row[5],
-          'game-name' => $row[6],
-          'author-id' => $row[7],
+          'content' => $row[5],
+          'author-fullname' => $row[6],
+          'game-name' => $row[7],
+          'author-id' => $row[8],
         ]);
       },
       $dbResult
-    );
+    ));
   }
 
   public function listByGame(string $id, bool $filter, bool $hidden = false): array {
     $dbResult = $this
       ->get('db-query-set')
       ->get('get-all-comments-by-game')
-      ->executeOnce([$id, (int) $filter, (int) $hidden], 8)
+      ->executeOnce([$id, (int) $filter, (int) $hidden], 9)
       ->fetch()
     ;
 
-    return array_map(
+    return $this->group(array_map(
       function (array $row) {
         return array_merge($row, [
           'id' => $row[0],
@@ -98,13 +100,41 @@ class CommentManager extends LoginDoubleChecker {
           'parent-comment-id' => $row[2],
           'date' => $row[3],
           'hidden' => (bool) $row[4],
-          'author-fullname' => $row[5],
-          'game-id' => $row[6],
-          'game-name' => $row[7],
+          'content' => $row[5],
+          'author-fullname' => $row[6],
+          'game-id' => $row[7],
+          'game-name' => $row[8],
         ]);
       },
       $dbResult
-    );
+    ));
+  }
+
+  private function group(array $list): array {
+    $surface = array_filter($list, function (array $row) {
+      return $row['parent-comment-id'] === null;
+    });
+
+    return array_merge($list, [
+      'all' => $list,
+      'surface' => $surface,
+      'groups' => array_map(
+        function (array $top) use($list) {
+          $replies = array_filter($list, function (array $reply) use($top) {
+            return $reply['parent-comment-id'] === $top['id'];
+          });
+
+          $all = array_merge([$top], $replies);
+
+          return array_merge($all, [
+            'all' => $all,
+            'top' => $top,
+            'replies' => $replies,
+          ]);
+        },
+        $surface
+      ),
+    ]);
   }
 
   public function clear(): void {

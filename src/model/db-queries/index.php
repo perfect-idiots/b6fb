@@ -18,7 +18,7 @@ return [
   'add-game-genre-pair' => 'ss',
   'add-user-playing-history' => 'ss',
   'add-favourite' => 'ss',
-  'add-comment' => 'ssi',
+  'add-comment' => 'ssis',
   'user-info' => 's',
   'game-info' => 's',
   'genre-info' => 's',
