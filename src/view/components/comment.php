@@ -52,7 +52,7 @@ abstract class CommentThread extends RawDataContainer implements Component {
     $self = $this;
     $component = $this->commentComponentName();
     $surface = $this->getDefault('surface', []);
-    $group = $this->getDefault('group', []);
+    $response = $this->getDefault('response', []);
     $surfaceId = RawDataContainer::instance($surface)->getDefault('id', -1);
 
     return HtmlElement::create('article', [
@@ -67,7 +67,7 @@ abstract class CommentThread extends RawDataContainer implements Component {
               ->createCommentParams($response)
           );
         },
-        $group
+        $response
       )),
     ]);
   }
