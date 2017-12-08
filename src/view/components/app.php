@@ -34,6 +34,7 @@ class App extends RawDataContainer implements Component {
         JsonDataEmbed::dump($data['colors'], JSON_PRETTY_PRINT, ['id' => 'data-colors']),
         JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
         JsonDataEmbed::dump($data['images'], JSON_PRETTY_PRINT, ['id' => 'data-images']),
+        JsonDataEmbed::dump($data['url-query']->getData(), JSON_PRETTY_PRINT, ['id' => 'data-url-query']),
       ]),
       HtmlElement::create('body', [
         new HeaderSection($data),
