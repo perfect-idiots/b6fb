@@ -18,6 +18,7 @@ return [
   'add-game-genre-pair' => 'ss',
   'add-user-playing-history' => 'ss',
   'add-favourite' => 'ss',
+  'add-comment' => 'ssi',
   'user-info' => 's',
   'game-info' => 's',
   'genre-info' => 's',
@@ -60,6 +61,7 @@ return [
   'delete-comment' => 'i',
   'hide-comment' => 'i',
   'reveal-comment' => 'i',
+  'user-hide-comment' => 'si',
   'search-games' => 's',
 ];
 ?>

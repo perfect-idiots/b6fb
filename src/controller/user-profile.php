@@ -162,6 +162,28 @@ class UserProfile extends LoginDoubleChecker {
       $list
     );
   }
+
+  public function addComment(string $game, ?int $parent): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-comment')
+      ->executeOnce([$username, $game, $parent])
+    ;
+  }
+
+  public function hideComment(int $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('user-hide-comment')
+      ->executeOnce([$username, $id])
+    ;
+  }
 }
 
 class UserInfo extends RawDataContainer {
