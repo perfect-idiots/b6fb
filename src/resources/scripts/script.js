@@ -20,7 +20,7 @@
     makeClassToggler(button, document.documentElement, 'nav-hidden')
   })
 
-  if (!isAdminPage) {
+  if (isLoggedIn && !isAdminPage) {
     const player = document.querySelector('.x-component--player')
     const isFavourite = () => player.classList.contains('favourite')
     const addFavourite = () => player.classList.add('favourite')
