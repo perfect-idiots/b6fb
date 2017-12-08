@@ -51,23 +51,23 @@ abstract class CommentThread extends RawDataContainer implements Component {
   public function render(): Component {
     $self = $this;
     $component = $this->commentComponentName();
-    $surface = $this->getDefault('surface', []);
-    $response = $this->getDefault('response', []);
-    $surfaceId = RawDataContainer::instance($surface)->getDefault('id', -1);
+    $top = $this->getDefault('top', []);
+    $replies = $this->getDefault('replies', []);
+    $topId = RawDataContainer::instance($top)->getDefault('id', -1);
 
     return HtmlElement::create('article', [
       HtmlElement::create('surface-comment-container', [
-        new $component($this->createCommentParams($surface)),
+        new $component($this->createCommentParams($top)),
       ]),
       HtmlElement::create('replying-comment-container', array_map(
-        function (array $response) use($self, $surfaceId) {
+        function (array $response) use($self, $topId) {
           return new CommentViewer(
             $self
-              ->set('comment-parent', $surfaceId)
+              ->set('comment-parent', $topId)
               ->createCommentParams($response)
           );
         },
-        $response
+        $replies
       )),
     ]);
   }
