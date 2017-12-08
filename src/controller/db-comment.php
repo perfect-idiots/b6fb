@@ -57,7 +57,7 @@ class CommentManager extends LoginDoubleChecker {
     );
   }
 
-  public function listByUser(string $id, bool $filter, bool $hidden): array {
+  public function listByUser(string $id, bool $filter, bool $hidden = false): array {
     $dbResult = $this
       ->get('db-query-set')
       ->get('get-all-comments-by-user')
@@ -82,7 +82,7 @@ class CommentManager extends LoginDoubleChecker {
     );
   }
 
-  public function listByGame(string $id, bool $filter, bool $hidden): array {
+  public function listByGame(string $id, bool $filter, bool $hidden = false): array {
     $dbResult = $this
       ->get('db-query-set')
       ->get('get-all-comments-by-game')
