@@ -5,6 +5,7 @@ select
   user_comments.parent_comment_id,
   user_comments.date,
   user_comments.hidden,
+  user_comments.content,
   user_accounts.fullname as author_fullname,
   games.name as game_name
 from user_comments

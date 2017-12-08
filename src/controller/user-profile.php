@@ -163,14 +163,14 @@ class UserProfile extends LoginDoubleChecker {
     );
   }
 
-  public function addComment(string $game, ?int $parent): void {
+  public function addComment(string $game, ?int $parent, string $content): void {
     $this->verify();
     $username = $this->username();
 
     $this
       ->get('db-query-set')
       ->get('add-comment')
-      ->executeOnce([$username, $game, $parent])
+      ->executeOnce([$username, $game, $parent, $content])
     ;
   }
 
