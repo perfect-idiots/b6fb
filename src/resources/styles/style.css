@@ -517,8 +517,13 @@ button:hover {
 
 surface-comment-container,
 replying-comment-container,
+comment-author-identity,
 comment-content {
   display: block;
+}
+
+comment-image, comment-text {
+  display: inline-block;
 }
 
 .x-component--comment-thread > replying-comment-container {

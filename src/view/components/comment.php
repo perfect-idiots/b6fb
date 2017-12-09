@@ -17,17 +17,19 @@ class CommentViewer extends Comment {
       'dataset' => [
         'parent' => $parent,
       ],
-      HtmlElement::emmetTop('figure.author', [
-        HtmlElement::emmetTop('img.avatar', [
+      HtmlElement::emmetTop('comment-image', [
+        HtmlElement::emmetTop('img.author.avatar', [
           'src' => $avatar,
           'alt' => 'Avatar',
         ]),
-        HtmlElement::emmetTop('figcaption.identity', [
-          HtmlElement::emmetTop('span.fullname', $fullname),
-          HtmlElement::emmetTop('span.username', $username),
-        ]),
       ]),
-      HtmlElement::create('comment-content', $content),
+      HtmlElement::create('comment-text', [
+        HtmlElement::emmetTop('comment-author-identity.author.identity', [
+          HtmlElement::emmetBottom('comment-author-fullname>span.fullname', $fullname),
+          HtmlElement::emmetBottom('comment-author-username>span.username', $username),
+        ]),
+        HtmlElement::emmetBottom('comment-content>p.content', $content),
+      ]),
     ]);
   }
 }
