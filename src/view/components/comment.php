@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/text-area-element.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 abstract class Comment extends RawDataContainer implements Component {}
@@ -37,7 +38,6 @@ class CommentViewer extends Comment {
 class CommentEditor extends Comment {
   public function render(): Component {
     $content = $this->getDefault('comment-content', '');
-    $contentInnerHtml = htmlentities($content);
     $colors = $this->get('colors');
     $avatar = $this->get('images')["default-avatar-{$colors['text-color']}-image"];
 
@@ -50,7 +50,13 @@ class CommentEditor extends Comment {
       ]),
       HtmlElement::emmetTop('comment-text', [
         HtmlElement::emmetBottom('comment-content>.input-container', [
-          new UnescapedText("<textarea class='content editor'>$contentInnerHtml</textarea>"),
+          new TextAreaElement([
+            'classes' => [
+              'content',
+              'editor',
+            ],
+            $content,
+          ]),
         ]),
         HtmlElement::emmetBottom('comment-control>.button-container', [
           HtmlElement::emmetTop('button.submit', 'Xác nhận'),
