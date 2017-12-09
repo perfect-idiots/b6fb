@@ -26,7 +26,7 @@ class CommentViewer extends Comment {
       HtmlElement::create('comment-text', [
         HtmlElement::emmetTop('comment-author-identity.author.identity', [
           HtmlElement::emmetBottom('comment-author-fullname>span.fullname', $fullname),
-          HtmlElement::emmetBottom('comment-author-username>span.username', $username),
+          HtmlElement::emmetBottom('comment-author-username>span.username', "@$username"),
         ]),
         HtmlElement::emmetBottom('comment-content>p.content', $content),
       ]),
