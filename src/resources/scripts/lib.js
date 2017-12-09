@@ -253,7 +253,7 @@ function createJsonEmbedLoader () {
   }
 }
 
-function createSizeTracker (element, delay = 1024) {
+function createSizeTracker (element, delay = 1024, init = true) {
   if (typeof element === 'string') {
     element = document.querySelector(element)
   }
@@ -312,6 +312,12 @@ function createSizeTracker (element, delay = 1024) {
       __proto__: proto
     },
     __proto__: proto
+  }
+
+  if (init) {
+    call('width', rect.width, null, rect.height, null)
+    call('height', rect.height, null, rect.height, null)
+    call('all', rect, null, rect, null)
   }
 
   return result
