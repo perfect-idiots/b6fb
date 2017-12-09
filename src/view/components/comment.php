@@ -39,10 +39,18 @@ class CommentEditor extends Comment {
     $content = $this->getDefault('comment-content', '');
 
     return HtmlElement::create('comment-editor', [
-      HtmlElement::emmetBottom('comment-content>.input-container>textarea.content.editor', $content),
-      HtmlElement::emmetBottom('comment-control>.button-container', [
-        HtmlElement::emmetTop('button.submit', 'Xác nhận'),
-        HtmlElement::emmetTop('button.cancel', 'Hủy bỏ'),
+      HtmlElement::emmetTop('comment-image', [
+        HtmlElement::emmetTop('img.author.avatar', [
+          'src' => $avatar,
+          'alt' => 'Avatar',
+        ]),
+      ]),
+      HtmlElement::emmetTop('comment-text', [
+        HtmlElement::emmetBottom('comment-content>.input-container>textarea.content.editor', $content),
+        HtmlElement::emmetBottom('comment-control>.button-container', [
+          HtmlElement::emmetTop('button.submit', 'Xác nhận'),
+          HtmlElement::emmetTop('button.cancel', 'Hủy bỏ'),
+        ]),
       ]),
     ]);
   }
