@@ -34,14 +34,20 @@
         {},
         false,
         container
-      ).addEventListener('click', async function ajaxFav () {
+      ).addEventListener('click', async function ajaxFav ({target}) {
         if (lock) return
         lock = true
+        target.disabled = true
+        target.style.cursor = 'wait'
+
         const key = isFavourite() ? 'userDeleteFavourite' : 'userAddFavourite'
         isFavourite() ? removeFavourite() : addFavourite()
         const response = await ajax({[key]: player.dataset.gameId})
         response.payload[key] ? addFavourite() : removeFavourite()
+
         lock = false
+        target.disabled = false
+        target.style.cursor = 'pointer'
       }, false)
     })
   }
