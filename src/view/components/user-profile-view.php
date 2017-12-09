@@ -12,13 +12,13 @@ class UserProfileView extends RawDataContainer implements Component {
     return $login->isLoggedIn()
       ? HtmlElement::emmetTop('#user-profile-view.logged-in', [
         HtmlElement::emmetBottom('button#profile-button>img#profile-image', [
-          'src' => $images['default-avatar-image'],
+          'src' => $images['default-avatar-white-image'],
         ]),
         HtmlElement::emmetTop('#profile-setting.popup', [
           'hidden' => true,
           HtmlElement::emmetTop('#popup-profile-view', [
             HtmlElement::emmetTop('img#popup-profile-image', [
-              'src' => $images['default-avatar-image'],
+              'src' => $images['default-avatar-white-image'],
             ]),
             HtmlElement::emmetBottom('a#popup-profile-identity', [
               'href' => $urlQuery->set('page', 'profile')->getUrlQuery(),

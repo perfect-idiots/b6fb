@@ -49,7 +49,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetBottom('#logo-admin>button#profile-button', [
               HtmlElement::emmetTop('img#popup-profile-image', [
-                'src' => $images['default-avatar-image'],
+                'src' => $images['default-avatar-white-image'],
               ]),
             ]),
             HtmlElement::emmetTop('#profile-setting', [

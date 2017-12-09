@@ -10,7 +10,8 @@ class CommentViewer extends Comment {
     $username = $this->getDefault('author-username', '');
     $content = $this->getDefault('comment-content', '');
     $parent = $this->getDefault('comment-parent', false);
-    $avatar = $this->get('images')['default-avatar-image'];
+    $colors = $this->get('colors');
+    $avatar = $this->get('images')["default-avatar-{$colors['text-color']}-image"];
 
     return HtmlElement::emmetTop('article.comment.view', [
       'dataset' => [
