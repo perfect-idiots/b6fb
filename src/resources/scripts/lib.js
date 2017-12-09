@@ -252,3 +252,67 @@ function createJsonEmbedLoader () {
     return value
   }
 }
+
+function createSizeTracker (element, delay = 1024) {
+  if (typeof element === 'string') {
+    element = document.querySelector(element)
+  }
+
+  let rect = element.getBoundingClientRect()
+  const listeners = {width: [], height: [], all: []}
+
+  const check = newRect =>
+    ['width', 'height'].filter(x => rect[x] !== newRect[x])
+
+  const call = (name, newVal, oldVal, newRect = newVal, oldRect = oldVal) => {
+    listeners[name].forEach(fn => setTimeout(
+      () => fn({newVal, oldVal, newRect, oldRect, element})
+    ))
+  }
+
+  const intervalId = setInterval(() => {
+    const newRect = element.getBoundingClientRect()
+    const change = check(newRect)
+    if (!change.length) return
+    change.includes('width') && call('width', newRect.width, rect.width, newRect, rect)
+    change.includes('height') && call('height', newRect.height, rect.height, newRect, rect)
+    call('all', newRect, rect)
+    rect = newRect
+  }, delay)
+
+  const validate = fn => {
+    if (typeof fn !== 'function') {
+      throw new TypeError(`Invalid type of callback: ${fn}`)
+    }
+  }
+
+  const createListenerAdder = key => fn => {
+    validate(fn)
+    listeners[key].push(fn)
+    return result
+  }
+
+  const proto = {
+    element,
+    delay,
+    intervalId,
+    __proto__: null
+  }
+
+  const result = {
+    validate,
+    stop: () => clearInterval(intervalId),
+    onChange: createListenerAdder('all'),
+    width: {
+      onChange: createListenerAdder('width'),
+      __proto__: proto
+    },
+    height: {
+      onChange: createListenerAdder('height'),
+      __proto__: proto
+    },
+    __proto__: proto
+  }
+
+  return result
+}
