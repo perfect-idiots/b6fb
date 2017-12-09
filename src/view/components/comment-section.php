@@ -10,7 +10,7 @@ class CommentSection extends RawDataContainer implements Component {
     $list = $this->get('comment-manager')->listByGame($id, true);
     $groups = $list['groups'];
 
-    return HtmlElement::create('article', array_map(
+    $threadContainer = HtmlElement::create('article', array_map(
       function (array $thread) use($self) {
         return new CommentThreadViewer($self->assign([
           'top' => $thread['top'],
@@ -19,6 +19,10 @@ class CommentSection extends RawDataContainer implements Component {
       },
       $groups
     ));
+
+    return HtmlElement::create('div', [
+      $threadContainer,
+    ]);
   }
 
   static protected function requiredFieldSchema(): array {
