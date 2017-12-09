@@ -80,7 +80,7 @@ abstract class CommentThread extends RawDataContainer implements Component {
 
     return $this->assign([
       'author-fullname' => $wrapper->getDefault('author-fullname', ''),
-      'author-username' => $wrapper->getDefault('author-username', ''),
+      'author-username' => $wrapper->getDefault('author-id', ''),
       'comment-content' => $wrapper->getDefault('content', ''),
       'comment-parent' => $wrapper->getDefault('parent-comment-id', -1),
     ])->getData();
