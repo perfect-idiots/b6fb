@@ -27,16 +27,21 @@
     const removeFavourite = () => player.classList.remove('favourite')
 
     callIfExists.querySelector('.x-component--player .control', container => {
+      let lock = false
+
       renderTemplate(
         '#toggle-favourite-button',
         {},
         false,
         container
       ).addEventListener('click', async function ajaxFav () {
+        if (lock) return
+        lock = true
         const key = isFavourite() ? 'userDeleteFavourite' : 'userAddFavourite'
         isFavourite() ? removeFavourite() : addFavourite()
         const response = await ajax({[key]: player.dataset.gameId})
         response.payload[key] ? addFavourite() : removeFavourite()
+        lock = false
       }, false)
     })
   }
