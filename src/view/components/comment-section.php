@@ -10,9 +10,9 @@ class CommentSection extends RawDataContainer implements Component {
     $list = $this->get('comment-manager')->listByGame($id, true);
     $groups = $list['groups'];
 
-    $commentEditorContainer = HtmlElement::create('comment-editor-container');
+    $editorContainer = HtmlElement::create('comment-editor-container');
 
-    $threadContainer = HtmlElement::create('article', array_map(
+    $threadContainer = HtmlElement::emmetBottom('comment-thread-container>article', array_map(
       function (array $thread) use($self) {
         return new CommentThreadViewer($self->assign([
           'top' => $thread['top'],
@@ -23,7 +23,7 @@ class CommentSection extends RawDataContainer implements Component {
     ));
 
     return HtmlElement::create('div', [
-      $commentEditorContainer,
+      $editorContainer,
       $threadContainer,
     ]);
   }
