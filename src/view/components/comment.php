@@ -55,6 +55,9 @@ class CommentEditor extends Comment {
               'content',
               'editor',
             ],
+            'style' => [
+              'resize' => 'none',
+            ],
             $content,
           ]),
         ]),
