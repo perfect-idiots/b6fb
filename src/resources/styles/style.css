@@ -522,6 +522,15 @@ comment-content {
   display: block;
 }
 
+comment-author-fullname {
+  font-weight: bold;
+}
+
+comment-author-username {
+  opacity: 0.5;
+  font-size: 0.8em;
+}
+
 comment-image, comment-text {
   display: inline-block;
 }
