@@ -37,6 +37,7 @@ class CommentViewer extends Comment {
 class CommentEditor extends Comment {
   public function render(): Component {
     $content = $this->getDefault('comment-content', '');
+    $contentInnerHtml = htmlentities($content);
 
     return HtmlElement::create('comment-editor', [
       HtmlElement::emmetTop('comment-image', [
@@ -46,7 +47,9 @@ class CommentEditor extends Comment {
         ]),
       ]),
       HtmlElement::emmetTop('comment-text', [
-        HtmlElement::emmetBottom('comment-content>.input-container>textarea.content.editor', $content),
+        HtmlElement::emmetBottom('comment-content>.input-container', [
+          new UnescapedText("<textarea class='content editor'>$contentInnerHtml</textarea>"),
+        ]),
         HtmlElement::emmetBottom('comment-control>.button-container', [
           HtmlElement::emmetTop('button.submit', 'Xác nhận'),
           HtmlElement::emmetTop('button.cancel', 'Hủy bỏ'),
