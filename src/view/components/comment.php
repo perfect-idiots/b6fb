@@ -38,6 +38,8 @@ class CommentEditor extends Comment {
   public function render(): Component {
     $content = $this->getDefault('comment-content', '');
     $contentInnerHtml = htmlentities($content);
+    $colors = $this->get('colors');
+    $avatar = $this->get('images')["default-avatar-{$colors['text-color']}-image"];
 
     return HtmlElement::create('comment-editor', [
       HtmlElement::emmetTop('comment-image', [
