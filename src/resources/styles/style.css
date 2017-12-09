@@ -494,6 +494,42 @@ button:hover {
   display: block;
 }
 
+.x-component--comment,
+.x-component--comment figure,
+.x-component--comment comment-content {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+}
+
+.x-component--comment figcaption,
+.x-component--comment img {
+  display: inline-block;
+}
+
+.x-component--comment img {
+  [[comment-avatar-size-block]]
+}
+
+.x-component--comment-thread {
+  display: block;
+}
+
+surface-comment-container,
+replying-comment-container,
+comment-author-identity,
+comment-content {
+  display: block;
+}
+
+comment-image, comment-text {
+  display: inline-block;
+}
+
+.x-component--comment-thread > replying-comment-container {
+  margin-left: 3em;
+}
+
 .x-component--user-profile-setting article {
   padding: 1em;
   margin: 1em auto 1em auto;

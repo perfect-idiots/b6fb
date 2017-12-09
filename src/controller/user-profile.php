@@ -140,13 +140,12 @@ class UserProfile extends LoginDoubleChecker {
     ;
   }
 
-
   public function listFavourite(): array {
     $username = $this->username();
 
     $list = $this
       ->get('db-query-set')
-      ->get('list-favourite-games')
+      ->get('get-all-favourite-games-by-user')
       ->executeOnce([$username], 3 + 2)
       ->fetch()
     ;
@@ -162,6 +161,28 @@ class UserProfile extends LoginDoubleChecker {
       },
       $list
     );
+  }
+
+  public function addComment(string $game, ?int $parent, string $content): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-comment')
+      ->executeOnce([$username, $game, $parent, $content])
+    ;
+  }
+
+  public function hideComment(int $id): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('user-hide-comment')
+      ->executeOnce([$username, $id])
+    ;
   }
 }
 

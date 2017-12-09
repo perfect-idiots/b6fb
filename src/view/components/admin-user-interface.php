@@ -32,7 +32,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', 'Quản trị'),
-        CssView::fromFile(__DIR__ . "/../../resources/$cssFileName.css"),
+        CssView::fromFile(__DIR__ . "/../../resources/styles/$cssFileName.css"),
       ]),
       $isLoggedIn
         ? HtmlElement::create('body', [
@@ -49,7 +49,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetBottom('#logo-admin>button#profile-button', [
               HtmlElement::emmetTop('img#popup-profile-image', [
-                'src' => $images['default-avatar-image'],
+                'src' => $images['default-avatar-white-image'],
               ]),
             ]),
             HtmlElement::emmetTop('#profile-setting', [
@@ -68,6 +68,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             new AdminNavigatorSection($this->getData()),
             new AdminMainSection($this->getData()),
           ]),
+          JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/lib.js'),
           JavascriptEmbed::file(__DIR__ . '/../../resources/scripts/script.js'),
         ])
         : HtmlElement::emmetBottom('body#login-page>#page.aligner', [
@@ -558,6 +559,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
           LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
           LabeledCheckbox::text('history', 'Lịch sử Truy cập Trò chơi'),
           LabeledCheckbox::text('favourite', 'Danh sách Trò chơi được Yêu thích'),
+          LabeledCheckbox::text('comment', 'Bình luận'),
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
