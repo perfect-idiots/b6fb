@@ -513,6 +513,7 @@ button:hover {
 
 .x-component--comment-thread {
   display: block;
+  margin-top: 10px;
 }
 
 surface-comment-container,
@@ -582,13 +583,21 @@ comment-image, comment-text {
 }
 
 .x-component--user-profile-setting button {
+  padding: 6px;
+  width: 240px;
+  margin: 0.5em 0px 0px 0px;
+}
+
+ button {
   border: none;
   background: [[primary-button-background-color]];
   cursor: pointer;
-  padding: 6px;
-  width: 200px;
+  padding: 10px 40px;
   color: white;
-  margin: 0.5em 0px 0px 0px;
+}
+
+button.cancel {
+  background-color: [[primary-button-cancel-background-color]];
 }
 
 button.toggle-favourite {
@@ -757,4 +766,30 @@ button.toggle-favourite {
 
 .theme-light #clear-history a {
   color: [[primary-button-text-color]];
+}
+
+comment-text .button-container {
+  text-align: right;
+}
+
+comment-text button {
+  margin: 0px;
+}
+
+comment-text {
+  vertical-align: middle;
+}
+
+comment-content textarea {
+  height: 60px;
+}
+
+surface-comment-container comment-image {
+  padding-left: 5px;
+  border-left: 5px solid [[border-left-comment-surface-color]];
+}
+
+replying-comment-container comment-image {
+  padding-left: 5px;
+  border-left: 5px solid [[border-left-comment-replying-color]];
 }

@@ -8,6 +8,7 @@ return [
   'scrollbar-active-color' => '#cccccc',
   'primary-button-text-color' => 'white',
   'primary-button-background-color' => '#3d3dee',
+  'primary-button-cancel-background-color' => '#037cd2',
   'primary-button-hover-background-color' => '#55f',
   'secondary-button-text-color' => 'black',
   'secondary-button-hover-background-color' => 'rgba(127, 127, 127, 0.5)',
@@ -23,5 +24,7 @@ return [
   'profile-setting-hover-background-color' => '#d7d7d7',
   'shadow-color' => 'rgba(100, 100, 100, 0.5)',
   'game-item-hover-background' => '#a9a9f5',
+  'border-left-comment-surface-color' => 'orangered',
+  'border-left-comment-replying-color' => 'purple',
 ];
 ?>
