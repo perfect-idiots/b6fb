@@ -7,6 +7,7 @@ abstract class Comment extends RawDataContainer implements Component {}
 
 class CommentViewer extends Comment {
   public function render(): Component {
+    $id = $this->getDefault('id', false);
     $fullname = $this->getDefault('author-fullname', '');
     $username = $this->getDefault('author-username', '');
     $content = $this->getDefault('comment-content', '');
@@ -16,6 +17,7 @@ class CommentViewer extends Comment {
 
     return HtmlElement::emmetTop('article.comment.view', [
       'dataset' => [
+        'id' => $id,
         'parent' => $parent,
       ],
       HtmlElement::emmetTop('comment-image', [
@@ -101,6 +103,7 @@ abstract class CommentThread extends RawDataContainer implements Component {
     $wrapper = new RawDataContainer($data);
 
     return $this->assign([
+      'id' => $wrapper->getDefault('id', false),
       'author-fullname' => $wrapper->getDefault('author-fullname', ''),
       'author-username' => $wrapper->getDefault('author-id', ''),
       'comment-content' => $wrapper->getDefault('content', ''),
