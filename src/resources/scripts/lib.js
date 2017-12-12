@@ -54,8 +54,21 @@ function ajax (query) {
   xhr.open('POST', '?type=api')
 
   return new Promise((resolve, reject) => {
-    xhr.addEventListener('loadend', () => resolve(JSON.parse(xhr.response)))
-    xhr.addEventListener('error', error => reject(error))
+    xhr.addEventListener('loadend', () => {
+      const {status, response} = xhr
+
+      if (status < 200 || status > 200) {
+        reject(xhr)
+      } else {
+        try {
+          resolve(JSON.parse(response))
+        } catch (error) {
+          reject({error, __proto__: xhr})
+        }
+      }
+    })
+
+    xhr.addEventListener('error', error => reject({error, __proto__: xhr}))
     xhr.send(JSON.stringify(query))
   })
 }
