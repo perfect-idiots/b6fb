@@ -118,6 +118,16 @@ renderTemplate.createAppendFunction.attributes = {
     container.textContent = text
   },
 
+  events: (container, listeners) => {
+    if (typeof listeners !== 'object') {
+      throw new TypeError(`Second argument is not an object: ${listeners}`)
+    }
+
+    for (const type in listeners) {
+      container.addEventListener(type, listeners[type], false)
+    }
+  },
+
   __proto__: null
 }
 
