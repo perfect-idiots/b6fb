@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/prerendered.php';
 require_once __DIR__ . '/text-area-element.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
@@ -15,6 +16,15 @@ class CommentViewer extends Comment {
     $colors = $this->get('colors');
     $avatar = $this->get('images')["default-avatar-{$colors['text-color']}-image"];
 
+    $createIdentityField = function (string $key, string $value, string $prefix = '') {
+      return new Minified(
+        HtmlElement::emmetTop("comment-author-$key", [
+          $prefix ? HtmlElement::emmetTop('span.prefix', $prefix) : '',
+          HtmlElement::emmetTop("span.$key", $value),
+        ])
+      );
+    };
+
     return HtmlElement::emmetTop('article.comment.view', [
       'dataset' => [
         'id' => $id,
@@ -28,8 +38,8 @@ class CommentViewer extends Comment {
       ]),
       HtmlElement::create('comment-text', [
         HtmlElement::emmetTop('comment-author-identity.author.identity', [
-          HtmlElement::emmetBottom('comment-author-fullname>span.fullname', $fullname),
-          HtmlElement::emmetBottom('comment-author-username>span.username', "@$username"),
+          $createIdentityField('fullname', $fullname),
+          $createIdentityField('username', $username, '@'),
         ]),
         HtmlElement::emmetBottom('comment-content>p.content', $content),
       ]),
