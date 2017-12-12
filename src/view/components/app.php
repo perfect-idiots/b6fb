@@ -15,6 +15,17 @@ class App extends RawDataContainer implements Component {
     $data = $this->getData();
     $cssVars = array_merge($data['colors'], $data['sizes'], $data['images']);
     $login = $data['login'];
+    $isLoggedIn = $login->isLoggedIn();
+
+    $userInfo = ['is-logged-in' => false];
+    if ($isLoggedIn) {
+      [$username, $fullname] = $this->get('user-profile')->info();
+      $userInfo = [
+        'is-logged-in' => true,
+        'username' => $username,
+        'fullname' => $fullname,
+      ];
+    }
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -24,7 +35,7 @@ class App extends RawDataContainer implements Component {
       ],
       'classes' => [
         "theme-{$data['theme-name']}",
-        $login->isLoggedIn() ? 'logged-in' : 'anonymous',
+        $isLoggedIn ? 'logged-in' : 'anonymous',
       ],
 
       HtmlElement::create('head', [
@@ -35,6 +46,7 @@ class App extends RawDataContainer implements Component {
         JsonDataEmbed::dump($data['sizes'], JSON_PRETTY_PRINT, ['id' => 'data-sizes']),
         JsonDataEmbed::dump($data['images'], JSON_PRETTY_PRINT, ['id' => 'data-images']),
         JsonDataEmbed::dump($data['url-query']->getData(), JSON_PRETTY_PRINT, ['id' => 'data-url-query']),
+        JsonDataEmbed::dump($userInfo, JSON_PRETTY_PRINT, ['id' => 'data-user-info']),
       ]),
       HtmlElement::create('body', [
         new HeaderSection($data),
