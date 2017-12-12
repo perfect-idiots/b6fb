@@ -314,5 +314,7 @@ function createSizeTracker (element, delay = 1024) {
     __proto__: proto
   }
 
+  element.addEventListener('DOMNodeRemoved', result.stop, false)
+
   return result
 }
