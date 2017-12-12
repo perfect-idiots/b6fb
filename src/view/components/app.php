@@ -19,7 +19,7 @@ class App extends RawDataContainer implements Component {
 
     $userInfo = ['is-logged-in' => false];
     if ($isLoggedIn) {
-      [$username, $fullname] = $this->get('user-profile')->info();
+      [$fullname, $username] = $this->get('user-profile')->info();
       $userInfo = [
         'is-logged-in' => true,
         'username' => $username,
