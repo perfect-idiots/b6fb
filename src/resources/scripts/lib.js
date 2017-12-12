@@ -123,8 +123,12 @@ renderTemplate.createAppendFunction.attributes = {
       throw new TypeError(`Second argument is not an object: ${listeners}`)
     }
 
+    const add = (type, fn) => fn instanceof Array
+      ? fn.forEach(x => add(type, x))
+      : container.addEventListener(type, fn, false)
+
     for (const type in listeners) {
-      container.addEventListener(type, listeners[type], false)
+      add(type, listeners[type])
     }
   },
 
