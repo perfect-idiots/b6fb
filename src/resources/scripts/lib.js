@@ -106,6 +106,9 @@ renderTemplate.createAppendFunction.attributes = {
   classList: (container, classes) =>
     container.classList.add(...classes),
 
+  dataset: (container, dataset) =>
+    Object.assign(container.dataset, dataset),
+
   children: (container, children) => Array
     .from(children)
     .map(createDOMNode)
