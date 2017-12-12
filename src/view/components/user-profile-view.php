@@ -8,7 +8,11 @@ class UserProfileView extends RawDataContainer implements Component {
     $urlQuery = $this->get('url-query');
     $login = $this->get('login');
     $images = $this->get('images');
-    [$fullname, $username] = $this->get('user-profile')->info();
+
+    [$fullname, $username] = $login->isLoggedIn()
+      ? $this->get('user-profile')->info()
+      : ['', '']
+    ;
 
     return $login->isLoggedIn()
       ? HtmlElement::emmetTop('#user-profile-view.logged-in', [
