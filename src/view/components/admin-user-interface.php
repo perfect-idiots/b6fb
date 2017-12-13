@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/base.php';
 require_once __DIR__ . '/meta-element.php';
+require_once __DIR__ . '/text-area-element.php';
 require_once __DIR__ . '/css-view.php';
 require_once __DIR__ . '/logo.php';
 require_once __DIR__ . '/anchor.php';
@@ -49,7 +50,7 @@ class AdminUserInterface extends RawDataContainer implements Component {
             ]),
             HtmlElement::emmetBottom('#logo-admin>button#profile-button', [
               HtmlElement::emmetTop('img#popup-profile-image', [
-                'src' => $images['default-avatar-image'],
+                'src' => $images['default-avatar-white-image'],
               ]),
             ]),
             HtmlElement::emmetTop('#profile-setting', [
@@ -421,11 +422,11 @@ class AdminEditGame extends RawDataContainer implements Component {
               ->set('checked', array_keys($info['genre']))
               ->getData()
           ),
-          new UnescapedText(
-            '<textarea name="description" required>' .
-            htmlspecialchars($info['description']) .
-            '</textarea>'
-          ),
+          new TextAreaElement([
+            'name' => 'description',
+            'required' => true,
+            $info['description'],
+          ]),
           LabeledFileInput::text('swf', 'Tệp trò chơi (.swf)'),
           LabeledFileInput::text('img', 'Tệp hình ảnh (.jpg)'),
         ]),
@@ -559,6 +560,7 @@ class AdminAdvancedResetDatabaseSection extends RawDataContainer implements Comp
           LabeledCheckbox::text('admin', 'Dữ liệu Người quản trị'),
           LabeledCheckbox::text('history', 'Lịch sử Truy cập Trò chơi'),
           LabeledCheckbox::text('favourite', 'Danh sách Trò chơi được Yêu thích'),
+          LabeledCheckbox::text('comment', 'Bình luận'),
         ]),
         HtmlElement::emmetTop('.button-container', [
           HtmlElement::create('button', [
