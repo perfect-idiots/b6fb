@@ -135,7 +135,7 @@
 
                       createReplyingCommentButton(newComment)
 
-                      sendReplyingComment(targetedCommentId, thread, editor.value).catch(error => {
+                      sendReplyingComment(targetedCommentId, thread, value).catch(error => {
                         newComment.remove()
                         console.warn(error)
                       })
