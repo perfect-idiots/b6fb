@@ -3,6 +3,7 @@
 ; (function ({document, location}) {
   const isLoggedIn = document.documentElement.classList.contains('logged-in')
   const isAdminPage = /\?page=admin/.test(location.href)
+  const loadJsonData = createJsonEmbedLoader()
 
   callIfExists.querySelector('#profile-button', button => {
     const profileSetting = document.getElementById('profile-setting')
@@ -76,6 +77,109 @@
 
       resizeTextArea()
       createSizeTracker(editor, 0).width.onChange(resizeTextArea)
+    })
+
+    callIfExists.querySelector('comment-thread-container', container => {
+      const getKnownComments = container => Array
+        .from(container.querySelectorAll('.x-component--comment-viewer'))
+        .map(element => parseInt(element.dataset.id))
+
+      const sendReplyingComment = (target, container, reply) => ajax({
+        userDiffReplyingComment: {
+          [target]: {
+            knownComments: getKnownComments(container),
+            reply
+          }
+        }
+      })
+
+      Array
+        .from(container
+          .querySelectorAll('.x-component--comment-thread-viewer')
+        )
+        .forEach(thread => {
+          const targetedCommentId = parseInt(thread
+            .querySelector('surface-comment-container .x-component--comment-viewer')
+            .dataset
+            .id
+          )
+
+          const replyingCommentContainer = thread.querySelector('replying-comment-container')
+
+          const createReplyingCommentButton = comment => {
+            renderTemplate.byClass(
+              '#replying-comment-button',
+              {
+                outer: {
+                  dataset: {
+                    targetedCommentId
+                  },
+                  events: {click () {
+                    callIfExists(thread.querySelector('comment-editor'), x => x.remove())
+
+                    const onSubmit = () => {
+                      const {value} = editor.querySelector('textarea')
+                      editor.remove()
+
+                      const {fullname, username} = loadJsonData('user-info')
+                      const newComment = renderTemplate.byClass(
+                        '#comment-viewer',
+                        {
+                          fullname,
+                          username,
+                          content: value
+                        },
+                        false,
+                        replyingCommentContainer
+                      )
+
+                      createReplyingCommentButton(newComment)
+
+                      sendReplyingComment(targetedCommentId, thread, editor.value).catch(error => {
+                        newComment.remove()
+                        console.warn(error)
+                      })
+                    }
+
+                    const onCancel = () => editor.remove()
+
+                    const editor = renderTemplate.byClass(
+                      '#comment-editor',
+                      {
+                        submit: {events: {click: onSubmit}},
+                        cancel: {events: {click: onCancel}},
+                        editor: {events: {
+                          keydown: event => {
+                            if (event.shiftKey) return
+
+                            switch (event.keyCode) {
+                              case 13: // ENTER
+                                event.preventDefault()
+                                onSubmit()
+                                break
+                              case 27: // ESC
+                                event.preventDefault()
+                                onCancel()
+                                break
+                            }
+                          }
+                        }}
+                      },
+                      false,
+                      replyingCommentContainer
+                    )
+                  }}
+                }
+              },
+              false,
+              comment
+            )
+          }
+
+          Array
+            .from(thread.querySelectorAll('.x-component--comment-viewer'))
+            .forEach(createReplyingCommentButton)
+        })
     })
   }
 })(window)

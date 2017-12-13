@@ -120,6 +120,92 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           return $parseException($exception);
         }
       },
+
+      'userDiffReplyingComment' => function ($threads) use($param, $parseException) {
+        $type = gettype($threads);
+        if ($type !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        try {
+          $fn = function ($parent, $children) use($param) {
+            if (!is_numeric($parent)) {
+              return ApiResponse::failure([
+                'path' => [$parent],
+                'reason' => "Key is not a number: $parent",
+              ]);
+            }
+
+            $childrenType = gettype($children);
+            if ($childrenType !== 'object') {
+              return ApiResponse::failure([
+                'path' => [$parent],
+                'expected' => ['type' => 'object'],
+                'received' => ['type' => $childrenType],
+              ]);
+            }
+
+            $unknownComments = [];
+            if (property_exists($children, 'knownComments')) {
+              $knownComments = $children->knownComments;
+
+              $knownCommentsType = gettype($knownComments);
+              if ($knownCommentsType !== 'array') {
+                return ApiResponse::failure([
+                  'path' => [$parent, 'knownComments'],
+                  'expected' => ['type' => 'array'],
+                  'received' => ['type' => $knownCommentsType],
+                ]);
+              }
+
+              $unknownComments = $param
+                ->get('comment-manager')
+                ->getUnknownCommentsByParent($knownComments, $parent)
+              ;
+            } else {
+              $unknownComments = $param
+                ->get('comment-manager')
+                ->getUnknownCommentsByParent([], $parent)
+              ;
+            }
+
+            if (property_exists($children, 'reply')) {
+              $reply = $children->reply;
+
+              $replyType = gettype($reply);
+              if ($replyType !== 'string') {
+                return ApiResponse::failure([
+                  'path' => [$parent, 'reply'],
+                  'expected' => ['type' => 'string'],
+                  'received' => ['type' => $replyType],
+                ]);
+              }
+
+              $param
+                ->get('user-profile')
+                ->addReplyingComment($parent, $reply)
+              ;
+            }
+
+            return ApiResponse::success($unknownComments);
+          };
+
+          [$payload, $error] = [[], []];
+          foreach ($threads as $parent => $children) {
+            $response = $fn($parent, $children);
+            $payload[$parent] = $response->payload();
+            if ($error) array_push($error, $response->error());
+          }
+
+          return ApiResponse::success($payload, $error);
+        } catch (Exception $exception) {
+          return $parseException($exception);
+        }
+      }
     ];
   }
 

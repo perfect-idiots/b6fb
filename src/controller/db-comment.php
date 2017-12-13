@@ -110,6 +110,34 @@ class CommentManager extends LoginDoubleChecker {
     ));
   }
 
+  public function getUnknownCommentsByParent(array $knownComments, int $parent, bool $filter = false, bool $hidden = false): array {
+    $serialized = implode(',', $knownComments);
+
+    $dbResult = $this
+      ->get('db-query-set')
+      ->get('get-unknown-replying-comments')
+      ->executeOnce([$serialized, $parent, (int) $filter, (int) $hidden], 9)
+      ->fetch()
+    ;
+
+    return $this->group(array_map(
+      function (array $row) {
+        return array_merge($row, [
+          'id' => $row[0],
+          'author-id' => $row[1],
+          'game-id' => $row[2],
+          'parent-comment-id' => $row[3],
+          'date' => $row[4],
+          'hidden' => (bool) $row[5],
+          'content' => $row[6],
+          'author-fullname' => $row[7],
+          'game-name' => $row[8],
+        ]);
+      },
+      $dbResult
+    ));
+  }
+
   private function group(array $list): array {
     $surface = filterArrayConcrete($list, function (array $row) {
       return $row['parent-comment-id'] === null;
