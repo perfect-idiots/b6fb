@@ -81,9 +81,23 @@ class StarStrokeBlackIcon extends StarIcon {
   }
 }
 
-class DefaultAvatarImage extends SvgImage {
+abstract class DefaultAvatarImage extends SvgImage {
+  abstract protected function suffix(): string;
+
   protected function name(): string {
-    return 'default-avatar.svg';
+    return 'default-avatar-' . $this->suffix() . '.svg';
+  }
+}
+
+class DefaultAvatarWhiteImage extends DefaultAvatarImage {
+  protected function suffix(): string {
+    return 'white';
+  }
+}
+
+class DefaultAvatarBlackImage extends DefaultAvatarImage {
+  protected function suffix(): string {
+    return 'black';
   }
 }
 
@@ -107,7 +121,8 @@ class ImageSet extends LazyLoadedDataContainer {
       'SearchIcon',
       'NightModeIcon',
       'MenuIcon',
-      'DefaultAvatarImage',
+      'DefaultAvatarWhiteImage',
+      'DefaultAvatarBlackImage',
       'GamepadImage',
       'MultiUsersImage',
       'StarFillIcon',

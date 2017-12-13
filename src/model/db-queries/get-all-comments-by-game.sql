@@ -2,8 +2,9 @@ select
   user_comments.id,
   user_comments.author_id,
   user_comments.parent_comment_id,
-  user_comments.date,
+  unix_timestamp(user_comments.date) as `date`,
   user_comments.hidden,
+  user_comments.content,
   user_accounts.fullname as author_fullname,
   games.name as game_name,
   user_comments.game_id
@@ -15,4 +16,4 @@ from user_comments
 where
   user_comments.game_id = ? and
   (not ? or user_comments.hidden = ?)
-order by user_comments.date desc
+order by user_comments.date asc
