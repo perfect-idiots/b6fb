@@ -12,7 +12,7 @@ class SignUpUserInterface extends RawDataContainer implements Component {
       HtmlElement::create('head', [
         new CharsetMetaElement('utf-8'),
         HtmlElement::create('title', 'Tạo tài khoản'),
-        CssView::fromFile(__DIR__ . '/../../resources/sign-up.css'),
+        CssView::fromFile(__DIR__ . '/../../resources/styles/sign-up.css'),
       ]),
       HtmlElement::emmetBottom('body>#page', [
         HtmlElement::emmetBottom('header#main-header', [
