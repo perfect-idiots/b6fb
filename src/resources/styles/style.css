@@ -201,6 +201,16 @@ body {
   background-color: [[profile-setting-background-color]];
 }
 
+#popup-profile-identity {
+  margin-left: 10px;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#popup-fullname {
+  font-weight: bold;
+}
+
 #popup-profile-view {
   display: block;
   background-color: [[profile-setting-avatar-background-color]];
@@ -492,6 +502,51 @@ button:hover {
   font-weight: bold;
   font-size: 1.5em;
   display: block;
+}
+
+.x-component--comment,
+.x-component--comment figure,
+.x-component--comment comment-content {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+}
+
+.x-component--comment figcaption,
+.x-component--comment img {
+  display: inline-block;
+}
+
+.x-component--comment img {
+  [[comment-avatar-size-block]]
+}
+
+.x-component--comment-thread {
+  display: block;
+}
+
+surface-comment-container,
+replying-comment-container,
+comment-author-identity,
+comment-content {
+  display: block;
+}
+
+comment-author-fullname {
+  font-weight: bold;
+}
+
+comment-author-username {
+  opacity: 0.5;
+  font-size: 0.8em;
+}
+
+comment-image, comment-text {
+  display: inline-block;
+}
+
+.x-component--comment-thread > replying-comment-container {
+  margin-left: 3em;
 }
 
 .x-component--user-profile-setting article {
