@@ -205,7 +205,7 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
         } catch (Exception $exception) {
           return $parseException($exception);
         }
-      }
+      },
     ];
   }
 
