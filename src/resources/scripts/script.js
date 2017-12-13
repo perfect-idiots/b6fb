@@ -28,6 +28,27 @@
     const removeFavourite = () => player.classList.remove('favourite')
     const {fullname, username} = loadJsonData('user-info')
 
+    const createSubmitCancelTemplate = (onSubmit, onCancel) => ({
+      submit: {events: {click: onSubmit}},
+      cancel: {events: {click: onCancel}},
+      editor: {events: {
+        keydown: event => {
+          if (event.shiftKey) return
+
+          switch (event.keyCode) {
+            case 13: // ENTER
+              event.preventDefault()
+              onSubmit()
+              break
+            case 27: // ESC
+              event.preventDefault()
+              onCancel()
+              break
+          }
+        }
+      }}
+    })
+
     const createReplyingCommentButton = (thread, comment) => {
       const replyingCommentContainer = thread.querySelector('replying-comment-container')
 
@@ -88,26 +109,7 @@
 
               const editor = renderTemplate.byClass(
                 '#comment-editor',
-                {
-                  submit: {events: {click: onSubmit}},
-                  cancel: {events: {click: onCancel}},
-                  editor: {events: {
-                    keydown: event => {
-                      if (event.shiftKey) return
-
-                      switch (event.keyCode) {
-                        case 13: // ENTER
-                          event.preventDefault()
-                          onSubmit()
-                          break
-                        case 27: // ESC
-                          event.preventDefault()
-                          onCancel()
-                          break
-                      }
-                    }
-                  }}
-                },
+                createSubmitCancelTemplate(onSubmit, onCancel),
                 false,
                 replyingCommentContainer
               )
@@ -189,26 +191,7 @@
 
       const editor = renderTemplate.byClass(
         '#comment-editor',
-        {
-          submit: {events: {click: onSubmit}},
-          cancel: {events: {click: onCancel}},
-          editor: {events: {
-            keydown: event => {
-              if (event.shiftKey) return
-
-              switch (event.keyCode) {
-                case 13: // ENTER
-                  event.preventDefault()
-                  onSubmit()
-                  break
-                case 27: // ESC
-                  event.preventDefault()
-                  onCancel()
-                  break
-              }
-            }
-          }}
-        },
+        createSubmitCancelTemplate(onSubmit, onCancel),
         false,
         container,
       )
