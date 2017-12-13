@@ -1,0 +1,423 @@
+body, h1 {
+  margin: 0px;
+  font-family: 'Roboto', 'Cantarell', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+}
+
+p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+a {
+  color: #0d0dcc;
+  text-decoration: none;
+}
+
+button {
+  background-color: #5cb85c;
+  border: 0px;
+  padding: 10px;
+  color: white;
+}
+
+button:hover {
+  background-color: #1A7F1A;
+}
+
+button a {
+  color: white;
+  padding: 10px;
+}
+
+input {
+  color: #555;
+  padding: 5px;
+}
+
+header {
+  height: 50px;
+  background-color: blue;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100%;
+  height: 60px;
+  display: inline-block;
+}
+
+#title-header {
+  color: white;
+  font-size: 1.75em;
+  display: inline-block;
+  line-height: 50px;
+}
+
+#username-admin {
+  position: absolute;
+  right: 50px;
+  top: 13px;
+  font-size: 20px;
+  color: white;
+}
+
+#popup-profile-image {
+  width: 30px;
+  height: 30px;
+}
+
+#profile-button {
+  padding: 3px;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+}
+
+#profile-setting {
+  background-color: #f2f2f2;
+  position: absolute;
+  right: 30px;
+  top: 60px;
+  border: 1px solid #9B9B9B;
+
+}
+#profile-setting a {
+  display: block;
+  padding: 10px 30px;
+  color: black;
+}
+
+#profile-setting div:hover {
+    background-color: #C8C8C8;
+}
+
+#profile-setting div:last-child {
+  border-top: 1px solid #9B9B9B;
+}
+
+nav {
+  font-size: 1.1em;
+  position: fixed;
+  width: 180px;
+  height: 100%;
+  top: 0px;
+  z-index: 500;
+  background-color: #f2f2f2;
+  box-shadow: 0px 0px 1px black;
+}
+
+nav > :first-child {
+  margin-top: 60px;
+}
+
+nav > ul > ul > li.current-page a[href] {
+  color: black;
+}
+
+nav ul {
+  list-style-type: none;
+  background: #f8f8f8;
+  padding: 0px;
+}
+
+nav ul li {
+  padding-left: 15px;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+
+nav ul li a {
+  padding: 10px 0px;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+nav ul:nth-child(2) li:hover {
+  background-color: #ddd;
+}
+
+.x-component--admin-main-section {
+  width: 80%;
+  display: inline-block;
+  margin-left: 180px;
+  margin-top: 50px;
+  padding: 15px;
+}
+
+.header-subpage {
+  padding-bottom: 9px;
+  border-bottom: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.header-subpage * {
+  display: inline;
+}
+
+button.btn-add {
+  display: inline;
+  float: right;
+  margin-right: 10px;
+}
+.body-subpage {
+  margin-top: 30px;
+  margin-left: 20px;
+}
+
+.x-component--dashboard-panel {
+  display: inline-block;
+  border-radius: 3px;
+  color: white;
+  width: 200px;
+  padding: 10px 15px;
+  height: 100px;
+  border: none;
+}
+
+#dashboard-games {
+  background-color: #337ab7;
+}
+
+#dashboard-users {
+  background-color: #FD2F2F;
+}
+
+.x-component--dashboard-panel:hover {
+  box-shadow: 0px 0px 7px -1px black;
+}
+
+.x-component--dashboard-panel .image-container {
+  padding-top: 30px;
+  float: left;
+}
+
+.x-component--dashboard-panel .image-container img {
+  width: 50px;
+  height: 50px;
+}
+.x-component--dashboard-panel .list {
+  padding-top: 15px;
+  float: right;
+}
+
+.x-component--dashboard-panel .list .count {
+  font-size: 40px;
+}
+
+ table {
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th,td {
+  width: auto;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+  padding: 3px 15px 3px 15px;
+}
+
+th {
+  text-align: center;
+  background-color: #eee;
+}
+
+.controller a:hover {
+  color: red;
+}
+
+.editing-page h2 {
+  font-weight: normal;
+}
+
+.editing-form {
+  height: 300px;
+  width: 100%;
+  padding: 19px;
+  border: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+}
+
+.editing-form .form-group,
+.editing-form .x-component--labeled-input {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.editing-form input, .editing-form output {
+  color: #1716de;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 5px;
+  position: relative;
+  margin-left: 10px;
+}
+
+.editing-form button {
+  margin-left: 10px;
+}
+
+output {
+  padding-left: 0px;
+}
+
+legend {
+  border-bottom: 1px solid #e5e5e5;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+form.add {
+  width: 100%;
+  border: 0px;
+}
+
+form.add h2 {
+  display: inline-block;
+}
+
+form.add {
+  width: auto;
+  border: 1px solid #C8C8C8;
+  padding: 50px 30px;
+  background-color: aliceblue;
+  font-size: 17px;
+  position: absolute;
+}
+
+textarea {
+  width: 400px;
+  height: 100px;
+}
+
+form.add label, form.add input, form.add output {
+  display: block;
+}
+
+form.add a {
+  padding: 0px;
+}
+
+form.add legend {
+  height: 60px;
+  text-align: center;
+}
+
+form.add input, textarea {
+  margin-bottom: 15px;
+}
+
+form.add button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  width:48%;
+}
+
+form.add input, output, textarea {
+  color: #555;
+}
+
+form.add .x-component--genre-checkbox-set * {
+  display: inline;
+}
+
+.x-component--genre-checkbox-set {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+form.change label, form.editing-form label,
+form.editing-form .button-container label {
+  display: inline-block;
+  text-align: right;
+  width: 30%;
+}
+
+form.change input {
+  margin: 5px 10px;
+  width: 40%;
+}
+
+form.change  {
+  padding: 30px 0px;
+  width: 600px;
+  border: 1px solid #C8C8C8;
+  background-color: aliceblue;
+  font-size: 17px;
+}
+
+form.change .button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+form.change button {
+  width: 100px;
+}
+
+.x-component--admin-advanced-reset-database-section form * {
+  padding-bottom: 10px;
+}
+
+input[type='checkbox'] {
+  transform: scale(1.5);
+}
+
+reset-db button:hover {
+  background-color: rgb(175, 10, 10);
+}
+
+.answer input {
+  padding: 3px;
+}
+
+.answer form >* {
+  padding-bottom: 30px;
+}
+
+button.dangerous {
+  background-color: #ce0000;
+}
+
+button.dangerous:hover {
+  background-color: darkred;
+}
+
+button.safe {
+  background-color: blue;
+}
+
+button.safe:hover {
+  background-color: darkblue;
+}
+
+.warning {
+  color: #D8000C;
+  padding-left: 10px;
+  border: 1px solid red;
+  background-color: #FFBABA;
+}
+
+.x-component--admin-advanced-admin-management-section ul {
+  list-style-type: circle;
+  color:red;
+}
+
+.x-component--admin-advanced-admin-management-section ul li {
+  margin-bottom: 10px;
+}
+
+.x-component--admin-advanced-admin-management-section a {
+  font-weight: bold;
+  color:blue;
+}
+
+.x-component--admin-advanced-admin-management-section a:hover {
+  text-decoration: underline;
+}

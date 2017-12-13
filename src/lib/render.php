@@ -30,7 +30,7 @@ class Renderer {
   }
 
   private function renderElement(Element $element, int $level, array $compClassNames): string {
-    $tag = $element->tag;
+    $tag = $element->tag ? $element->tag : 'x-component-element';
     $classmap = Renderer::makeComponentClassMap($compClassNames);
 
     $attributes = $this->renderAttributes(array_merge(
@@ -105,8 +105,8 @@ class Renderer {
     $result = [];
 
     foreach ($attributes as $key => $value) {
-      $actualKey = htmlspecialchars($key);
-      $actualValue = htmlspecialchars($value);
+      $actualKey = htmlentities($key);
+      $actualValue = htmlentities($value);
 
       array_push($result, "$actualKey=\"$actualValue\"");
     }
@@ -120,7 +120,7 @@ class Renderer {
     return 'class="' . implode(
       ' ',
       array_map(
-        function ($x) { return htmlspecialchars($x); },
+        function ($x) { return htmlentities($x); },
         $classes
       )
     ) . '"';
@@ -132,8 +132,8 @@ class Renderer {
     $result = 'style="';
 
     foreach ($style as $key => $value) {
-      $actualKey = htmlspecialchars($key);
-      $actualValue = htmlspecialchars(is_array($value) ? implode(' ', $value) : $value);
+      $actualKey = htmlentities($key);
+      $actualValue = htmlentities(is_array($value) ? implode(' ', $value) : $value);
 
       $result .= "$actualKey: $actualValue; ";
     }

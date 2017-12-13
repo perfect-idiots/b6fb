@@ -59,8 +59,11 @@ class AdminPage extends Page {
 class ErrorPage extends Page {
   protected function component(): Component {
     $status = $this->get('status');
+    $exception = $this->get('exception');
     $message = HttpStatusTable::create()->get($status);
     http_response_code($status);
+
+    $exceptionMessage = $exception ? $exception->getMessage() : '';
 
     return HtmlElement::create('html', [
       'lang' => 'en',
@@ -70,7 +73,7 @@ class ErrorPage extends Page {
         new CharsetMetaElement('utf-8'),
         new NamedMetaElement('status', $status),
         HtmlElement::create('title', "$status: $message"),
-        CssView::fromFile(__DIR__ . '/../resources/error.css', [
+        CssView::fromFile(__DIR__ . '/../resources/styles/error.css', [
           'text-color' => 'black',
           'background-color' => 'white',
           'header-background-color' => 'white',
@@ -87,16 +90,24 @@ class ErrorPage extends Page {
             'font-weight' => 'normal',
             'font-size' => '5em',
           ],
-          (string) $status
+          (string) $status,
         ]),
         HtmlElement::nested(['main', 'output'], [
-          'style' => [
-            'background-color' => 'yellow',
-            'font-size' => '3em',
-            'display' => 'block',
-            'height' => '100%',
-          ],
-          $message
+          HtmlElement::create('div', [
+            'style' => [
+              'background-color' => 'yellow',
+              'font-size' => '3em',
+              'display' => 'block',
+              'height' => '100%',
+            ],
+            $message,
+          ]),
+          HtmlElement::create('div', [
+            'style' => [
+              'font-size' => '1.5em',
+            ],
+            $exceptionMessage
+          ]),
         ]),
         JavascriptEmbed::text(
           "console.error(new Error('HTTP Status: $status — $message'))",
@@ -106,8 +117,11 @@ class ErrorPage extends Page {
     ]);
   }
 
-  static public function status(int $status): self {
-    return new static(['status' => $status]);
+  static public function status(int $status,  ?Exception $exception = null): self {
+    return new static([
+      'status' => $status,
+      'exception' => $exception,
+    ]);
   }
 }
 ?>
