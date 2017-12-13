@@ -16,4 +16,4 @@ from user_comments
 where
   user_comments.author_id = ? and
   (not ? or user_comments.hidden = ?)
-order by user_comments.date desc
+order by user_comments.date asc

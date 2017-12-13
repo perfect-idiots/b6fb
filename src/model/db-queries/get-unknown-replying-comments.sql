@@ -17,4 +17,4 @@ where
   find_in_set(user_comments.id, ?) = 0 and
   user_comments.parent_comment_id = ? and
   (not ? or user_comments.hidden = ?)
-order by user_comments.date desc
+order by user_comments.date asc
