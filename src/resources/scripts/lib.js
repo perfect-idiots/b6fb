@@ -354,3 +354,8 @@ function createSizeTracker (element, delay = 1024) {
 
   return result
 }
+
+function focusAndScroll (element) {
+  element.focus()
+  element.scrollIntoView()
+}

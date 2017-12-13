@@ -97,7 +97,7 @@
                 )
 
                 createReplyingCommentButton(thread, newComment)
-                newComment.focus()
+                focusAndScroll(newComment)
 
                 sendReplyingComment(targetedCommentId, thread, value).catch(error => {
                   newComment.remove()
@@ -114,7 +114,7 @@
                 replyingCommentContainer
               )
 
-              setTimeout(() => editor.querySelector('textarea').focus())
+              setTimeout(() => focusAndScroll(editor.querySelector('textarea')))
             }}
           }
         },
@@ -170,8 +170,7 @@
           document.querySelector('comment-thread-container > article')
         )
 
-        newCommentThread.scrollIntoView()
-        newCommentThread.focus()
+        focusAndScroll(newCommentThread)
 
         createReplyingCommentButton(
           newCommentThread,
