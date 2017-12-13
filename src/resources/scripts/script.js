@@ -134,6 +134,7 @@
                       )
 
                       createReplyingCommentButton(newComment)
+                      newComment.focus()
 
                       sendReplyingComment(targetedCommentId, thread, value).catch(error => {
                         newComment.remove()
