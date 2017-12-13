@@ -300,7 +300,7 @@ function createSizeTracker (element, delay = 1024) {
     ))
   }
 
-  const intervalId = setInterval(() => {
+  const loop = () => {
     const newRect = element.getBoundingClientRect()
     const change = check(newRect)
     if (!change.length) return
@@ -308,7 +308,10 @@ function createSizeTracker (element, delay = 1024) {
     change.includes('height') && call('height', newRect.height, rect.height, newRect, rect)
     call('all', newRect, rect)
     rect = newRect
-  }, delay)
+  }
+
+  const intervalId = setInterval(loop, delay)
+  window.addEventListener('resize', loop, false)
 
   const validate = fn => {
     if (typeof fn !== 'function') {
@@ -331,7 +334,10 @@ function createSizeTracker (element, delay = 1024) {
 
   const result = {
     validate,
-    stop: () => clearInterval(intervalId),
+    stop: () => {
+      clearInterval(intervalId)
+      window.removeEventListener('resize', loop, false)
+    },
     onChange: createListenerAdder('all'),
     width: {
       onChange: createListenerAdder('width'),
