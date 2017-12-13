@@ -27,6 +27,100 @@
     const addFavourite = () => player.classList.add('favourite')
     const removeFavourite = () => player.classList.remove('favourite')
 
+    const createReplyingCommentButton = (thread, comment) => {
+      const replyingCommentContainer = thread.querySelector('replying-comment-container')
+
+      const targetedCommentId = parseInt(thread
+        .querySelector('surface-comment-container .x-component--comment-viewer')
+        .dataset
+        .id
+      )
+
+      const sendReplyingComment = (target, container, reply) => ajax({
+        userDiffReplyingComment: {
+          [target]: {
+            knownComments: getKnownComments(container),
+            reply
+          }
+        }
+      })
+
+      const getKnownComments = container => Array
+        .from(container.querySelectorAll('.x-component--comment-viewer'))
+        .map(element => parseInt(element.dataset.id))
+
+      renderTemplate.byClass(
+        '#replying-comment-button',
+        {
+          outer: {
+            dataset: {
+              targetedCommentId
+            },
+            events: {click () {
+              callIfExists(thread.querySelector('comment-editor'), x => x.remove())
+
+              const onSubmit = () => {
+                const {value} = editor.querySelector('textarea')
+                editor.remove()
+
+                const {fullname, username} = loadJsonData('user-info')
+                const newComment = renderTemplate.byClass(
+                  '#comment-viewer',
+                  {
+                    fullname,
+                    username,
+                    content: value
+                  },
+                  false,
+                  replyingCommentContainer
+                )
+
+                createReplyingCommentButton(thread, newComment)
+                newComment.focus()
+
+                sendReplyingComment(targetedCommentId, thread, value).catch(error => {
+                  newComment.remove()
+                  console.warn(error)
+                })
+              }
+
+              const onCancel = () => editor.remove()
+
+              const editor = renderTemplate.byClass(
+                '#comment-editor',
+                {
+                  submit: {events: {click: onSubmit}},
+                  cancel: {events: {click: onCancel}},
+                  editor: {events: {
+                    keydown: event => {
+                      if (event.shiftKey) return
+
+                      switch (event.keyCode) {
+                        case 13: // ENTER
+                          event.preventDefault()
+                          onSubmit()
+                          break
+                        case 27: // ESC
+                          event.preventDefault()
+                          onCancel()
+                          break
+                      }
+                    }
+                  }}
+                },
+                false,
+                replyingCommentContainer
+              )
+
+              setTimeout(() => editor.querySelector('textarea').focus())
+            }}
+          }
+        },
+        false,
+        comment.querySelector('comment-text')
+      )
+    }
+
     callIfExists.querySelector('.x-component--player .control', container => {
       let lock = false
 
@@ -80,109 +174,14 @@
     })
 
     callIfExists.querySelector('comment-thread-container', container => {
-      const getKnownComments = container => Array
-        .from(container.querySelectorAll('.x-component--comment-viewer'))
-        .map(element => parseInt(element.dataset.id))
-
-      const sendReplyingComment = (target, container, reply) => ajax({
-        userDiffReplyingComment: {
-          [target]: {
-            knownComments: getKnownComments(container),
-            reply
-          }
-        }
-      })
-
       Array
         .from(container
           .querySelectorAll('.x-component--comment-thread-viewer')
         )
-        .forEach(thread => {
-          const targetedCommentId = parseInt(thread
-            .querySelector('surface-comment-container .x-component--comment-viewer')
-            .dataset
-            .id
-          )
-
-          const replyingCommentContainer = thread.querySelector('replying-comment-container')
-
-          const createReplyingCommentButton = comment => {
-            renderTemplate.byClass(
-              '#replying-comment-button',
-              {
-                outer: {
-                  dataset: {
-                    targetedCommentId
-                  },
-                  events: {click () {
-                    callIfExists(thread.querySelector('comment-editor'), x => x.remove())
-
-                    const onSubmit = () => {
-                      const {value} = editor.querySelector('textarea')
-                      editor.remove()
-
-                      const {fullname, username} = loadJsonData('user-info')
-                      const newComment = renderTemplate.byClass(
-                        '#comment-viewer',
-                        {
-                          fullname,
-                          username,
-                          content: value
-                        },
-                        false,
-                        replyingCommentContainer
-                      )
-
-                      createReplyingCommentButton(newComment)
-                      newComment.focus()
-
-                      sendReplyingComment(targetedCommentId, thread, value).catch(error => {
-                        newComment.remove()
-                        console.warn(error)
-                      })
-                    }
-
-                    const onCancel = () => editor.remove()
-
-                    const editor = renderTemplate.byClass(
-                      '#comment-editor',
-                      {
-                        submit: {events: {click: onSubmit}},
-                        cancel: {events: {click: onCancel}},
-                        editor: {events: {
-                          keydown: event => {
-                            if (event.shiftKey) return
-
-                            switch (event.keyCode) {
-                              case 13: // ENTER
-                                event.preventDefault()
-                                onSubmit()
-                                break
-                              case 27: // ESC
-                                event.preventDefault()
-                                onCancel()
-                                break
-                            }
-                          }
-                        }}
-                      },
-                      false,
-                      replyingCommentContainer
-                    )
-
-                    setTimeout(() => editor.querySelector('textarea').focus())
-                  }}
-                }
-              },
-              false,
-              comment.querySelector('comment-text')
-            )
-          }
-
-          Array
-            .from(thread.querySelectorAll('.x-component--comment-viewer'))
-            .forEach(createReplyingCommentButton)
-        })
+        .forEach(thread => Array
+          .from(thread.querySelectorAll('.x-component--comment-viewer'))
+          .forEach(comment => createReplyingCommentButton(thread, comment))
+        )
     })
   }
 })(window)
