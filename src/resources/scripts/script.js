@@ -168,6 +168,8 @@
                       false,
                       replyingCommentContainer
                     )
+
+                    setTimeout(() => editor.querySelector('textarea').focus())
                   }}
                 }
               },
