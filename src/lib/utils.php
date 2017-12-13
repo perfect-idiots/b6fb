@@ -55,6 +55,10 @@ function mapArrayKeyValue(array $array, callable $callback): array {
   );
 }
 
+function filterArrayConcrete(array $array, callable $callback, int $flags = 0): array {
+  return array_values(array_filter($array, $callback, $flags));
+}
+
 class ClassChecker {
   private $parents, $implements;
 

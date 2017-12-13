@@ -66,6 +66,7 @@ class SizeSet extends LazyLoadedDataContainer {
     $hidingRightSegmentWidth = 2 * 3 * $unitSize;
     $hiddingDateWidth = 7 * 3 * $unitSize;
     $mainSectionMinWidth = 2 * 3 * $unitSize;
+    $commentHeight = $unitSize;
 
     $begin = Tree::instance([
       'unit' => [
@@ -145,6 +146,9 @@ class SizeSet extends LazyLoadedDataContainer {
       ],
       'main-section' => [
         'min-width' => $mainSectionMinWidth,
+      ],
+      'comment' => [
+        'avatar' => BlockSize::sqr($commentHeight),
       ],
     ])->flat('-', '');
 
