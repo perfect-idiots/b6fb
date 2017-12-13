@@ -26,6 +26,7 @@
     const isFavourite = () => player.classList.contains('favourite')
     const addFavourite = () => player.classList.add('favourite')
     const removeFavourite = () => player.classList.remove('favourite')
+    const {fullname, username} = loadJsonData('user-info')
 
     const createReplyingCommentButton = (thread, comment) => {
       const replyingCommentContainer = thread.querySelector('replying-comment-container')
@@ -63,7 +64,6 @@
                 const {value} = editor.querySelector('textarea')
                 editor.remove()
 
-                const {fullname, username} = loadJsonData('user-info')
                 const newComment = renderTemplate.byClass(
                   '#comment-viewer',
                   {
@@ -147,9 +147,68 @@
     })
 
     callIfExists.querySelector('comment-editor-container', container => {
-      const editor = renderTemplate(
+      const sendSurfaceComment = (game, content) => ajax({
+        userAddSurfaceComment: {
+          [game]: content
+        }
+      })
+
+      const onSubmit = () => {
+        const {value} = textarea
+        textarea.value = ''
+
+        const newCommentThread = renderTemplate.byClass(
+          '#comment-thread-viewer',
+          {
+            username,
+            fullname,
+            content: value
+          },
+          false,
+          document.querySelector('comment-thread-container > article')
+        )
+
+        newCommentThread.scrollIntoView()
+        newCommentThread.focus()
+
+        createReplyingCommentButton(
+          newCommentThread,
+          newCommentThread.querySelector('.x-component--comment-viewer')
+        )
+
+        const {gameId} = loadJsonData('url-query')
+        sendSurfaceComment(gameId, value).catch(error => {
+          newCommentThread.remove()
+          console.warn(error)
+        })
+      }
+
+      const onCancel = () => {
+        textarea.value = ''
+      }
+
+      const editor = renderTemplate.byClass(
         '#comment-editor',
-        {},
+        {
+          submit: {events: {click: onSubmit}},
+          cancel: {events: {click: onCancel}},
+          editor: {events: {
+            keydown: event => {
+              if (event.shiftKey) return
+
+              switch (event.keyCode) {
+                case 13: // ENTER
+                  event.preventDefault()
+                  onSubmit()
+                  break
+                case 27: // ESC
+                  event.preventDefault()
+                  onCancel()
+                  break
+              }
+            }
+          }}
+        },
         false,
         container,
       )

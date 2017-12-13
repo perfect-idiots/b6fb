@@ -121,6 +121,53 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
         }
       },
 
+      'userAddSurfaceComment' => function ($list) use($param, $parseException) {
+        $type = gettype($list);
+        if ($type !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        $fn = function (string $game, $content) use($param, $parseException) {
+          $gameType = gettype($game);
+          if ($gameType !== 'string') {
+            return ApiResponse::failure([
+              'path' => [$game],
+              'expected' => ['type' => 'string'],
+              'received' => ['type' => $gameType],
+            ]);
+          }
+
+          $contentType = gettype($content);
+          if ($contentType !== 'string') {
+            return ApiResponse::failure([
+              'path' => [$game],
+              'expected' => ['type' => 'string'],
+              'received' => ['type' => $contentType],
+            ]);
+          }
+
+          try {
+            $param->get('user-profile')->addComment($game, null, $content);
+            return ApiResponse::success('ok');
+          } catch (Exception $exception) {
+            return $parseException($exception);
+          }
+        };
+
+        [$payload, $error] = [[], []];
+        foreach ($list as $game => $content) {
+          $response = $fn($game, $content);
+          $payload[$game] = $response->payload();
+          if ($error) array_push($error, $response->error());
+        }
+
+        return ApiResponse::success($payload, $error);
+      },
+
       'userDiffReplyingComment' => function ($threads) use($param, $parseException) {
         $type = gettype($threads);
         if ($type !== 'object') {
