@@ -174,7 +174,7 @@
                 }
               },
               false,
-              comment
+              comment.querySelector('comment-text')
             )
           }
 
