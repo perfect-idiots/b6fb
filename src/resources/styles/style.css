@@ -201,6 +201,16 @@ body {
   background-color: [[profile-setting-background-color]];
 }
 
+#popup-profile-identity {
+  margin-left: 10px;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#popup-fullname {
+  font-weight: bold;
+}
+
 #popup-profile-view {
   display: block;
   background-color: [[profile-setting-avatar-background-color]];

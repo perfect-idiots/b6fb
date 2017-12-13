@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/base.php';
+require_once __DIR__ . '/prerendered.php';
+require_once __DIR__ . '/text-area-element.php';
 require_once __DIR__ . '/../../lib/utils.php';
 
 abstract class Comment extends RawDataContainer implements Component {}
 
 class CommentViewer extends Comment {
   public function render(): Component {
+    $id = $this->getDefault('id', false);
     $fullname = $this->getDefault('author-fullname', '');
     $username = $this->getDefault('author-username', '');
     $content = $this->getDefault('comment-content', '');
@@ -13,8 +16,18 @@ class CommentViewer extends Comment {
     $colors = $this->get('colors');
     $avatar = $this->get('images')["default-avatar-{$colors['text-color']}-image"];
 
+    $createIdentityField = function (string $key, string $value, string $prefix = '') {
+      return new Minified(
+        HtmlElement::emmetTop("comment-author-$key", [
+          $prefix ? HtmlElement::emmetTop('span.prefix', $prefix) : '',
+          HtmlElement::emmetTop("span.$key", $value),
+        ])
+      );
+    };
+
     return HtmlElement::emmetTop('article.comment.view', [
       'dataset' => [
+        'id' => $id,
         'parent' => $parent,
       ],
       HtmlElement::emmetTop('comment-image', [
@@ -25,8 +38,8 @@ class CommentViewer extends Comment {
       ]),
       HtmlElement::create('comment-text', [
         HtmlElement::emmetTop('comment-author-identity.author.identity', [
-          HtmlElement::emmetBottom('comment-author-fullname>span.fullname', $fullname),
-          HtmlElement::emmetBottom('comment-author-username>span.username', "@$username"),
+          $createIdentityField('fullname', $fullname),
+          $createIdentityField('username', $username, '@'),
         ]),
         HtmlElement::emmetBottom('comment-content>p.content', $content),
       ]),
@@ -37,12 +50,33 @@ class CommentViewer extends Comment {
 class CommentEditor extends Comment {
   public function render(): Component {
     $content = $this->getDefault('comment-content', '');
+    $colors = $this->get('colors');
+    $avatar = $this->get('images')["default-avatar-{$colors['text-color']}-image"];
 
     return HtmlElement::create('comment-editor', [
-      HtmlElement::emmetBottom('comment-content>.input-container>textarea.content.editor', $content),
-      HtmlElement::emmetBottom('comment-control>.button-container', [
-        HtmlElement::emmetTop('button.submit', 'Xác nhận'),
-        HtmlElement::emmetTop('button.cancel', 'Hủy bỏ'),
+      HtmlElement::emmetTop('comment-image', [
+        HtmlElement::emmetTop('img.author.avatar', [
+          'src' => $avatar,
+          'alt' => 'Avatar',
+        ]),
+      ]),
+      HtmlElement::emmetTop('comment-text', [
+        HtmlElement::emmetBottom('comment-content>.input-container', [
+          new TextAreaElement([
+            'classes' => [
+              'content',
+              'editor',
+            ],
+            'style' => [
+              'resize' => 'none',
+            ],
+            $content,
+          ]),
+        ]),
+        HtmlElement::emmetBottom('comment-control>.button-container', [
+          HtmlElement::emmetTop('button.submit', 'Xác nhận'),
+          HtmlElement::emmetTop('button.cancel', 'Hủy bỏ'),
+        ]),
       ]),
     ]);
   }
@@ -79,6 +113,7 @@ abstract class CommentThread extends RawDataContainer implements Component {
     $wrapper = new RawDataContainer($data);
 
     return $this->assign([
+      'id' => $wrapper->getDefault('id', false),
       'author-fullname' => $wrapper->getDefault('author-fullname', ''),
       'author-username' => $wrapper->getDefault('author-id', ''),
       'comment-content' => $wrapper->getDefault('content', ''),

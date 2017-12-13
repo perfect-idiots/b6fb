@@ -13,4 +13,4 @@ from user_comments
     on user_comments.author_id = user_accounts.username
   inner join games
     on user_comments.game_id = games.id
-order by user_comments.date desc
+order by user_comments.date asc
