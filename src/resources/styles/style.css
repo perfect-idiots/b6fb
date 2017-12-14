@@ -816,6 +816,9 @@ comment-text {
 
 .input-container, textarea {
   width: 100%;
+  background: [[background-comment]];
+  color: [[text-color]];
+  border: none;
 }
 
 replying-comment-button a {
