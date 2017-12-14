@@ -49,9 +49,55 @@ class NightModeIcon extends SvgImage {
   }
 }
 
-class DefaultAvatarImage extends SvgImage {
+class MenuIcon extends SvgImage {
   protected function name(): string {
-    return 'default-avatar.svg';
+    return 'menu.svg';
+  }
+}
+
+abstract class StarIcon extends SvgImage {
+  abstract protected function suffix(): string;
+
+  protected function name(): string {
+    return 'star-' . $this->suffix() . '.svg';
+  }
+}
+
+class StarFillIcon extends StarIcon {
+  protected function suffix(): string {
+    return 'fill';
+  }
+}
+
+class StarStrokeWhiteIcon extends StarIcon {
+  protected function suffix(): string {
+    return 'stroke-white';
+  }
+}
+
+class StarStrokeBlackIcon extends StarIcon {
+  protected function suffix(): string {
+    return 'stroke-black';
+  }
+}
+
+abstract class DefaultAvatarImage extends SvgImage {
+  abstract protected function suffix(): string;
+
+  protected function name(): string {
+    return 'default-avatar-' . $this->suffix() . '.svg';
+  }
+}
+
+class DefaultAvatarWhiteImage extends DefaultAvatarImage {
+  protected function suffix(): string {
+    return 'white';
+  }
+}
+
+class DefaultAvatarBlackImage extends DefaultAvatarImage {
+  protected function suffix(): string {
+    return 'black';
   }
 }
 
@@ -74,9 +120,14 @@ class ImageSet extends LazyLoadedDataContainer {
     $classes = [
       'SearchIcon',
       'NightModeIcon',
-      'DefaultAvatarImage',
+      'MenuIcon',
+      'DefaultAvatarWhiteImage',
+      'DefaultAvatarBlackImage',
       'GamepadImage',
       'MultiUsersImage',
+      'StarFillIcon',
+      'StarStrokeWhiteIcon',
+      'StarStrokeBlackIcon',
     ];
 
     $result = [];

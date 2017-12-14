@@ -8,6 +8,8 @@ class LabeledInput extends RawDataContainer implements Component {
     $id = $this->getDefault('id', null);
     $type = $this->getDefault('type', null);
     $label = $this->getDefault('label', '');
+    $value = $this->getDefault('value', static::defaultValue());
+    $valueField = $this->valueField();
 
     $labelAttr = array_merge(
       static::defaultLabelAttr(),
@@ -16,25 +18,48 @@ class LabeledInput extends RawDataContainer implements Component {
 
     $inputAttr = array_merge(
       static::defaultInputAttr(),
-      $this->getDefault('input-attr', [])
+      $this->getDefault('input-attr', []),
+      $value
+        ? ($valueField
+          ? [$valueField => $value]
+          : [$value]
+        )
+        : []
     );
 
+    $labelElement = HtmlElement::create('label', array_merge(
+      [$label],
+      $labelAttr,
+      $id ? ['for' => $id] : []
+    ));
 
-    return HtmlElement::create('div', [
-      HtmlElement::create('label', array_merge(
-        [$label],
-        $labelAttr,
-        $id ? ['for' => $id] : []
-      )),
-      HtmlElement::create($tagName, array_merge($inputAttr, array_merge(
-        $id ? ['id' => $id, 'name' => $id] : [],
-        $type ? ['type' => $type] : []
-      ))),
-    ]);
+    $inputElement = HtmlElement::create($tagName, array_merge($inputAttr, array_merge(
+      $id ? ['id' => $id, 'name' => $id] : [],
+      $type ? ['type' => $type] : []
+    )));
+
+    return HtmlElement::create(
+      'div',
+      static::reversedOrder()
+        ? [$inputElement, $labelElement]
+        : [$labelElement, $inputElement]
+    );
+  }
+
+  protected function reversedOrder(): bool {
+    return false;
   }
 
   protected function defaultTagName(): string {
     return 'input';
+  }
+
+  protected function valueField(): string {
+    return 'value';
+  }
+
+  static protected function defaultValue() {
+    return '';
   }
 
   static protected function defaultLabelAttr(): array {
@@ -45,10 +70,11 @@ class LabeledInput extends RawDataContainer implements Component {
     return [];
   }
 
-  static public function text(string $id, string $label): self {
+  static public function text(string $id, string $label, $value = ''): self {
     return new static([
       'id' => $id,
       'label' => $label,
+      'value' => $value,
       'input-attr' => static::textInputAttr(),
       'label-attr' => static::textLabelAttr(),
     ]);
@@ -63,15 +89,37 @@ class LabeledInput extends RawDataContainer implements Component {
   }
 }
 
-class LabeledCheckbox extends LabeledInput {
+class ReversedLabeledInput extends LabeledInput {
+  protected function reversedOrder(): bool {
+    return true;
+  }
+}
+
+abstract class LabeledCheckboxRadio extends ReversedLabeledInput {
+  protected function valueField(): string {
+    return 'checked';
+  }
+
+  static protected function defaultValue() {
+    return false;
+  }
+}
+
+class LabeledCheckbox extends LabeledCheckboxRadio {
   static protected function defaultInputAttr(): array {
-    return ['type' => 'checkbox'];
+    return array_merge(parent::defaultInputAttr(), ['type' => 'checkbox']);
+  }
+}
+
+class LabeledRadio extends LabeledCheckboxRadio {
+  static protected function defaultInputAttr(): array {
+    return array_merge(parent::defaultInputAttr(), ['type' => 'radio']);
   }
 }
 
 class RequiredLabeledInput extends LabeledInput {
   static protected function defaultInputAttr(): array {
-    return ['required' => true];
+    return array_merge(parent::defaultInputAttr(), ['required' => true]);
   }
 }
 
@@ -87,13 +135,33 @@ class SecretLabeledInput extends RequiredLabeledInput {
   }
 }
 
-class LabeledTextArea extends RequiredLabeledInput {
+class LabeledTextArea extends LabeledInput {
   protected function defaultTagName(): string {
     return 'textarea';
   }
+
+  protected function valueField(): string {
+    return '';
+  }
 }
 
-class LabeledFileInput extends RequiredLabeledInput {
+class LabeledFileInput extends LabeledInput {
+  static protected function defaultInputAttr(): array {
+    return array_merge(parent::defaultInputAttr(), ['type' => 'file']);
+  }
+}
+
+class RequiredTextArea extends RequiredLabeledInput {
+  protected function defaultTagName(): string {
+    return 'textarea';
+  }
+
+  protected function valueField(): string {
+    return '';
+  }
+}
+
+class RequiredFileInput extends RequiredLabeledInput {
   static protected function defaultInputAttr(): array {
     return array_merge(parent::defaultInputAttr(), ['type' => 'file']);
   }

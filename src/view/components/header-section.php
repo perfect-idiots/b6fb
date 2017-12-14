@@ -12,7 +12,7 @@ class HeaderSection extends RawDataContainer implements Component {
       'id' => 'main-header',
       'classes' => ['header'],
       HtmlElement::emmetBottom('.left-corner.segment', [
-        new Logo($this->getData()),
+        new Logo($this->set('hidable-nav', true)->getData()),
       ]),
       HtmlElement::emmetBottom('.middle-segment.segment', [
         new SearchBox($this->getData()),

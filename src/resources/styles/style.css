@@ -1,0 +1,827 @@
+* {
+  transition-timing-function: ease;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
+html, body {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+body {
+  color: [[text-color]];
+  background-color: [[background-color]];
+  font-family: 'Arial', 'Helvatica', sans-serif;
+}
+
+*::-webkit-scrollbar {
+  width: 1em;
+}
+
+*::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*:hover::-webkit-scrollbar-thumb, *::-webkit-scrollbar-thumb:hover {
+  background-color: [[scrollbar-hover-color]];
+}
+
+*:hover::-webkit-scrollbar-thumb:active, *::-webkit-scrollbar-thumb:active {
+  background-color: [[scrollbar-active-color]];
+}
+
+.x-component--header-section {
+  background: [[header-background-color]];
+  box-shadow: 0px 1px 2px black;
+}
+
+.x-component--header-section {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  width: 100%;
+  height: [[unit-size]];
+  display: inline-block;
+}
+
+.x-component--header-section, .x-component--header-section * {
+  vertical-align: middle;
+}
+
+.x-component--header-section .segment {
+  display: inline-block;
+}
+
+.x-component--header-section .segment.left-corner,
+.x-component--header-section .segment.right-corner {
+  [[corner-segment-size-block]]
+}
+
+.x-component--header-section .segment.right-corner {
+  position: fixed;
+  right: 0px;
+  top: [[header-vertical-padding]];
+}
+
+.x-component--header-section .segment.middle-segment {
+  position: fixed;
+  left: [[middle-segment-padding]];
+  right: [[middle-segment-padding]];
+}
+
+.x-component--logo {
+  display: inline-block;
+  font-weight: normal;
+  margin: 0;
+  [[logo-size-block]]
+}
+
+.x-component--logo, .x-component--logo * {
+  text-align: center;
+  line-height: [[logo-line-height]];
+  color: [[header-text-color]];
+  [[logo-size-block]]
+}
+
+.x-component--logo, .x-component--logo * {
+  text-align: center;
+  line-height: [[logo-line-height]];
+  color: [[header-text-color]];
+}
+
+#nav-hiding-button {
+  zoom: 0.7;
+  border: none;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url([[menu-icon]]);
+  [[header-square-button-size-block]]
+}
+
+.nav-hidden nav {
+  right: 101%;
+}
+
+.nav-hidden .main.outer {
+  left: 0px;
+}
+
+.x-component--logo a {
+  text-decoration: none;
+}
+
+[hidden], [hidden] *, input[type='hidden'], button[type='hidden'], {
+  display: none;
+}
+
+.x-component--search-box {
+  display: inline-block;
+}
+
+.x-component--search-box {
+  height: [[search-box-height]];
+  margin: 0;
+  box-sizing: border-box;
+  padding-top: [[header-vertical-padding]];
+  padding-bottom: [[header-vertical-padding]];
+}
+
+#theme-switcher {
+  text-decoration: none;
+}
+
+#search-box-input {
+  background-color: [[search-box-background-color]];
+  border: none;
+  color: [[header-text-color]];
+  position: absolute;
+  width: 100%;
+  height: [[search-box-input-height]];
+  padding-left: [[search-box-input-padding-left]];
+  padding-right: [[search-box-input-padding-right]];
+  box-sizing: border-box;
+}
+
+#search-box-button, #theme-switcher-button {
+  background-color: transparent;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  margin: 0px;
+  padding: 3px;
+  border: none;
+  [[search-box-button-size-block]]
+}
+
+#search-box-button {
+  background-color: [[search-box-button-background-color]];
+  background-image: url([[search-icon]]);
+  position: absolute;
+  right: 0px;
+  top: [[header-vertical-padding]];
+}
+
+#theme-switcher, #user-profile-view {
+  display: inline-block;
+}
+
+#theme-switcher-button {
+  background-image: url([[night-mode-icon]]);
+  [[header-square-button-size-block]]
+}
+
+#login-anchor, #login-anchor button {
+  cursor: pointer;
+}
+
+#profile-button, #profile-image {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  background-color: transparent;
+  [[header-square-button-size-block]]
+}
+
+#profile-setting {
+  position: absolute;
+  overflow: hidden;
+  right: 0px;
+  top: [[unit-size]];
+  width: [[profile-setting-width]];
+  background-color: [[profile-setting-background-color]];
+}
+
+#popup-profile-identity {
+  margin-left: 10px;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#popup-fullname {
+  font-weight: bold;
+}
+
+#popup-profile-view {
+  display: block;
+  background-color: [[profile-setting-avatar-background-color]];
+}
+
+#popup-profile-view > * {
+  display: inline-block;
+}
+
+#popup-profile-image {
+  [[profile-setting-avatar-size-block]]
+}
+
+#profile-setting .button-container {
+  display: block;
+
+}
+
+#profile-setting .button-container button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: [[profile-setting-width]];
+  height: [[header-child-height]];
+}
+
+#profile-setting .button-container button:hover {
+  background-color: [[profile-setting-hover-background-color]];
+  box-shadow: none;
+  filter: none;
+}
+
+#profile-setting .button-container button a {
+  text-decoration: none;
+  display: inline-block;
+  line-height: [[header-child-height]];
+  color: [[text-color]];
+  width: [[profile-setting-width]];
+  height: [[header-child-height]];
+}
+
+nav {
+  text-transform: uppercase;
+  position: fixed;
+  width: [[logo-width]];
+  top: [[unit-size]];
+  bottom: 0px;
+  z-index: 500;
+  overflow-x: hidden;
+  overflow-y: scrollbar;
+  background-color: [[navigation-background-color]];
+  box-shadow: 0px 0px 1px black;
+}
+
+nav::-webkit-scrollbar {
+  width: 0.4em;
+}
+
+nav .subpage.title {
+  font-size: 0.7em;
+  display: inline-block;
+}
+
+nav ul, nav li {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+nav li {
+  margin: 5px;
+}
+
+nav > ul > ul > li {
+  padding-left: 10px;
+}
+
+nav > ul > ul > li:hover {
+  background-color: [[navigation-hover-background-color]];
+}
+
+nav > ul > ul > li a {
+  color: [[clickable-text-color]];
+  text-decoration: none;
+  width: [[logo-width]];
+  height: [[navigation-entry-height]];
+  vertical-align: middle;
+  line-height: [[navigation-entry-line-height]];
+  display: inline-block;
+}
+
+nav > ul > ul > li.current-page {
+  background-color: [[navigation-activated-background-color]];
+}
+
+nav > ul > ul > li.current-page a[href] {
+  color: [[hover-clickable-text-color]];
+}
+
+nav a[href]:hover {
+  color: [[hover-clickable-text-color]];
+}
+
+nav > ul > ul > li a[href]:hover {
+  filter: brightness(1.8);
+}
+
+nav ul ul:last-child > li {
+  height: 30px;
+  background-image: transparent;
+  text-decoration: underline;
+  text-transform: none;
+  font-size: 0.85em;
+  color: [[text-color]];
+}
+
+nav ul ul:last-child > li > a {
+  line-height: [[header-square-button-height]];
+}
+
+.main.outer {
+  display: inline-block;
+  position: fixed;
+  left: [[logo-width]];
+  top: [[unit-size]];
+  right: 0px;
+  bottom: 0px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 0px;
+  margin: 0px;
+}
+
+.main.inner {
+  padding: 15px;
+}
+
+text-area:focus, input:focus, button:focus {
+  outline: none !important;
+}
+
+text-area:focus, input:focus {
+  box-shadow: inset 0 0 5px [[shadow-color]];
+}
+
+button:hover {
+  filter: brightness(1.2) drop-shadow(1px 1px 2px [[shadow-color]]);
+  box-shadow: 0px 0px 3px [[shadow-color]];
+}
+
+.x-component--text-button {
+  text-transform: uppercase;
+  border: 0px;
+  [[text-button-size-block]]
+}
+
+.x-component--primary-button {
+  box-shadow: 0px 1px 2px black;
+  color: [[primary-button-text-color]];
+  background-color: [[primary-button-background-color]];
+}
+
+.x-component--primary-button:hover {
+  box-shadow: 0px 2px 3px black;
+  background-color: [[primary-button-hover-background-color]];
+}
+
+.x-component--primary-button:active {
+  box-shadow: 0px 0px 0px;
+}
+
+.x-component--secondary-button {
+  color: [[secondary-button-text-color]];
+  background-color: transparent;
+}
+
+.x-component--secondary-button:hover {
+  filter: none;
+  background-color: [[secondary-button-hover-background-color]];
+}
+
+[hidden], [hidden] *, input[type='hidden'], button[type='hidden'] {
+  display: none;
+}
+
+.x-component--game-item {
+  display: inline-block;
+  [[game-item-size-block]]
+}
+
+.x-component--game-item img {
+  [[game-item-image-size-block]]
+  margin: [[game-item-image-margin]];
+}
+
+.x-component--game-item figure {
+  margin-left: [[game-item-figure-margin]];
+  margin-right: [[game-item-figure-margin]];
+}
+
+.x-component--game-item figcaption {
+  text-align: center ;
+  height: [[game-item-figcaptionheight]];
+  color: [[text-color]];
+}
+
+.x-component--game-item:hover {
+  background: [[game-item-hover-background]];
+}
+
+.x-component--game-item * {
+  display: inline-block;
+  text-align: center;
+}
+
+#game-menu {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.embed-container {
+  width: 100%;
+  object-fit: contain;
+}
+
+.embed-container .embed {
+  display: block;
+  height: 500px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.main-footer {
+  text-align: center;
+}
+
+#main-footer{
+  display: block;
+  text-align: center;
+  height: [[footer-height]];
+}
+
+.copyright {
+  display: inline-block;
+  padding-right: 5px;
+  margin-top: [[footer-margin]];;
+}
+
+.about {
+  display: inline-block;
+  border-left: 2px solid [[text-color]];
+  padding: 0 10px 0 10px;
+  margin-top: [[footer-margin]];
+}
+
+.about a {
+  color: [[text-color]];
+}
+
+.x-component--game-item.x-component--search-result-item {
+  width: 100%;
+  height: 170px;
+  display: flex;
+  margin: 10px;
+  box-shadow: 1px 1px 7px -1px black;
+  text-align: justify;
+}
+
+.x-component--game-item.x-component--search-result-item article {
+  display: inline-flex;
+  margin: 10px;
+  color: [[text-color]];
+}
+
+.x-component--game-item.x-component--search-result-item * {
+  text-align: justify;
+}
+
+.x-component--game-item.x-component--search-result-item figure {
+  position: relative;
+}
+
+.x-component--game-item.x-component--search-result-item .text {
+  padding: 15px 15px 0px 0px;
+}
+
+.x-component--game-item.x-component--search-result-item .subtitle {
+  font-weight: bold;
+  font-size: 1.5em;
+  display: block;
+}
+
+.x-component--comment,
+.x-component--comment figure,
+.x-component--comment comment-content {
+  display: flex;
+  margin: 5px;
+  padding: 0px;
+}
+
+.x-component--comment figcaption,
+.x-component--comment img {
+  display: inline-block;
+}
+
+.x-component--comment img {
+  [[comment-avatar-size-block]]
+}
+
+.x-component--comment-thread {
+  display: block;
+}
+
+surface-comment-container,
+replying-comment-container,
+comment-author-identity,
+comment-content {
+  display: block;
+}
+
+comment-author-fullname {
+  font-weight: bold;
+}
+
+comment-author-username {
+  opacity: 0.5;
+  font-size: 0.8em;
+}
+
+comment-image, comment-text {
+  display: inline-block;
+}
+
+.x-component--comment-thread > replying-comment-container {
+  margin-left: 4em;
+}
+
+.x-component--user-profile-setting article {
+  padding: 1em;
+  margin: 1em auto 1em auto;
+  width: [[user-profile-setting-width]];
+  height: 100%;
+  box-shadow: 1px 1px 7px -1px black;
+}
+
+.x-component--user-profile-setting article h2 {
+  font-size: 2.1em;
+  font-weight: normal;
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+.x-component--user-profile-setting label {
+  width: 30%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  text-align: right;
+  display: inline-block;
+  font-weight: bold;
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.x-component--user-profile-setting output {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  display: inline-block;
+}
+
+.x-component--user-profile-setting input {
+  width: 60%;
+  height: 1.5em;
+  margin: 0.5em 0px 0px 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid [[text-color]];
+}
+
+.x-component--user-profile-setting button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 200px;
+  color: white;
+  margin: 0.5em 0px 0px 0px;
+}
+
+button.toggle-favourite {
+  border: none;
+  background-color: transparent;
+  background-origin: padding-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 2em;
+  height: 2em;
+  transition-duration: 0.05s;
+}
+
+.info button:hover {
+  box-shadow: none;
+}
+
+.info .control, .info h2 {
+  vertical-align: middle;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.theme-light .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-black-icon]]);
+}
+
+.theme-dark .x-component--player:not(.favourite) button.toggle-favourite {
+  background-image: url([[star-stroke-white-icon]]);
+}
+
+.x-component--player.favourite button.toggle-favourite {
+  background-image: url([[star-fill-icon]]);
+}
+
+.x-component--playing-history-item {
+  color: [[text-color]];
+  width: 100%;
+  height: 90px;
+  margin: 10px;
+  box-shadow: 1px 1px 7px -1px black;
+  text-align: justify;
+}
+
+.x-component--playing-history-item article {
+  display: inline-flex;
+}
+
+.x-component--playing-history-item article figure {
+ margin: 0.5em;
+}
+
+.x-component--playing-history-item article img {
+  width: 100px;
+  height: 70px;
+}
+
+.x-component--playing-history-item .subtitle {
+  height: 100%;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.5em 1em 0.5em 0.5em;
+}
+
+.x-component--empty-message {
+  text-align: center;
+}
+
+@media screen and (max-width: [[hiding-search-box-width]]) {
+  .x-component--search-box {
+    display: none;
+  }
+
+  .x-component--search-result-item .description {
+    display: none;
+  }
+
+  .x-component--game-item.x-component--search-result-item .subtitle {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .x-component--playing-history-item .subtitle {
+    font-size: 20px;
+  }
+
+  .x-component--game-item.x-component--search-result-item {
+    color: [[text-color]];
+    width: 100%;
+    height: 90px;
+    margin: 10px;
+    box-shadow: 1px 1px 7px -1px black;
+    text-align: justify;
+  }
+
+  .x-component--game-item.x-component--search-result-item article {
+   margin: 0px;
+  }
+
+  .x-component--game-item.x-component--search-result-item article figure {
+  margin: 0.5em;
+  }
+
+  .x-component--game-item.x-component--search-result-item article img {
+    width: 100px;
+    height: 70px;
+  }
+}
+
+@media screen and (max-width: [[hiding-navigator-width]]) {
+  nav {
+    right: 101%;
+  }
+
+  .main.outer {
+    left: 0px;
+  }
+
+  #nav-hiding-button {
+    display: none;
+  }
+}
+
+@media screen and (max-width: [[hiding-date-width]]){
+  .x-component--playing-history-item .description {
+    display: none;
+  }
+
+  .x-component--search-result-item article {
+    overflow: hidden;
+  }
+}
+
+@media screen and (max-width: [[hiding-right-segment-width]]) {
+  .segment.right-corner {
+    display: none;
+  }
+
+  main {
+   width: [[main-section-min-width]];
+   overflow-x: auto;
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex.right-aligned {
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
+#clear-history a {
+  text-transform: uppercase;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#clear-history {
+  border: 0px;
+  padding: 10px;
+  color: [[text-color]];
+  background-color: [[primary-button-background-color]];
+}
+
+.theme-light #clear-history a {
+  color: [[primary-button-text-color]];
+}
+
+comment-editor-container button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 120px;
+  color: white;
+  margin: 0.5em 0px 0px 0px;
+}
+
+comment-editor-container  .cancel {
+  background: [[primary-button-cancel-background-color]];
+}
+
+comment-control .button-container {
+  text-align: right;
+}
+
+comment-control button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 100px;
+  color: white;
+}
+
+comment-control .cancel {
+  background: [[primary-button-cancel-background-color]];
+}
+
+comment-editor-container .button-container {
+  text-align: right ;
+  margin: 5px;
+}
+
+replying-comment-container article {
+  padding: 10px;
+}
+
+comment-text {
+ margin: 10px 0px 10px 30px;
+ width: 100%;
+}
+
+comment-editor .input-container, textarea {
+  width: 100%;
+  background: [[background-comment]];
+  color: [[text-color]];
+  border: none;
+}
+
+replying-comment-button a {
+  opacity: 0.5;
+  font-size: 15px;
+}
