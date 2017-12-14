@@ -8,6 +8,7 @@ return [
   'scrollbar-active-color' => '#cccccc',
   'primary-button-text-color' => 'white',
   'primary-button-background-color' => '#3d3dee',
+  'primary-button-cancel-background-color' => 'red',
   'primary-button-hover-background-color' => '#55f',
   'secondary-button-text-color' => 'black',
   'secondary-button-hover-background-color' => 'rgba(127, 127, 127, 0.5)',
