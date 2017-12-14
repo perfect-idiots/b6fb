@@ -779,6 +779,27 @@ comment-editor-container button {
   margin: 0.5em 0px 0px 0px;
 }
 
+comment-editor-container  .cancel {
+  background: [[primary-button-cancel-background-color]];
+}
+
+comment-control .button-container {
+  text-align: right;
+}
+
+comment-control button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 100px;
+  color: white;
+}
+
+comment-control .cancel {
+  background: [[primary-button-cancel-background-color]];
+}
+
 comment-editor-container .button-container {
   text-align: right ;
   margin: 5px;
@@ -790,6 +811,11 @@ replying-comment-container article {
 
 comment-text {
  margin: 10px 0px 10px 30px;
+ width: 100%;
+}
+
+.input-container, textarea {
+  width: 100%;
 }
 
 replying-comment-button a {
