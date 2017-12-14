@@ -250,22 +250,6 @@
       )
 
       const textarea = editor.querySelector('textarea')
-
-      const resizeTextArea = () => {
-        const editorSize = editor
-          .getBoundingClientRect()
-          .width
-
-        const avatarSize = editor
-          .querySelector('comment-image')
-          .getBoundingClientRect()
-          .width
-
-        textarea.style.width = `${editorSize - avatarSize - 20}px`
-      }
-
-      resizeTextArea()
-      createSizeTracker(editor, 0).width.onChange(resizeTextArea)
     })
 
     callIfExists.querySelector('comment-thread-container', container => {
