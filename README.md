@@ -1,5 +1,15 @@
 # b6fb
 
+## Vị trí của ứng dụng trong project
+
+Toàn bộ code của ứng dụng được đặt trong thư mục `src/`.
+
+> 📓 **Ví dụ:** Giả sử project được copy vào thư mục `htdocs/b6fb/` (`C:\xampp\htdocs\b6fb\` trên Windows hoặc `/opt/lampp/htdocs/b6fb/` trên Linux), thì:
+>   * Code nằm trong thư mục `htdocs/b6fb/src/`
+>   * Địa chỉ localhost của trang web là `http://localhost/b6fb/src/`
+>     - Trang Quản trị: `http://localhost/b6fb/src/?page=admin`
+>     - Trang chủ: `http://localhost/b6fb/src/?page=index`
+
 ## Hướng dẫn cài đặt
 
 ### Yêu cầu hệ thống
@@ -10,7 +20,7 @@ XAMPP với **PHP 7**
 
 > ⚠ **Chú ý:** Trang web này không hoạt động với phiên bản XAMPP thông thường (PHP 5) mà yêu cầu PHP 7 để hoạt động.
 >
-> Download XAMPP 7.1:  [Windows](https://www.apachefriends.org/xampp-files/7.1.11/xampp-win32-7.1.11-0-VC14-installer.exe) | [Linux](https://www.apachefriends.org/xampp-files/7.1.11/xampp-linux-x64-7.1.11-0-installer.run) | [macOS](https://www.apachefriends.org/xampp-files/7.1.11/xampp-osx-7.1.11-0-installer.dmg)
+> Download XAMPP 7.1: [Windows](https://www.apachefriends.org/xampp-files/7.1.11/xampp-win32-7.1.11-0-VC14-installer.exe) | [Linux](https://www.apachefriends.org/xampp-files/7.1.11/xampp-linux-x64-7.1.11-0-installer.run) | [macOS](https://www.apachefriends.org/xampp-files/7.1.11/xampp-osx-7.1.11-0-installer.dmg)
 
 #### Trình duyệt
 
@@ -66,7 +76,7 @@ values (
 
 **Bước 2.3:** Đổi mật khẩu cho tài khoản admin:
 
-_Bước 2.3.1:_ Vào trang `?page=admin` (Quản trị), giao diện đăng nhập sẽ hiển thị.
+_Bước 2.3.1:_ Vào trang `src/?page=admin` (Quản trị), giao diện đăng nhập sẽ hiện ra.
 
 _Bước 2.3.2:_ Nhập thông tin sau vào form đăng nhập:
 
@@ -107,9 +117,9 @@ Truy cập mục "Trò chơi" của trang Quản trị, nhấn nút "Thêm trò 
 
 ### Hoàn tất cài đặt
 
-Truy cập Trang Chủ bằng cách xóa `?page=admin...` từ thanh địa chỉ hoặc truy cập `?page=index`.
+Truy cập Trang Chủ bằng cách truy cập `src/?page=index` hoặc `src/`.
 
-> ⚠ **Chú ý:** Trang Chủ (`?page=index`) và Trang Quản trị (`?page=admin`) không được kết nối với nhau vì người dùng thông thường không bao giờ dùng trang quản trị.
+> ⚠ **Chú ý:** Trang Chủ (`src/?page=index`) và Trang Quản trị (`src/?page=admin`) không được kết nối với nhau vì người dùng thông thường không bao giờ dùng trang quản trị.
 
 ## Cơ chế hoạt động của web
 
@@ -118,9 +128,9 @@ Truy cập Trang Chủ bằng cách xóa `?page=admin...` từ thanh địa ch�
 Trang web là ứng dụng một trang, dựa vào các tham số (parameters) của URL (mảng `$_GET` trong PHP, đối tượng `UrlQuery` trong project này).
 
 **Ví dụ:**
-  * `?type=html&page=login` sẽ dẫn đến trang đăng nhập của người dùng thông thường.
-  * `?type=html&page=admin` sẽ dẫn đến trang quản trị.
-  * `?type=action&action=reset-database` sẽ đặt lại toàn bộ CSDL (bao gồm CSDL MySQL và thư mục `storage`) về trạng thái sơ khai.
+  * `src/?type=html&page=login` sẽ dẫn đến trang đăng nhập của người dùng thông thường.
+  * `src/?type=html&page=admin` sẽ dẫn đến trang quản trị.
+  * `src/?type=action&action=reset-database` sẽ đặt lại toàn bộ CSDL (bao gồm CSDL MySQL và thư mục `storage`) về trạng thái sơ khai.
 
 #### Một số tham số routing quan trọng
 
