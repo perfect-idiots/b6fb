@@ -24,5 +24,6 @@ return [
   'profile-setting-hover-background-color' => '#343434',
   'shadow-color' => 'rgba(127, 128, 129, 0.5)',
   'game-item-hover-background' => '#070719',
+  'background-comment' => '#303030',
 ];
 ?>
