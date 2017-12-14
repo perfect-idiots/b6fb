@@ -201,6 +201,16 @@ body {
   background-color: [[profile-setting-background-color]];
 }
 
+#popup-profile-identity {
+  margin-left: 10px;
+  text-decoration: none;
+  color: [[text-color]];
+}
+
+#popup-fullname {
+  font-weight: bold;
+}
+
 #popup-profile-view {
   display: block;
   background-color: [[profile-setting-avatar-background-color]];
@@ -494,6 +504,51 @@ button:hover {
   display: block;
 }
 
+.x-component--comment,
+.x-component--comment figure,
+.x-component--comment comment-content {
+  display: flex;
+  margin: 5px;
+  padding: 0px;
+}
+
+.x-component--comment figcaption,
+.x-component--comment img {
+  display: inline-block;
+}
+
+.x-component--comment img {
+  [[comment-avatar-size-block]]
+}
+
+.x-component--comment-thread {
+  display: block;
+}
+
+surface-comment-container,
+replying-comment-container,
+comment-author-identity,
+comment-content {
+  display: block;
+}
+
+comment-author-fullname {
+  font-weight: bold;
+}
+
+comment-author-username {
+  opacity: 0.5;
+  font-size: 0.8em;
+}
+
+comment-image, comment-text {
+  display: inline-block;
+}
+
+.x-component--comment-thread > replying-comment-container {
+  margin-left: 4em;
+}
+
 .x-component--user-profile-setting article {
   padding: 1em;
   margin: 1em auto 1em auto;
@@ -712,4 +767,61 @@ button.toggle-favourite {
 
 .theme-light #clear-history a {
   color: [[primary-button-text-color]];
+}
+
+comment-editor-container button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 120px;
+  color: white;
+  margin: 0.5em 0px 0px 0px;
+}
+
+comment-editor-container  .cancel {
+  background: [[primary-button-cancel-background-color]];
+}
+
+comment-control .button-container {
+  text-align: right;
+}
+
+comment-control button {
+  border: none;
+  background: [[primary-button-background-color]];
+  cursor: pointer;
+  padding: 6px;
+  width: 100px;
+  color: white;
+}
+
+comment-control .cancel {
+  background: [[primary-button-cancel-background-color]];
+}
+
+comment-editor-container .button-container {
+  text-align: right ;
+  margin: 5px;
+}
+
+replying-comment-container article {
+  padding: 10px;
+}
+
+comment-text {
+ margin: 10px 0px 10px 30px;
+ width: 100%;
+}
+
+comment-editor .input-container, textarea {
+  width: 100%;
+  background: [[background-comment]];
+  color: [[text-color]];
+  border: none;
+}
+
+replying-comment-button a {
+  opacity: 0.5;
+  font-size: 15px;
 }

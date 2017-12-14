@@ -174,6 +174,17 @@ class UserProfile extends LoginDoubleChecker {
     ;
   }
 
+  public function addReplyingComment(int $parent, string $reply): void {
+    $this->verify();
+    $username = $this->username();
+
+    $this
+      ->get('db-query-set')
+      ->get('add-replying-comment')
+      ->executeOnce([$username, $parent, $reply])
+    ;
+  }
+
   public function hideComment(int $id): void {
     $this->verify();
     $username = $this->username();

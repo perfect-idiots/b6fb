@@ -120,6 +120,215 @@ class ApplicationProgrammingInterface extends LazyLoadedDataContainer {
           return $parseException($exception);
         }
       },
+
+      'userAddSurfaceComment' => function ($list) use($param, $parseException) {
+        $type = gettype($list);
+        if ($type !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        $fn = function (string $game, $content) use($param, $parseException) {
+          $gameType = gettype($game);
+          if ($gameType !== 'string') {
+            return ApiResponse::failure([
+              'path' => [$game],
+              'expected' => ['type' => 'string'],
+              'received' => ['type' => $gameType],
+            ]);
+          }
+
+          $contentType = gettype($content);
+          if ($contentType !== 'string') {
+            return ApiResponse::failure([
+              'path' => [$game],
+              'expected' => ['type' => 'string'],
+              'received' => ['type' => $contentType],
+            ]);
+          }
+
+          try {
+            $param->get('user-profile')->addComment($game, null, $content);
+            return ApiResponse::success('ok');
+          } catch (Exception $exception) {
+            return $parseException($exception);
+          }
+        };
+
+        [$payload, $error] = [[], []];
+        foreach ($list as $game => $content) {
+          $response = $fn($game, $content);
+          $payload[$game] = $response->payload();
+          if ($error) array_push($error, $response->error());
+        }
+
+        return ApiResponse::success($payload, $error);
+      },
+
+      'userDiffSurfaceComments' => function ($list) use($param, $parseException) {
+        $listType = gettype($list);
+        if ($listType !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $listType],
+          ]);
+        }
+
+        $knownComments = [];
+        if (property_exists($list, 'knownComments')) {
+          $knownComments = $list->knownComments;
+          $knownCommentsType = gettype($knownComments);
+          if ($knownCommentsType !== 'array') {
+            return ApiResponse::failure([
+              'path' => [],
+              'expected' => ['type' => 'array'],
+              'received' => ['type' => $knownCommentsType],
+            ]);
+          }
+        }
+
+        $fn = function ($game, $addend) use($knownComments, $param, $parseException) {
+          if ($addend !== null) {
+            $addendType = gettype($addend);
+            if ($addendType !== 'array') {
+              return ApiResponse::failure([
+                'path' => ['byGame', $game],
+                'expected' => ['type' => 'array'],
+                'received' => ['type' => $addendType],
+              ]);
+            }
+
+            $userProfile = $param->get('user-profile');
+            foreach ($addend as $index => $content) {
+              try {
+                $userProfile->addComment($game, null, $content);
+              } catch (Exception $exception) {
+                return $parseException($exception);
+              }
+            }
+          }
+
+          $unknownComments = $param
+            ->get('comment-manager')
+            ->getUnknownCommentsByGame($knownComments, $game)
+          ;
+
+          return ApiResponse::success($unknownComments);
+        };
+
+        if (property_exists($list, 'byGame')) {
+          $byGame = $list->byGame;
+          $byGameType = gettype($list);
+          if ($byGameType !== 'object') {
+            return ApiResponse::failure([
+              'path' => [],
+              'expected' => ['type' => 'object'],
+              'received' => ['type' => $byGameType],
+            ]);
+          }
+
+          [$payload, $error] = [[], []];
+          foreach ($byGame as $game => $addend) {
+            $response = $fn($game, $addend);
+            $payload[$game] = $response->payload();
+            if ($error) array_push($error, $response->error());
+          }
+
+          return ApiResponse::success(['byGame' => $payload], $error);
+        } else {
+          return ApiResponse::success(new stdClass());
+        }
+      },
+
+      'userDiffReplyingComment' => function ($threads) use($param, $parseException) {
+        $type = gettype($threads);
+        if ($type !== 'object') {
+          return ApiResponse::failure([
+            'path' => [],
+            'expected' => ['type' => 'object'],
+            'received' => ['type' => $type],
+          ]);
+        }
+
+        try {
+          $fn = function ($parent, $children) use($param) {
+            if (!is_numeric($parent)) {
+              return ApiResponse::failure([
+                'path' => [$parent],
+                'reason' => "Key is not a number: $parent",
+              ]);
+            }
+
+            $childrenType = gettype($children);
+            if ($childrenType !== 'object') {
+              return ApiResponse::failure([
+                'path' => [$parent],
+                'expected' => ['type' => 'object'],
+                'received' => ['type' => $childrenType],
+              ]);
+            }
+
+            $unknownComments = [];
+            if (property_exists($children, 'knownComments')) {
+              $knownComments = $children->knownComments;
+
+              $knownCommentsType = gettype($knownComments);
+              if ($knownCommentsType !== 'array') {
+                return ApiResponse::failure([
+                  'path' => [$parent, 'knownComments'],
+                  'expected' => ['type' => 'array'],
+                  'received' => ['type' => $knownCommentsType],
+                ]);
+              }
+
+              $unknownComments = $param
+                ->get('comment-manager')
+                ->getUnknownCommentsByParent($knownComments, $parent)
+              ;
+            } else {
+              $unknownComments = $param
+                ->get('comment-manager')
+                ->getUnknownCommentsByParent([], $parent)
+              ;
+            }
+
+            if (property_exists($children, 'reply')) {
+              $reply = $children->reply;
+
+              $replyType = gettype($reply);
+              if ($replyType !== 'string') {
+                return ApiResponse::failure([
+                  'path' => [$parent, 'reply'],
+                  'expected' => ['type' => 'string'],
+                  'received' => ['type' => $replyType],
+                ]);
+              }
+
+              $param
+                ->get('user-profile')
+                ->addReplyingComment($parent, $reply)
+              ;
+            }
+
+            return ApiResponse::success($unknownComments);
+          };
+
+          [$payload, $error] = [[], []];
+          foreach ($threads as $parent => $children) {
+            $response = $fn($parent, $children);
+            $payload[$parent] = $response->payload();
+            if ($error) array_push($error, $response->error());
+          }
+
+          return ApiResponse::success($payload, $error);
+        } catch (Exception $exception) {
+          return $parseException($exception);
+        }
+      },
     ];
   }
 
