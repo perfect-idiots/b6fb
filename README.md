@@ -1,18 +1,115 @@
 # b6fb
 
-## Tạo tài khoản admin đầu tiên
+## Hướng dẫn cài đặt
 
-**Bước 1:** Tạo tài khoản (đăng ký) người dùng thông thường đầu tiên trên giao diện web
+### Yêu cầu hệ thống
 
-**Bước 2:** Chạy lệnh sau trên CSDL
+#### Server
+
+XAMPP với **PHP 7**
+
+> ⚠ **Chú ý:** Trang web này không hoạt động với phiên bản XAMPP thông thường (PHP 5) mà yêu cầu PHP 7 để hoạt động.
+>
+> Download XAMPP 7.1:  [Windows](https://www.apachefriends.org/xampp-files/7.1.11/xampp-win32-7.1.11-0-VC14-installer.exe) | [Linux](https://www.apachefriends.org/xampp-files/7.1.11/xampp-linux-x64-7.1.11-0-installer.run) | [macOS](https://www.apachefriends.org/xampp-files/7.1.11/xampp-osx-7.1.11-0-installer.dmg)
+
+#### Trình duyệt
+
+> ⚠ **Chú ý:** Do được lập trình dựa trên nền tảng HTML 5 + CSS 3 + ECMAScript 6 nên chỉ có những trình duyệt mới nhất mới có thể hiện thị trang web.
+
+> ⚠ **Chú ý:** Công nghệ Flash đang dần bị thay thế bởi HTML5 nên chỉ một số trình duyệt desktop mới có thể chạy được game.
+
+**Khuyến cáo:**
+  * Google Chrome
+  * Firefox + Flash Plugin
+
+**Không khuyến cáo:**
+  * ~~Internet Explorer~~ _(không hỗ trợ ECMAScript 6)_
+  * ~~Microsoft Edge~~ _(không hỗ trợ Flash)_
+  * ~~Mobile Phone~~ _(không hỗ trợ Flash)_
+
+### Bước 1: Chuẩn bị Cơ sở Dữ liệu (MySQL)
+
+**Bước 1.1:** Mở `http://localhost/phpmyadmin`.
+
+**Bước 1.2:** Import file `sql/schema.sql` (hoặc copy nội dung của file đó vào ô nhập lệnh SQL).
+
+> ⮕ Cơ sở dữ liệu được tạo có tên `b6fb`
+
+**Bước 1.3:** Tạo file `src/model/database/database.php` (tránh nhầm với `src/model/database.php`) với nội dung như sau:
+
+```php
+<?php
+return [
+  'host' => 'localhost',
+  'username' => 'root',
+  'password' => '',
+  'dbname' => 'b6fb',
+];
+?>
+```
+
+### Bước 2: Tạo tài khoản admin
+
+> Để đảm bảo tính an toàn, tài khoản admin không thể được đăng ký từ website mà phải được thêm trực tiếp vào CSDL bằng câu lệnh SQL.
+
+**Bước 2.1:** Mở `http://localhost/phpmyadmin`
+
+**Bước 2.2:** Nhập câu lệnh sql sau:
 
 ```sql
 insert into admin_accounts (username, password_hash)
-select username, password_hash
-from user_accounts
+values (
+ 'admin', -- Tên đăng nhập là 'admin'
+ '$2y$10$dPsN3Gw7lQR1BAA9xJCNs.hUfMT5lkGnrtO4g44wefiXFN/SPdJ8u' -- Mật khẩu là '123456789'
+)
 ```
 
-**Kết quả:** Bây giờ bạn đã có một tài khoản admin với tên đăng nhập và mật khẩu tương tự tại khoản người dùng đầu tiên.
+**Bước 2.3:** Đổi mật khẩu cho tài khoản admin:
+
+_Bước 2.3.1:_ Vào trang `?page=admin` (Quản trị), giao diện đăng nhập sẽ hiển thị.
+
+_Bước 2.3.2:_ Nhập thông tin sau vào form đăng nhập:
+
+> Tên đăng nhập: `admin`
+> Mật khẩu: `123456789`
+
+**Bước 2.4:** Chọn "Nâng cao" → "Đổi mật khẩu".
+
+### Bước 3: Nhập dữ liệu
+
+#### Phương pháp 1: Nhập thủ công
+
+**Bước 3.1.3:** Thêm thể loại:
+
+Truy cập mục "Trò chơi" của trang Quản trị, nhấn nút "Thêm thể loại", và nhập đầy đử các thông tin cần thiết.
+
+**Bước 3.1.2:** Thêm trò chơi:
+
+Truy cập mục "Trò chơi" của trang Quản trị, nhấn nút "Thêm trò chơi", và nhập **đầy đủ** các thông tin cần thiết.
+
+> ⚠ **Chú ý:** Mỗi trò chơi _phải_ có ít nhất 1 thể loại thì mới được liệt kê.
+
+> 🕮 **Tip:** Mục "mô tả" của trò chơi hỗ trợ _một số_ cú pháp [markdown](https://goo.gl/vnWvnJ) (chữ đậm, chữ nghiêng, link, html ...).
+
+#### Phương pháp 2: Nhập hàng loạt
+
+> ⚠ **Chú ý:** Phương pháp này sẽ sao chép tất cả các file từ `src/media/` sang `src/storage/` nên sẽ mất một khoảng thời gian (từ 1 đến 2 phút).
+
+**Bước 3.2.1:** Truy cập mục "Nâng cao" của trang Quản trị.
+
+**Bước 3.2.2:** Đánh dấu tick (`✓`) vào mục "Dữ liệu Trò chơi".
+
+**Bước 3.2.3:** Nhấn nút "Đặt lại CSDL".
+
+**Bước 3.2.4:** Nhập mật khẩu admin, nhấn "Xóa và Đặt lại CSDL", và chờ 1 - 2 phút.
+
+> ⮕ Khi hoàn tất, trình duyệt sẽ trở về giao diện "Nâng cao".
+
+### Hoàn tất cài đặt
+
+Truy cập Trang Chủ bằng cách xóa `?page=admin...` từ thanh địa chỉ hoặc truy cập `?page=index`.
+
+> ⚠ **Chú ý:** Trang Chủ (`?page=index`) và Trang Quản trị (`?page=admin`) không được kết nối với nhau vì người dùng thông thường không bao giờ dùng trang quản trị.
 
 ## Cơ chế hoạt động của web
 
