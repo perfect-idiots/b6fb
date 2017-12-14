@@ -93,6 +93,8 @@ _Bước 2.3.2:_ Nhập thông tin sau vào form đăng nhập:
 
 Truy cập mục "Trò chơi" của trang Quản trị, nhấn nút "Thêm thể loại", và nhập đầy đử các thông tin cần thiết.
 
+> 🕮 **Tip:** Cơ sở dữ liệu của b6fb sử dụng encoding `utf8mb4_bin` nên hỗ trợ nhiều ký tự đặc biệt của bảng mã Unicode (`Tiếng Việt`, `中国`, `日本の`, `emoji 😃 🐶 👍 📦`).
+
 **Bước 3.1.2:** Thêm trò chơi:
 
 Truy cập mục "Trò chơi" của trang Quản trị, nhấn nút "Thêm trò chơi", và nhập **đầy đủ** các thông tin cần thiết.
