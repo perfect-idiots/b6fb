@@ -58,12 +58,12 @@ function ajax (query) {
       const {status, response} = xhr
 
       if (status < 200 || status > 200) {
-        reject(xhr)
+        reject({status, response, xhr})
       } else {
         try {
           resolve(JSON.parse(response))
         } catch (error) {
-          reject({error, __proto__: xhr})
+          reject({error, status, response, xhr})
         }
       }
     })
