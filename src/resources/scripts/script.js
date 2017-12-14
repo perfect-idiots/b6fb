@@ -49,6 +49,10 @@
       }}
     })
 
+    const getKnownComments = container => Array
+      .from(container.querySelectorAll('.x-component--comment-viewer'))
+      .map(element => parseInt(element.dataset.id))
+
     const createReplyingCommentButton = (thread, comment) => {
       const replyingCommentContainer = thread.querySelector('replying-comment-container')
 
@@ -66,10 +70,6 @@
           }
         }
       })
-
-      const getKnownComments = container => Array
-        .from(container.querySelectorAll('.x-component--comment-viewer'))
-        .map(element => parseInt(element.dataset.id))
 
       renderTemplate.byClass(
         '#replying-comment-button',
@@ -149,17 +149,22 @@
     })
 
     callIfExists.querySelector('comment-editor-container', container => {
-      const sendSurfaceComment = (game, content) => ajax({
-        userAddSurfaceComment: {
-          [game]: content
+      const sendSurfaceComment = (knownComments, gameId, content) => ajax({
+        userDiffSurfaceComments: {
+          knownComments,
+          byGame: {
+            [gameId]: [content]
+          }
         }
       })
 
       const onSubmit = () => {
+        const knownComments = getKnownComments(document)
+        const threadContainer = document.querySelector('comment-thread-container > article')
         const {value} = textarea
         textarea.value = ''
 
-        const newCommentThread = renderTemplate.byClass(
+        const earlyCommentThread = renderTemplate.byClass(
           '#comment-thread-viewer',
           {
             username,
@@ -167,19 +172,68 @@
             content: value
           },
           false,
-          document.querySelector('comment-thread-container > article')
+          threadContainer
         )
 
-        focusAndScroll(newCommentThread)
-
-        createReplyingCommentButton(
-          newCommentThread,
-          newCommentThread.querySelector('.x-component--comment-viewer')
-        )
+        focusAndScroll(earlyCommentThread)
 
         const {gameId} = loadJsonData('url-query')
-        sendSurfaceComment(gameId, value).catch(error => {
-          newCommentThread.remove()
+        sendSurfaceComment(knownComments, gameId, value).then(response => {
+          const {byGame} = response.payload.userDiffSurfaceComments
+          earlyCommentThread.remove()
+          if (!byGame) return
+
+          const {groups} = byGame[gameId]
+          for (const threadInfo of groups) {
+            const {top} = threadInfo
+
+            const thread = renderTemplate.byClass(
+              '#comment-thread-viewer',
+              {
+                comment: {
+                  dataset: {
+                    id: top.id,
+                    parent: top['parent-comment-id'] || ''
+                  },
+                },
+                fullname: top['author-fullname'],
+                username: top['author-id'],
+                content: top.content
+              },
+              false,
+              threadContainer
+            )
+
+            focusAndScroll(thread)
+            createReplyingCommentButton(
+              thread,
+              thread.querySelector('.x-component--comment-viewer')
+            )
+
+            const replyingCommentContainer = thread.querySelector('replying-comment-container')
+            for (const replyInfo of threadInfo.replies) {
+              const reply = renderTemplate.byClass(
+                '#comment-viewer',
+                {
+                  comment: {
+                    dataset: {
+                      id: replyInfo.id,
+                      parent: replyInfo['parent-comment-id'] || ''
+                    }
+                  },
+                  fullname: replyInfo['author-fullname'],
+                  username: replyInfo['author-id'],
+                  content: reply.content
+                },
+                false,
+                thread.querySelector('replying-comment-container')
+              )
+
+              createReplyingCommentButton(thread, reply)
+            }
+          }
+        }).catch(error => {
+          earlyCommentThread.remove()
           console.warn(error)
         })
       }
