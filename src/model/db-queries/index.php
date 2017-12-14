@@ -29,6 +29,7 @@ return [
   'get-history-by-game' => 's',
   'get-all-comments-by-user' => 'sii',
   'get-all-comments-by-game' => 'sii',
+  'get-unknown-comments-by-game' => 'ssii',
   'get-unknown-replying-comments' => 'siii',
   'update-admin-password' => 'ss',
   'update-user-profile' => 'ss',
